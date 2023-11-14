@@ -358,6 +358,13 @@
 }
 
 /* RTL */
+[dir="rtl"].ui5-switch-root:not(.ui5-switch--checked).ui5-switch--semantic .ui5-switch-text--off,
+[dir="rtl"].ui5-switch-root:not(.ui5-switch--checked).ui5-switch-desktop.ui5-switch--no-label .ui5-switch-text--off {
+	right: var(--_ui5_switch_text_inactive_left);
+	left: var(--_ui5_switch_text_inactive_right);
+}
+
+
 [dir="rtl"].ui5-switch-root.ui5-switch--checked:not(.ui5-switch--no-label):not(.ui5-switch--semantic) .ui5-switch-slider {
 	transform: var(--_ui5_switch_rtl_transform_with_label);
 }
