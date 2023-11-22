@@ -32,7 +32,11 @@ import FileUploaderCss from "./generated/themes/FileUploader.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
 import ValueStateMessageCss from "./generated/themes/ValueStateMessage.css.js";
 import type FormSupport from "./features/InputElementsFormSupport.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
+import type { IFormElement, NativeFormElement } from "./features/InputElementsFormSupport.js";
+
+type FileUploaderChangeEventDetail = {
+	files: FileList | null,
+}
 
 /**
  * @class
@@ -179,16 +183,6 @@ class FileUploader extends UI5Element implements IFormElement {
 
 	/**
 	 * Defines the value state of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>None</code></li>
-	 * <li><code>Error</code></li>
-	 * <li><code>Warning</code></li>
-	 * <li><code>Success</code></li>
-	 * <li><code>Information</code></li>
-	 * </ul>
-	 *
 	 * @type {sap.ui.webc.base.types.ValueState}
 	 * @name sap.ui.webc.main.FileUploader.prototype.valueState
 	 * @defaultvalue "None"
@@ -204,7 +198,9 @@ class FileUploader extends UI5Element implements IFormElement {
 	focused!: boolean;
 
 	/**
-	 * By default the component contains a single input field. With this slot you can pass any content that you wish to add. See the samples for more information.
+	 * By default the component contains a single input field. With this slot you can pass any content that you wish to add. See the samples for more information. <br>
+	 * <b>Note:</b> If no content is provided in this slot, the component will only consist of an input field and will not be interactable using the keyboard.<br>
+	 * Also it is not recommended to use any non-interactable components, as it may lead to poor accessibility experience.
 	 *
 	 * @type {HTMLElement[]}
 	 * @name sap.ui.webc.main.FileUploader.prototype.default
@@ -331,7 +327,7 @@ class FileUploader extends UI5Element implements IFormElement {
 				this._setFormValue();
 			} else {
 				formSupport.syncNativeFileInput(this,
-					(element: IFormElement, nativeInput: HTMLInputElement) => {
+					(element: IFormElement, nativeInput: NativeFormElement) => {
 						nativeInput.disabled = !!element.disabled;
 					},
 					this._onChange.bind(this));
@@ -345,7 +341,7 @@ class FileUploader extends UI5Element implements IFormElement {
 		const changedFiles = (e.target as HTMLInputElement).files;
 
 		this._updateValue(changedFiles);
-		this.fireEvent("change", {
+		this.fireEvent<FileUploaderChangeEventDetail>("change", {
 			files: changedFiles,
 		});
 	}
@@ -509,3 +505,6 @@ class FileUploader extends UI5Element implements IFormElement {
 FileUploader.define();
 
 export default FileUploader;
+export type {
+	FileUploaderChangeEventDetail,
+};

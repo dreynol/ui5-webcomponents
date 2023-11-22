@@ -11,10 +11,11 @@ import { DocsPage } from "../../../.storybook/docs";
 import type RatingIndicator from "@ui5/webcomponents/dist/RatingIndicator.js";
 
 const component = "ui5-rating-indicator";
+let index = 0;
 
 export default {
-    title: "Main/RatingIndicator",
-    component,
+    title: "Main/Rating Indicator",
+    component: "RatingIndicator",
     parameters: {
         docs: {
           page: DocsPage({ ...componentInfo, component })
@@ -25,36 +26,39 @@ export default {
 
 const Template: UI5StoryArgs<RatingIndicator, StoryArgsSlots> = (args) => html`
 <ui5-rating-indicator
+	id="rating-indicator-${++index}"
 	value="${ifDefined(args.value)}"
 	max="${ifDefined(args.max)}"
 	?disabled="${ifDefined(args.disabled)}"
 	?readonly="${ifDefined(args.readonly)}"
-	accessible-нame="${ifDefined(args.accessibleName)}"
+	?required="${ifDefined(args.required)}"
+	tooltip="${ifDefined(args.tooltip)}"
+	accessible-name="${ifDefined(args.accessibleName)}"
+	accessible-name-ref="${ifDefined(args.accessibleNameRef)}"
 ></ui5-rating-indicator>`;
 
-export const BasicRatingIndicator = Template.bind({});
-BasicRatingIndicator.args = {
-	value: 3.7
+export const Basic = Template.bind({});
+Basic.args = {
+	value: 4
 };
 
-export const RatingIndicatorMax = Template.bind({});
-RatingIndicatorMax.args = {
+export const MaxValue = Template.bind({});
+MaxValue.args = {
 	value: 5,
 	max: 10
 };
-RatingIndicatorMax.storyName = "Rating Indicator with Max Value";
 
-
-export const DisabledRatingIndicator: StoryFn = Template.bind({});
-DisabledRatingIndicator.args = {
-	value: 5,
-	max: 10,
-	disabled: true
-};
-
-export const ReadonlyRatingIndicator: StoryFn = Template.bind({});
-ReadonlyRatingIndicator.args = {
+export const RequiredLabel: StoryFn = Template.bind({});
+RequiredLabel.args = {
 	value: 5,
 	max: 7,
-	readonly: true
+	accessibleNameRef: "label-acc-name-ref",
+	required: true
 };
+RequiredLabel.decorators = [
+	(story) => {
+	return html`
+	<ui5-label id="label-acc-name-ref" required="true" for="rating-indicator-${index+1}">Rate us</ui5-label>
+	${story()}`;
+	}
+]

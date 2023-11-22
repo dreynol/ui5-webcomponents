@@ -110,8 +110,9 @@ type AvatarGroupClickEventDetail = {
  * The component provides advanced keyboard handling.
  * When focused, the user can use the following keyboard
  * shortcuts in order to perform a navigation:
+ *
  * <br>
- * - <code>type</code> Individual:
+ * <code>type</code> Individual:
  * <br>
  * <ul>
  * <li>[TAB] - Move focus to the overflow button</li>
@@ -122,7 +123,7 @@ type AvatarGroupClickEventDetail = {
  * <li>[SPACE],[ENTER],[RETURN] - Trigger <code>ui5-click</code> event</li>
  * </ul>
  * <br>
- * - <code>type</code> Group:
+ * <code>type</code> Group:
  * <br>
  * <ul>
  * <li>[TAB] - Move focus to the next interactive element after the component</li>
@@ -174,12 +175,7 @@ type AvatarGroupClickEventDetail = {
 class AvatarGroup extends UI5Element {
 	/**
 	 * Defines the mode of the <code>AvatarGroup</code>.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Group</code></li>
-	 * <li><code>Individual</code></li>
-	 * </ul>
+	 *
 	 * @type {sap.ui.webc.main.types.AvatarGroupType}
 	 * @name sap.ui.webc.main.AvatarGroup.prototype.type
 	 * @defaultValue "Group"

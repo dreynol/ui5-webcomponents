@@ -32,7 +32,7 @@ import type { LinkClickEventDetail } from "./Link.js";
 import Label from "./Label.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import List from "./List.js";
-import type { SelectionChangeEventDetail } from "./List.js";
+import type { ListSelectionChangeEventDetail } from "./List.js";
 import StandardListItem from "./StandardListItem.js";
 import Icon from "./Icon.js";
 import Button from "./Button.js";
@@ -138,7 +138,6 @@ type FocusAdaptor = ITabbable & {
 class Breadcrumbs extends UI5Element {
 	/**
 	 * Defines the visual indication and behavior of the breadcrumbs.
-	 * Available options are <code>Standard</code> (by default) and <code>NoCurrentPage</code>.
 	 * <br><br>
 	 * <b>Note:</b> The <code>Standard</code> breadcrumbs show the current page as the last item in the trail.
 	 * The last item contains only plain text and is not a link.
@@ -153,17 +152,6 @@ class Breadcrumbs extends UI5Element {
 
 	/**
 	 * Determines the visual style of the separator between the breadcrumb items.
-	 *
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Slash</code></li>
-	 * <li><code>BackSlash</code></li>
-	 * <li><code>DoubleBackSlash</code></li>
-	 * <li><code>DoubleGreaterThan</code></li>
-	 * <li><code>DoubleSlash</code></li>
-	 * <li><code>GreaterThan</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.main.types.BreadcrumbsSeparatorStyle}
 	 * @name sap.ui.webc.main.Breadcrumbs.prototype.separatorStyle
@@ -360,7 +348,7 @@ class Breadcrumbs extends UI5Element {
 			requiredWidth += this._dropdownArrowLinkWidth;
 		}
 
-		while ((requiredWidth > availableWidth) && (overflowSize < this._maxAllowedOverflowSize)) {
+		while ((requiredWidth >= availableWidth) && (overflowSize < this._maxAllowedOverflowSize)) {
 			const itemToOverflow = items[overflowSize];
 			let itemWidth = 0;
 
@@ -407,7 +395,7 @@ class Breadcrumbs extends UI5Element {
 	_onLinkPress(e: CustomEvent<LinkClickEventDetail>) {
 		const link = e.target as Link,
 			items = this._getItems(),
-			item = items.find(x => `${x._id}-link` === link.id),
+			item = items.find(x => `${x._id}-link` === link.id)!,
 			{
 				altKey,
 				ctrlKey,
@@ -415,7 +403,7 @@ class Breadcrumbs extends UI5Element {
 				shiftKey,
 			} = e.detail;
 
-		if (!this.fireEvent("item-click", {
+		if (!this.fireEvent<BreadcrumbsItemClickEventDetail>("item-click", {
 			item,
 			altKey,
 			ctrlKey,
@@ -445,7 +433,7 @@ class Breadcrumbs extends UI5Element {
 		});
 	}
 
-	_onOverflowListItemSelect(e: CustomEvent<SelectionChangeEventDetail>) {
+	_onOverflowListItemSelect(e: CustomEvent<ListSelectionChangeEventDetail>) {
 		const listItem = e.detail.selectedItems[0],
 			items = this._getItems(),
 			item = items.find(x => `${x._id}-li` === listItem.id)!;
@@ -663,3 +651,6 @@ class Breadcrumbs extends UI5Element {
 Breadcrumbs.define();
 
 export default Breadcrumbs;
+export type {
+	BreadcrumbsItemClickEventDetail,
+};

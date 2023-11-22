@@ -48,30 +48,42 @@ import {
 	ARIA_LABEL_LIST_MULTISELECTABLE,
 	ARIA_LABEL_LIST_DELETABLE,
 } from "./generated/i18n/i18n-defaults.js";
+import CheckBox from "./CheckBox.js";
+import RadioButton from "./RadioButton.js";
 
 const INFINITE_SCROLL_DEBOUNCE_RATE = 250; // ms
 
 const PAGE_UP_DOWN_SIZE = 10;
 
 // ListItemBase-based events
-type FocusEventDetail = {
+type ListItemFocusEventDetail = {
 	item: ListItemBase,
 }
-type SelectionChangeEventDetail = {
+
+type ListSelectionChangeEventDetail = {
 	selectedItems: Array<ListItemBase>;
 	previouslySelectedItems: Array<ListItemBase>;
 	selectionComponentPressed: boolean;
 	targetItem: ListItemBase;
 	key?: string;
 }
-type DeleteEventDetail = FocusEventDetail;
 
-// ListItem-based events
-type CloseEventDetail = {
+type ListItemDeleteEventDetail = {
 	item: ListItemBase,
 }
-type ToggleEventDetail = CloseEventDetail;
-type ClickEventDetail = CloseEventDetail;
+
+// ListItem-based events
+type ListItemCloseEventDetail = {
+	item: ListItemBase,
+}
+
+type ListItemToggleEventDetail = {
+	item: ListItemBase,
+}
+
+type ListItemClickEventDetail = {
+	item: ListItemBase,
+}
 
 /**
  * @class
@@ -217,6 +229,7 @@ type ClickEventDetail = CloseEventDetail;
  * in <code>SingleSelect</code>, <code>SingleSelectBegin</code>, <code>SingleSelectEnd</code> and <code>MultiSelect</code> modes.
  *
  * @event sap.ui.webc.main.List#selection-change
+ * @allowPreventDefault
  * @param {Array} selectedItems An array of the selected items.
  * @param {Array} previouslySelectedItems An array of the previously selected items.
  * @public
@@ -287,9 +300,6 @@ class List extends UI5Element {
 
 	/**
 	 * Defines the mode of the component.
-	 * <br><br>
-	 * <b>Note:</b> Available options are <code>None</code>, <code>SingleSelect</code>, <code>SingleSelectBegin</code>,
-	 * <code>SingleSelectEnd</code>, <code>MultiSelect</code>, and <code>Delete</code>.
 	 *
 	 * @type {sap.ui.webc.main.types.ListMode}
 	 * @name sap.ui.webc.main.List.prototype.mode
@@ -312,14 +322,6 @@ class List extends UI5Element {
 
 	/**
 	 * Defines the item separator style that is used.
-	 * <br><br>
-	 * <b>Notes:</b>
-	 * <ul>
-	 * <li>Avalaible options are <code>All</code>, <code>Inner</code>, and <code>None</code>.</li>
-	 * <li>When set to <code>None</code>, none of the items are separated by horizontal lines.</li>
-	 * <li>When set to <code>Inner</code>, the first item doesn't have a top separator and the last
-	 * item doesn't have a bottom separator.</li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.main.types.ListSeparators}
 	 * @name sap.ui.webc.main.List.prototype.separators
@@ -333,17 +335,6 @@ class List extends UI5Element {
 	 * Defines whether the component will have growing capability either by pressing a <code>More</code> button,
 	 * or via user scroll. In both cases <code>load-more</code> event is fired.
 	 * <br><br>
-	 *
-	 * Available options:
-	 * <br><br>
-	 * <code>Button</code> - Shows a <code>More</code> button at the bottom of the list,
-	 * pressing of which triggers the <code>load-more</code> event.
-	 * <br>
-	 * <code>Scroll</code> - The <code>load-more</code> event is triggered when the user scrolls to the bottom of the list;
-	 * <br>
-	 * <code>None</code> (default) - The growing is off.
-	 * <br><br>
-	 *
 	 * <b>Restrictions:</b> <code>growing="Scroll"</code> is not supported for Internet Explorer,
 	 * on IE the component will fallback to <code>growing="Button"</code>.
 	 * @type {sap.ui.webc.main.types.ListGrowingMode}
@@ -605,14 +596,16 @@ class List extends UI5Element {
 	}
 
 	get ariaLabelModeText(): string {
-		if (this.isMultiSelect) {
-			return List.i18nBundle.getText(ARIA_LABEL_LIST_MULTISELECTABLE);
-		}
-		if (this.isSingleSelect) {
-			return List.i18nBundle.getText(ARIA_LABEL_LIST_SELECTABLE);
-		}
-		if (this.isDelete) {
-			return List.i18nBundle.getText(ARIA_LABEL_LIST_DELETABLE);
+		if (this.hasData) {
+			if (this.isMultiSelect) {
+				return List.i18nBundle.getText(ARIA_LABEL_LIST_MULTISELECTABLE);
+			}
+			if (this.isSingleSelect) {
+				return List.i18nBundle.getText(ARIA_LABEL_LIST_SELECTABLE);
+			}
+			if (this.isDelete) {
+				return List.i18nBundle.getText(ARIA_LABEL_LIST_DELETABLE);
+			}
 		}
 
 		return "";
@@ -715,13 +708,16 @@ class List extends UI5Element {
 		}
 
 		if (selectionChange) {
-			this.fireEvent<SelectionChangeEventDetail>("selection-change", {
+			const changePrevented = !this.fireEvent<ListSelectionChangeEventDetail>("selection-change", {
 				selectedItems: this.getSelectedItems(),
 				previouslySelectedItems,
 				selectionComponentPressed: e.detail.selectionComponentPressed,
 				targetItem: e.detail.item,
 				key: e.detail.key,
-			});
+			}, true);
+			if (changePrevented) {
+				this._revertSelection(previouslySelectedItems);
+			}
 		}
 	}
 
@@ -754,7 +750,7 @@ class List extends UI5Element {
 	}
 
 	handleDelete(item: ListItemBase): boolean {
-		this.fireEvent<DeleteEventDetail>("item-delete", { item });
+		this.fireEvent<ListItemDeleteEventDetail>("item-delete", { item });
 
 		return true;
 	}
@@ -777,6 +773,21 @@ class List extends UI5Element {
 
 	getItemsForProcessing(): Array<ListItemBase> {
 		return this.getItems();
+	}
+
+	_revertSelection(previouslySelectedItems: Array<ListItemBase>) {
+		this.getItems().forEach((item: ListItemBase) => {
+			const oldSelection = previouslySelectedItems.indexOf(item) !== -1;
+			const multiSelectCheckBox = item.shadowRoot!.querySelector<CheckBox>(".ui5-li-multisel-cb");
+			const singleSelectRadioButton = item.shadowRoot!.querySelector<RadioButton>(".ui5-li-singlesel-radiobtn");
+
+			item.selected = oldSelection;
+			if (multiSelectCheckBox) {
+				multiSelectCheckBox.checked = oldSelection;
+			} else if (singleSelectRadioButton) {
+				singleSelectRadioButton.checked = oldSelection;
+			}
+		});
 	}
 
 	_onkeydown(e: KeyboardEvent) {
@@ -922,7 +933,7 @@ class List extends UI5Element {
 		e.stopPropagation();
 
 		this._itemNavigation.setCurrentItem(target);
-		this.fireEvent<FocusEventDetail>("item-focused", { item: target });
+		this.fireEvent<ListItemFocusEventDetail>("item-focused", { item: target });
 
 		if (this.mode === ListMode.SingleSelectAuto) {
 			const detail: SelectionRequestEventDetail = {
@@ -939,7 +950,7 @@ class List extends UI5Element {
 	onItemPress(e: CustomEvent<PressEventDetail>) {
 		const pressedItem = e.detail.item;
 
-		if (!this.fireEvent<ClickEventDetail>("item-click", { item: pressedItem }, true)) {
+		if (!this.fireEvent<ListItemClickEventDetail>("item-click", { item: pressedItem }, true)) {
 			return;
 		}
 
@@ -959,12 +970,17 @@ class List extends UI5Element {
 	}
 
 	// This is applicable to NotificationListItem
-	onItemClose(e: CustomEvent<CloseEventDetail>) {
-		this.fireEvent<CloseEventDetail>("item-close", { item: e.detail.item });
+	onItemClose(e: CustomEvent<ListItemCloseEventDetail>) {
+		const target = e.target as UI5Element | null;
+		const shouldFireItemClose = target?.hasAttribute("ui5-li-notification") || target?.hasAttribute("ui5-li-notification-group");
+
+		if (shouldFireItemClose) {
+			this.fireEvent<ListItemCloseEventDetail>("item-close", { item: e.detail?.item });
+		}
 	}
 
-	onItemToggle(e: CustomEvent<ToggleEventDetail>) {
-		this.fireEvent<ToggleEventDetail>("item-toggle", { item: e.detail.item });
+	onItemToggle(e: CustomEvent<ListItemToggleEventDetail>) {
+		this.fireEvent<ListItemToggleEventDetail>("item-toggle", { item: e.detail.item });
 	}
 
 	onForwardBefore(e: CustomEvent) {
@@ -1005,7 +1021,7 @@ class List extends UI5Element {
 	}
 
 	getGrowingButton() {
-		return this.shadowRoot!.querySelector(`#${this._id}-growing-btn`) as HTMLElement;
+		return this.shadowRoot!.querySelector(`[id="${this._id}-growing-btn"]`) as HTMLElement;
 	}
 
 	/**
@@ -1091,14 +1107,14 @@ class List extends UI5Element {
 
 	getAfterElement() {
 		if (!this._afterElement) {
-			this._afterElement = this.shadowRoot!.querySelector(`#${this._id}-after`) as HTMLElement;
+			this._afterElement = this.shadowRoot!.querySelector(`[id="${this._id}-after"]`) as HTMLElement;
 		}
 		return this._afterElement;
 	}
 
 	getBeforeElement() {
 		if (!this._beforeElement) {
-			this._beforeElement = this.shadowRoot!.querySelector(`#${this._id}-before`) as HTMLElement;
+			this._beforeElement = this.shadowRoot!.querySelector(`[id="${this._id}-before"]`) as HTMLElement;
 		}
 		return this._beforeElement;
 	}
@@ -1120,10 +1136,10 @@ List.define();
 
 export default List;
 export type {
-	ClickEventDetail,
-	FocusEventDetail,
-	DeleteEventDetail,
-	CloseEventDetail,
-	ToggleEventDetail,
-	SelectionChangeEventDetail,
+	ListItemClickEventDetail,
+	ListItemFocusEventDetail,
+	ListItemDeleteEventDetail,
+	ListItemCloseEventDetail,
+	ListItemToggleEventDetail,
+	ListSelectionChangeEventDetail,
 };

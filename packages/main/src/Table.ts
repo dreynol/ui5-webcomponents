@@ -36,6 +36,7 @@ import isElementInView from "@ui5/webcomponents-base/dist/util/isElementInView.j
 import TableGrowingMode from "./types/TableGrowingMode.js";
 import BusyIndicator from "./BusyIndicator.js";
 import type {
+	TableRowClickEventDetail,
 	TableRowSelectionRequestedEventDetail,
 	TableRowF7PressEventDetail,
 	TableRowForwardBeforeEventDetail,
@@ -91,12 +92,12 @@ type TableColumnInfo = {
 
 type TableColumnHeaderInfo = ITabbable;
 
-type TableSelectionChangeEvent = {
+type TableSelectionChangeEventDetail = {
 	selectedRows: Array<ITableRow>,
 	previouslySelectedRows: Array<ITableRow>,
 }
 
-type TablePopinChangeEvent = {
+type TablePopinChangeEventDetail = {
 	poppedColumns: Array<TableColumnInfo>;
 }
 
@@ -380,13 +381,7 @@ class Table extends UI5Element {
 
 	/**
 	 * Defines the mode of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>MultiSelect</code></li>
-	 * <li><code>SingleSelect</code></li>
-	 * <li><code>None</code></li>
-	 * <ul>
+	 *
 	 * @type {sap.ui.webc.main.types.TableMode}
 	 * @name sap.ui.webc.main.Table.prototype.mode
 	 * @defaultvalue "None"
@@ -734,7 +729,7 @@ class Table extends UI5Element {
 
 		const selectedRows = this.selectedRows;
 
-		this.fireEvent<TableSelectionChangeEvent>("selection-change", {
+		this.fireEvent<TableSelectionChangeEventDetail>("selection-change", {
 			selectedRows,
 			previouslySelectedRows,
 		});
@@ -766,7 +761,7 @@ class Table extends UI5Element {
 
 		const selectedRows: Array<ITableRow> = this.selectedRows;
 
-		this.fireEvent<TableSelectionChangeEvent>("selection-change", {
+		this.fireEvent<TableSelectionChangeEventDetail>("selection-change", {
 			selectedRows,
 			previouslySelectedRows,
 		});
@@ -923,7 +918,7 @@ class Table extends UI5Element {
 
 	_getAfterForwardElement(): HTMLElement {
 		if (!this._afterElement) {
-			this._afterElement = this.shadowRoot!.querySelector(`#${this._id}-after`)!;
+			this._afterElement = this.shadowRoot!.querySelector(`[id="${this._id}-after"]`)!;
 		}
 
 		return this._afterElement;
@@ -931,7 +926,7 @@ class Table extends UI5Element {
 
 	_getBeforeForwardElement(): HTMLElement {
 		if (!this._beforeElement) {
-			this._beforeElement = this.shadowRoot!.querySelector(`#${this._id}-before`)!;
+			this._beforeElement = this.shadowRoot!.querySelector(`[id="${this._id}-before"]`)!;
 		}
 
 		return this._beforeElement;
@@ -1020,7 +1015,7 @@ class Table extends UI5Element {
 				}
 			});
 			row.selected = true;
-			this.fireEvent<TableSelectionChangeEvent>("selection-change", {
+			this.fireEvent<TableSelectionChangeEventDetail>("selection-change", {
 				selectedRows: [row],
 				previouslySelectedRows,
 			});
@@ -1045,7 +1040,7 @@ class Table extends UI5Element {
 			this._allRowsSelected = false;
 		}
 
-		this.fireEvent<TableSelectionChangeEvent>("selection-change", {
+		this.fireEvent<TableSelectionChangeEventDetail>("selection-change", {
 			selectedRows,
 			previouslySelectedRows,
 		});
@@ -1074,7 +1069,7 @@ class Table extends UI5Element {
 
 		const selectedRows = bAllSelected ? this.rows : [];
 
-		this.fireEvent<TableSelectionChangeEvent>("selection-change", {
+		this.fireEvent<TableSelectionChangeEventDetail>("selection-change", {
 			selectedRows,
 			previouslySelectedRows,
 		});
@@ -1154,7 +1149,7 @@ class Table extends UI5Element {
 		if (hiddenColumnsChange) {
 			this._hiddenColumns = hiddenColumns;
 			if (hiddenColumns.length) {
-				this.fireEvent<TablePopinChangeEvent>("popin-change", {
+				this.fireEvent<TablePopinChangeEventDetail>("popin-change", {
 					poppedColumns: this._hiddenColumns,
 				});
 			}
@@ -1287,4 +1282,7 @@ export default Table;
 export type {
 	ITableRow,
 	TableColumnInfo,
+	TableRowClickEventDetail,
+	TableSelectionChangeEventDetail,
+	TablePopinChangeEventDetail,
 };

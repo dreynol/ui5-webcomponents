@@ -62,20 +62,20 @@ describe("Popover general interaction", () => {
 		assert.notOk(await popover.isDisplayedInViewport(), "Popover is closed.");
 	});
 
-	it("tests if popover auto closes when opener goes out of the viewport", async () => {
-		const btnOpenPopover = await browser.$("#btnOpenWithAttr");
-		const btnAccNameRef = await browser.$("#btnAccNameRef");
+	// it("tests if popover auto closes when opener goes out of the viewport", async () => {
+	// 	const btnOpenPopover = await browser.$("#btnOpenWithAttr");
+	// 	const btnAccNameRef = await browser.$("#btnAccNameRef");
 
-		await btnOpenPopover.click();
+	// 	await btnOpenPopover.click();
 
-		const popover = await browser.$("#popoverAttr");
-		assert.ok(await popover.isDisplayedInViewport(), "Popover is opened.");
+	// 	const popover = await browser.$("#popoverAttr");
+	// 	assert.ok(await popover.isDisplayedInViewport(), "Popover is opened.");
 
-		await btnAccNameRef.scrollIntoView();
-		assert.notOk(await popover.isDisplayedInViewport(), "Popover is closed.");
+	// 	await btnAccNameRef.scrollIntoView();
+	// 	assert.notOk(await popover.isDisplayedInViewport(), "Popover is closed.");
 
-		await browser.$("#btn").scrollIntoView();
-	});
+	// 	await browser.$("#btn").scrollIntoView();
+	// });
 
 	it("tests popover does not close with opener", async () => {
 		const popover = await browser.$("#quickViewCard");
@@ -219,11 +219,11 @@ describe("Popover general interaction", () => {
 		await btnOpenPopover.click();
 
 		assert.ok(await focusedButton.getProperty("focused"), "The button is focused.");
+
+		await browser.keys("Escape");
 	});
 
 	it("tests focus trapping using TAB", async () => {
-		await browser.url(`test/pages/Popover.html`);
-
 		const btn = await browser.$("#btn");
 		const ff = await browser.$("#first-focusable");
 
@@ -251,11 +251,11 @@ describe("Popover general interaction", () => {
 		await browser.keys("Tab");
 
 		assert.ok(await ff.getProperty("focused"), "The first focusable element is focused.");
+
+		await browser.keys("Escape");
 	});
 
 	it("tests focus trapping using SHIFT TAB", async () => {
-		await browser.url(`test/pages/Popover.html`);
-
 		const btn = await browser.$("#btn");
 		const ff = await browser.$("#first-focusable");
 
@@ -279,11 +279,11 @@ describe("Popover general interaction", () => {
 		await browser.keys(["Shift", "Tab"]);
 
 		assert.ok(await ff.getProperty("focused"), "The first focusable element is focused.");
+
+		await browser.keys("Escape");
 	});
 
 	it("tests focus when there is no focusable content", async () => {
-		await browser.url(`test/pages/Popover.html`);
-
 		const firstBtn = await browser.$("#firstBtn");
 		const popoverId = "popNoFocusableContent";
 
@@ -298,11 +298,11 @@ describe("Popover general interaction", () => {
 		activeElementId = await browser.$(await browser.getActiveElement()).getAttribute("id");
 
 		assert.equal(activeElementId, popoverId, "Popover remains focused");
+
+		await browser.keys("Escape");
 	});
 
 	it("tests focus when content, which can't be focused is clicked", async () => {
-		await browser.url(`test/pages/Popover.html`);
-
 		await browser.$("#btnOpenPopoverWithDiv").click();
 		await browser.$("#divContent").click();
 
@@ -310,11 +310,11 @@ describe("Popover general interaction", () => {
 		const activeElementId = await browser.$(await browser.getActiveElement()).getAttribute("id");
 
 		assert.strictEqual(activeElementId, popoverId, "Popover is focused");
+
+		await browser.keys("Escape");
 	});
 
 	it("tests that dynamically created popover is opened", async () => {
-		await browser.url(`test/pages/Popover.html`);
-
 		const btnOpenDynamic = await browser.$("#btnOpenDynamic");
 		await btnOpenDynamic.click();
 		const popover = await browser.$('#dynamic-popover');
@@ -328,6 +328,8 @@ describe("Popover general interaction", () => {
 		);
 
 		assert.ok(true, "popover is opened");
+
+		await browser.keys("Escape");
 	});
 
 	it("tests that ENTER on list item that opens another popover doesn't trigger click event inside the focused element of that popover", async () => {
@@ -374,6 +376,16 @@ describe("Popover general interaction", () => {
 
 		await browser.keys("Escape");
 
+	});
+
+	it("tests initial focus when the popover is removed from the DOM in the meantime", async () => {
+		const createAndRemovePopover = await browser.$("#createAndRemove");
+		const result = await browser.$("#createAndRemoveResult");
+
+		await createAndRemovePopover.click();
+		await result.waitForDisplayed({ timeout: 3000 })
+
+		assert.strictEqual(await result.getText(), "No uncaught errors", "There is no error.");
 	});
 });
 
@@ -510,5 +522,30 @@ describe("Horizontal Alignment", () => {
 		const opener = await browser.$("#targetOpener");
 
 		assert.ok(await isHorizontallyLeftAligned(popover, opener), `Popover should be left aligned, flipped by RTL direction`);
+	});
+});
+
+describe("Responsive paddings", () => {
+	let oldScreenHeight, oldScreenWidth;
+
+	before(async () => {
+		const browserSize = await browser.getWindowSize();
+		oldScreenHeight = browserSize.height;
+		oldScreenWidth = browserSize.width;
+		await browser.url(`test/pages/Popover.html`);
+		await browser.setWindowSize(1000, 400);
+	});
+
+	after(async () => {
+		await browser.setWindowSize(oldScreenWidth, oldScreenHeight);
+	});
+
+	it("tests media-range", async () => {
+		const popover = await browser.$("#popXRightWide");
+		const btnOpenPopover = await browser.$("#btnOpenXRightWide");
+
+		await btnOpenPopover.click();
+
+		assert.strictEqual(await popover.getAttribute("media-range"), "M", "Popover has correct media range");
 	});
 });

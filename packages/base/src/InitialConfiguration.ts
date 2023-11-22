@@ -17,6 +17,7 @@ type InitialConfig = {
 	rtl: boolean | undefined,
 	language: string | undefined,
 	calendarType: CalendarType | undefined,
+	secondaryCalendarType: CalendarType | undefined,
 	timezone: string | undefined,
 	noConflict: boolean,
 	formatSettings: FormatSettings,
@@ -31,6 +32,7 @@ let initialConfig: InitialConfig = {
 	language: undefined,
 	timezone: undefined,
 	calendarType: undefined,
+	secondaryCalendarType: undefined,
 	noConflict: false, // no URL
 	formatSettings: {},
 	fetchDefaultLanguage: false,
@@ -84,6 +86,11 @@ const getNoConflict = () => {
 const getCalendarType = () => {
 	initConfiguration();
 	return initialConfig.calendarType;
+};
+
+const getSecondaryCalendarType = () => {
+	initConfiguration();
+	return initialConfig.secondaryCalendarType;
 };
 
 /**
@@ -180,7 +187,7 @@ const applyURLParam = (key: string, value: string, paramType: string) => {
 
 const applyOpenUI5Configuration = () => {
 	const openUI5Support = getFeature<typeof OpenUI5Support>("OpenUI5Support");
-	if (!openUI5Support || !openUI5Support.isLoaded()) {
+	if (!openUI5Support || !openUI5Support.isOpenUI5Detected()) {
 		return;
 	}
 
@@ -214,6 +221,7 @@ export {
 	getFetchDefaultLanguage,
 	getNoConflict,
 	getCalendarType,
+	getSecondaryCalendarType,
 	getTimezone,
 	getFormatSettings,
 };

@@ -3,6 +3,306 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.19.1](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0...v1.19.1) (2023-11-17)
+
+
+### Bug Fixes
+
+* openui5 support crashes with 1.120-snapshot ([2caf1cb](https://github.com/SAP/ui5-webcomponents/commit/2caf1cb9c5a0142441e4e295bfe6dd47e8ecfbe7))
+
+
+
+
+
+# [1.19.0](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.3...v1.19.0) (2023-11-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.19.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.2...v1.19.0-rc.3) (2023-11-02)
+
+
+### Bug Fixes
+
+* **framework:** use correct customElements registry ([#7760](https://github.com/SAP/ui5-webcomponents/issues/7760)) ([288f6d4](https://github.com/SAP/ui5-webcomponents/commit/288f6d4d6cee9dccf1c64fa12b3ead2920c6c08a))
+
+
+### Features
+
+* **framework:** switch default theme from Quartz Light to Morning Ho… ([#7749](https://github.com/SAP/ui5-webcomponents/issues/7749)) ([10dadd7](https://github.com/SAP/ui5-webcomponents/commit/10dadd79e3a93daf29baaed3a5bcebd8c66a0940))
+
+
+
+
+
+# [1.19.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.1...v1.19.0-rc.2) (2023-10-26)
+
+
+### Bug Fixes
+
+* **ui5-color-picker:** fix hsl to rgb color conversion ([#7723](https://github.com/SAP/ui5-webcomponents/issues/7723)) ([4e95272](https://github.com/SAP/ui5-webcomponents/commit/4e9527225be27c957ea71f17a4cacb3bc065d6b7)), closes [#7660](https://github.com/SAP/ui5-webcomponents/issues/7660)
+
+
+
+
+
+# [1.19.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.0...v1.19.0-rc.1) (2023-10-19)
+
+
+### Features
+
+* do not override CSS Vars by newer runtimes ([#7703](https://github.com/SAP/ui5-webcomponents/issues/7703)) ([8379071](https://github.com/SAP/ui5-webcomponents/commit/8379071846f5f76b7f7257594269dc9e7e814478))
+
+
+
+
+
+# [1.19.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.1-rc.0...v1.19.0-rc.0) (2023-10-12)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+## [1.18.1-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0...v1.18.1-rc.0) (2023-10-05)
+
+
+### Bug Fixes
+
+* **framework:** stop bubbling of camel case events ([#7658](https://github.com/SAP/ui5-webcomponents/issues/7658)) ([6ce57f7](https://github.com/SAP/ui5-webcomponents/commit/6ce57f75684620021319edebb2d1f81f17ef2e57))
+
+
+
+
+
+# [1.18.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.2...v1.18.0) (2023-10-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.18.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.1...v1.18.0-rc.2) (2023-09-28)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.18.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.0...v1.18.0-rc.1) (2023-09-21)
+
+
+### Features
+
+* add `secondaryCalendarType` global config ([#7547](https://github.com/SAP/ui5-webcomponents/issues/7547)) ([c9111a3](https://github.com/SAP/ui5-webcomponents/commit/c9111a38fc2a6cc54bb696dbdcec66100e304906))
+
+
+
+
+
+# [1.18.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0...v1.18.0-rc.0) (2023-09-07)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.17.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.2...v1.17.0) (2023-09-01)
+
+
+### Bug Fixes
+
+* fix import in base/index.js ([#7496](https://github.com/SAP/ui5-webcomponents/issues/7496)) ([b0b542a](https://github.com/SAP/ui5-webcomponents/commit/b0b542a33e4685267731536114ff5d5f12c13210)), closes [#7493](https://github.com/SAP/ui5-webcomponents/issues/7493)
+* **framework:** fix OpenUI5Support usage in applyTheme ([#7485](https://github.com/SAP/ui5-webcomponents/issues/7485)) ([174f4b4](https://github.com/SAP/ui5-webcomponents/commit/174f4b462de254fd3eaab41a06d26c016c360d5d))
+
+
+### Features
+
+* introduce SelectMenu(Option) components ([#7447](https://github.com/SAP/ui5-webcomponents/issues/7447)) ([b21db20](https://github.com/SAP/ui5-webcomponents/commit/b21db20cdedacd97de5d4372add6171f16f00316))
+
+
+
+
+
+# [1.17.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.1...v1.17.0-rc.2) (2023-08-24)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.17.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.0...v1.17.0-rc.1) (2023-08-17)
+
+
+### Features
+
+* **framework:** scope css variables per runtime and version ([#7449](https://github.com/SAP/ui5-webcomponents/issues/7449)) ([d3f6c2e](https://github.com/SAP/ui5-webcomponents/commit/d3f6c2efba9cfda389ea4d700a375f75b3e2996b))
+
+
+
+
+
+# [1.17.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0...v1.17.0-rc.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* **ui5-illustrated-message:** support collection based illustration loading ([#7318](https://github.com/SAP/ui5-webcomponents/issues/7318)) ([6b52dbd](https://github.com/SAP/ui5-webcomponents/commit/6b52dbd157a3c8198e41c84157e3d9ae89e3386e))
+
+
+
+
+
+# [1.16.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.4...v1.16.0) (2023-08-03)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.16.0-rc.4](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.3...v1.16.0-rc.4) (2023-08-03)
+
+
+### Features
+
+* **framework:** support theme dependent custom icon collections ([#7341](https://github.com/SAP/ui5-webcomponents/issues/7341)) ([33967dd](https://github.com/SAP/ui5-webcomponents/commit/33967dd12e31e17828986c7b40a5471c2936f0b7))
+
+
+
+
+
+# [1.16.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.2...v1.16.0-rc.3) (2023-07-27)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.16.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.1...v1.16.0-rc.2) (2023-07-20)
+
+
+### Bug Fixes
+
+* **framework:** fix I18Bundle#getText params TypeScript types ([#7310](https://github.com/SAP/ui5-webcomponents/issues/7310)) ([2f88dc8](https://github.com/SAP/ui5-webcomponents/commit/2f88dc814dd393748a7482c7f6566d244368c970)), closes [#7300](https://github.com/SAP/ui5-webcomponents/issues/7300)
+* **ui5:** change "focus-visible" pseudo selector to "focus" ([#7338](https://github.com/SAP/ui5-webcomponents/issues/7338)) ([37505c3](https://github.com/SAP/ui5-webcomponents/commit/37505c3f4e5dfe1c23fba7b5ee675312752f7ef5))
+
+
+
+
+
+# [1.16.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.0...v1.16.0-rc.1) (2023-07-13)
+
+
+### Bug Fixes
+
+* **framework:** missing 72-Semibold font ([#7298](https://github.com/SAP/ui5-webcomponents/issues/7298)) ([9547d1c](https://github.com/SAP/ui5-webcomponents/commit/9547d1cf75edce8739c3dc54a1f64b2f44d7c18c))
+
+
+
+
+
+# [1.16.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.1...v1.16.0-rc.0) (2023-07-06)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.15.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.2...v1.15.0) (2023-06-30)
+
+
+### Bug Fixes
+
+* **framework:** fix OpenUI5Support feature usage ([#7265](https://github.com/SAP/ui5-webcomponents/issues/7265)) ([109b6ee](https://github.com/SAP/ui5-webcomponents/commit/109b6eecb3b56f07c085ed59442c2a73f31644a8)), closes [#7175](https://github.com/SAP/ui5-webcomponents/issues/7175)
+
+
+
+
+
+# [1.15.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.1...v1.15.0-rc.2) (2023-06-22)
+
+
+### Bug Fixes
+
+* **framework:** support older OpenUI5 getThemeRoot API ([#7202](https://github.com/SAP/ui5-webcomponents/issues/7202)) ([54e615c](https://github.com/SAP/ui5-webcomponents/commit/54e615cffc047b8e1e72861a5be7d50bfcc2d6bf)), closes [#7199](https://github.com/SAP/ui5-webcomponents/issues/7199)
+
+
+
+
+
+# [1.15.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.0...v1.15.0-rc.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* **framework:** prioritize external fonts over locally installed ([#7184](https://github.com/SAP/ui5-webcomponents/issues/7184)) ([c527c70](https://github.com/SAP/ui5-webcomponents/commit/c527c70e47be84b663b6c40107737c25f91c9034)), closes [/github.com/SAP/openui5/blob/master/src/themelib_sap_horizon/src/sap/ui/core/themes/sap_horizon/shared.less#L259](https://github.com//github.com/SAP/openui5/blob/master/src/themelib_sap_horizon/src/sap/ui/core/themes/sap_horizon/shared.less/issues/L259) [#7177](https://github.com/SAP/ui5-webcomponents/issues/7177)
+* **ui5-static-area-item:** element additional properties ([#7166](https://github.com/SAP/ui5-webcomponents/issues/7166)) ([361ff95](https://github.com/SAP/ui5-webcomponents/commit/361ff9537dd6ed887e61d8fe2927e3eee0c952f8))
+
+
+### Features
+
+* **ui5-time-picker:** Redesign the Time Picker component according to the new design ([#6818](https://github.com/SAP/ui5-webcomponents/issues/6818)) ([1d910cf](https://github.com/SAP/ui5-webcomponents/commit/1d910cf47290fcd9986b0b9ced45c9c06e29d657))
+
+
+
+
+
+
+
+
+
+
+# [1.15.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0...v1.15.0-rc.0) (2023-06-08)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.14.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.2...v1.14.0) (2023-06-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.14.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.1...v1.14.0-rc.2) (2023-06-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-base
+
+
+
+
+
+# [1.14.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.0...v1.14.0-rc.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* **framework:** store shared resources as `meta` tag within the `head` ([#7051](https://github.com/SAP/ui5-webcomponents/issues/7051)) ([90722da](https://github.com/SAP/ui5-webcomponents/commit/90722da24600e28f31864e9f2006d18e97c1e596))
+
+
+### Features
+
+* **framework:** add `setThemeRoot` public API ([#6970](https://github.com/SAP/ui5-webcomponents/issues/6970)) ([a0ad904](https://github.com/SAP/ui5-webcomponents/commit/a0ad904ea21578ada97dc0c990ec04dbb5072990))
+
+
+
+
+
 # [1.14.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.13.2...v1.14.0-rc.0) (2023-05-18)
 
 

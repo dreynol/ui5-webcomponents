@@ -7,6 +7,9 @@
 
 :host {
 	--_ui5_input_placeholder_color: var(--sapShell_InteractiveTextColor);
+	--_ui5_input_border_radius: var(--_ui5_shellbar_input_border_radius);
+	--_ui5_input_focus_border_radius: var(--_ui5_shellbar_input_focus_border_radius);
+	--_ui5_input_background_color: var(--_ui5_shellbar_input_background_color);
 }
 
 .ui5-shellbar-root {
@@ -29,8 +32,8 @@
 	height: 2.25rem;
 	padding: 0;
 	margin-inline-start: 0.5rem;
-	border: none;
-	background: transparent;
+	border: 0.0625rem solid var(--sapButton_Lite_BorderColor);
+	background: var(--sapButton_Lite_Background);
 	outline-color: var(--_ui5_shellbar_logo_outline_color);
 	color: var(--sapShell_TextColor);
 	box-sizing: border-box;
@@ -56,13 +59,8 @@
 .ui5-shellbar-button:hover,
 .ui5-shellbar-image-button:hover {
 	background: var(--sapShell_Hover_Background);
-}
-
-
-::slotted([ui5-button][slot="startButton"]:hover),
-.ui5-shellbar-button:hover,
-.ui5-shellbar-menu-button.ui5-shellbar-menu-button--interactive:hover {
-	box-shadow: var(--_ui5_shellbar_button_box_shadow);
+	border-color: var(--sapButton_Lite_Hover_BorderColor);
+	color: var(--sapShell_TextColor);
 }
 
 ::slotted([ui5-button][slot="startButton"][active]),
@@ -70,6 +68,7 @@
 .ui5-shellbar-button[active],
 .ui5-shellbar-image-button:active {
 	background: var(--sapShell_Active_Background);
+	border-color: var(--sapButton_Lite_Active_BorderColor);
 	color: var(--_ui5_shellbar_button_active_color);
 }
 
@@ -212,6 +211,7 @@ slot[name="profile"] {
 }
 
 .ui5-shellbar-button {
+	--_ui5_button_focused_border: var(--_ui5_shellbar_button_focused_border);
 	width: 2.5rem;
 }
 
@@ -246,8 +246,8 @@ slot[name="profile"] {
 	justify-content: flex-start;
 	margin-inline-end: 0.5rem;
 	max-width: 75%;
-	flex-shrink: 1;
-	flex-grow: 1;
+	flex-shrink: 0;
+	flex-grow: 0;
 }
 
 .ui5-shellbar-overflow-container-left > :nth-child(n) {
@@ -259,6 +259,9 @@ slot[name="profile"] {
 	max-width: calc(50% - 1.5rem);
 }
 
+:host([show-co-pilot]) .ui5-shellbar-title {
+	flex-grow: 0;
+}
 
 .ui5-shellbar-menu-button {
 	white-space: nowrap;
@@ -299,7 +302,7 @@ slot[name="profile"] {
 }
 
 :host(:not([show-search-field])) .ui5-shellbar-overflow-container-right {
-	margin-inline-start: 8rem;
+	padding-inline-start: 8rem;
 }
 
 .ui5-shellbar-overflow-container-right .ui5-shellbar-overflow-container-right-child {
@@ -307,7 +310,10 @@ slot[name="profile"] {
 	justify-content: flex-end;
 	height: inherit;
 	align-items: center;
-	float: var(--_ui5_shellbar_overflow_container_float);
+}
+
+.ui5-shellbar-overflow-container-right-child .ui5-shellbar-button[data-count]:has(+ .ui5-shellbar-overflow-button)::before {
+	inset-inline-end: var(--_ui5-shellbar-notification-btn-count-offset);
 }
 
 .ui5-shellbar-overflow-button {
@@ -323,7 +329,7 @@ slot[name="profile"] {
 }
 
 :host([breakpoint-size="S"]) .ui5-shellbar-overflow-container-right {
-	margin-inline-start: 0;
+	padding-inline-start: 0;
 }
 
 .ui5-shellbar-overflow-button-shown {
@@ -342,11 +348,11 @@ slot[name="profile"] {
 }
 
 :host([breakpoint-size="L"]) .ui5-shellbar-with-searchfield .ui5-shellbar-overflow-container-right {
-	margin-inline-start: 1rem;
+	padding-inline-start: 1rem;
 }
 
 :host([breakpoint-size="XL"]) .ui5-shellbar-with-searchfield .ui5-shellbar-overflow-container-right {
-	margin-inline-start: 1rem;
+	padding-inline-start: 1rem;
 }
 
 :host(:not([notifications-count])) .ui5-shellbar-bell-button {
@@ -377,6 +383,7 @@ slot[name="profile"] {
 
 :host([notifications-count]:not([notifications-count=""])) .ui5-shellbar-bell-button::before {
 	content: attr(data-ui5-notifications-count);
+	inset-inline-end: var(--_ui5-shellbar-notification-btn-count-offset);
 }
 
 .ui5-shellbar-button[data-count]::before {

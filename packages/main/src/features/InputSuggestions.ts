@@ -7,7 +7,7 @@ import encodeXML from "@ui5/webcomponents-base/dist/sap/base/security/encodeXML.
 import generateHighlightedMarkup from "@ui5/webcomponents-base/dist/util/generateHighlightedMarkup.js";
 import type ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import List from "../List.js";
-import type { ClickEventDetail, SelectionChangeEventDetail } from "../List.js";
+import type { ListItemClickEventDetail, ListSelectionChangeEventDetail } from "../List.js";
 import ResponsivePopover from "../ResponsivePopover.js";
 import SuggestionItem from "../SuggestionItem.js";
 import SuggestionGroupItem from "../SuggestionGroupItem.js";
@@ -19,6 +19,7 @@ import SuggestionListItem from "../SuggestionListItem.js";
 
 import {
 	LIST_ITEM_POSITION,
+	LIST_ITEM_GROUP_HEADER,
 } from "../generated/i18n/i18n-defaults.js";
 import type ListItemType from "../types/ListItemType.js";
 import type ListItemBase from "../ListItemBase.js";
@@ -38,7 +39,7 @@ interface SuggestionComponent extends UI5Element {
 	onItemPreviewed: (item: SuggestionListItem) => void;
 }
 
-type InputSuggestionText = {
+type InputSuggestion = {
 	text: string;
 	description: string;
 	image?: string;
@@ -51,9 +52,12 @@ type InputSuggestionText = {
 }
 
 type SuggestionsAccInfo = {
+	isGroup: boolean,
 	currentPos: number;
 	listSize: number;
 	itemText: string;
+	description: string;
+	additionalText: string;
 }
 
 /**
@@ -75,7 +79,7 @@ class Suggestions {
 	_handledPress?: boolean;
 	attachedAfterOpened?: boolean;
 	attachedAfterClose?: boolean;
-	fnOnSuggestionItemPress: (e: CustomEvent<ClickEventDetail | SelectionChangeEventDetail>) => void;
+	fnOnSuggestionItemPress: (e: CustomEvent<ListItemClickEventDetail | ListSelectionChangeEventDetail>) => void;
 	fnOnSuggestionItemMouseOver: (e: MouseEvent) => void;
 	fnOnSuggestionItemMouseOut: (e: MouseEvent) => void;
 	static i18nBundle: I18nBundle;
@@ -110,7 +114,7 @@ class Suggestions {
 	defaultSlotProperties(hightlightValue: string) {
 		const inputSuggestionItems = this._getComponent().suggestionItems;
 		const highlight = this.highlight && !!hightlightValue;
-		const suggestions: Array<InputSuggestionText> = [];
+		const suggestions: Array<InputSuggestion> = [];
 
 		inputSuggestionItems.map((suggestion: SuggestionItem, idx: number) => {
 			const text = highlight ? this.getHighlightedText(suggestion, hightlightValue) : this.getRowText(suggestion);
@@ -283,13 +287,17 @@ class Suggestions {
 	onItemSelected(selectedItem: SuggestionListItem | null, keyboardUsed: boolean) {
 		const allItems = this._getItems();
 		const item = selectedItem || allItems[this.selectedItemIndex];
+		const nonGroupItems = this._getNonGroupItems();
 
 		this.selectedItemIndex = allItems.indexOf(item);
 
 		this.accInfo = {
-			currentPos: this.selectedItemIndex + 1,
-			listSize: allItems.length,
-			itemText: this._getRealItems()[this.selectedItemIndex].description,
+			isGroup: item.groupItem,
+			currentPos: nonGroupItems.indexOf(item) + 1,
+			listSize: nonGroupItems.length,
+			itemText: this._getRealItems()[this.selectedItemIndex].text,
+			description: this._getRealItems()[this.selectedItemIndex].description,
+			additionalText: this._getRealItems()[this.selectedItemIndex].additionalText,
 		};
 
 		// If the item is "Inactive", prevent selection with SPACE or ENTER
@@ -310,21 +318,21 @@ class Suggestions {
 
 	/* Private methods */
 	// Note: Split into two separate handlers
-	onItemPress(e: CustomEvent<ClickEventDetail | SelectionChangeEventDetail>) {
+	onItemPress(e: CustomEvent<ListItemClickEventDetail | ListSelectionChangeEventDetail>) {
 		let pressedItem: ListItemBase; // SuggestionListItem
 		const isPressEvent = e.type === "ui5-item-click";
 
 		// Only use the press e if the item is already selected, in all other cases we are listening for 'ui5-selection-change' from the list
 		// Also we have to check if the selection-change is fired by the list's 'item-click' event handling, to avoid double handling on our side
-		if ((isPressEvent && !(e.detail as ClickEventDetail).item.selected) || (this._handledPress && !isPressEvent)) {
+		if ((isPressEvent && !(e.detail as ListItemClickEventDetail).item.selected) || (this._handledPress && !isPressEvent)) {
 			return;
 		}
 
-		if (isPressEvent && (e.detail as ClickEventDetail).item.selected) {
-			pressedItem = (e.detail as ClickEventDetail).item;
+		if (isPressEvent && (e.detail as ListItemClickEventDetail).item.selected) {
+			pressedItem = (e.detail as ListItemClickEventDetail).item;
 			this._handledPress = true;
 		} else {
-			pressedItem = (e.detail as SelectionChangeEventDetail).selectedItems[0];
+			pressedItem = (e.detail as ListSelectionChangeEventDetail).selectedItems[0];
 		}
 
 		this.onItemSelected(pressedItem as SuggestionListItem, false /* keyboardUsed */);
@@ -472,6 +480,7 @@ class Suggestions {
 		const items = this._getItems();
 		const currentItem = items[nextIdx];
 		const previousItem = items[previousIdx];
+		const nonGroupItems = this._getNonGroupItems();
 
 		if (!currentItem) {
 			return;
@@ -481,9 +490,12 @@ class Suggestions {
 		this._clearValueStateFocus();
 
 		this.accInfo = {
-			currentPos: nextIdx + 1,
-			listSize: items.length,
-			itemText: this._getRealItems()[items.indexOf(currentItem)].description,
+			isGroup: currentItem.groupItem,
+			currentPos: nonGroupItems.indexOf(currentItem) + 1,
+			listSize: nonGroupItems.length,
+			itemText: this._getRealItems()[this.selectedItemIndex].text,
+			description: this._getRealItems()[items.indexOf(currentItem)].description,
+			additionalText: this._getRealItems()[items.indexOf(currentItem)].additionalText,
 		};
 
 		if (previousItem) {
@@ -554,6 +566,10 @@ class Suggestions {
 		return this.responsivePopover ? [...this.responsivePopover.querySelector<List>("[ui5-list]")!.children] as Array<SuggestionListItem> : [];
 	}
 
+	_getNonGroupItems(): Array<SuggestionListItem> {
+		return this._getItems().filter(item => !item.groupItem);
+	}
+
 	_getComponent(): SuggestionComponent {
 		return this.component;
 	}
@@ -588,8 +604,9 @@ class Suggestions {
 		}
 
 		const itemPositionText = Suggestions.i18nBundle.getText(LIST_ITEM_POSITION, this.accInfo.currentPos, this.accInfo.listSize);
+		const groupItemText = Suggestions.i18nBundle.getText(LIST_ITEM_GROUP_HEADER);
 
-		return `${this.accInfo.itemText} ${itemPositionText}`;
+		return this.accInfo.isGroup ? `${groupItemText} ${this.accInfo.itemText}` : `${this.accInfo.description} ${this.accInfo.additionalText} ${itemPositionText}`;
 	}
 
 	getRowText(suggestion: SuggestionItem) {
@@ -665,5 +682,5 @@ export default Suggestions;
 
 export type {
 	SuggestionComponent,
-	InputSuggestionText,
+	InputSuggestion,
 };

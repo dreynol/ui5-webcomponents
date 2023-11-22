@@ -12,6 +12,7 @@ import {
 	isHome,
 	isEnd,
 } from "@ui5/webcomponents-base/dist/Keys.js";
+import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import { MULTIINPUT_ROLEDESCRIPTION_TEXT } from "./generated/i18n/i18n-defaults.js";
 import Input from "./Input.js";
 import MultiInputTemplate from "./generated/templates/MultiInputTemplate.lit.js";
@@ -21,6 +22,11 @@ import Tokenizer, { ClipboardDataOperation } from "./Tokenizer.js";
 import type { TokenizerTokenDeleteEventDetail } from "./Tokenizer.js";
 import Icon from "./Icon.js";
 import "@ui5/webcomponents-icons/dist/value-help.js";
+
+import type {
+	InputSuggestionItemSelectEventDetail as MultiInputSuggestionItemSelectEventDetail,
+	InputSuggestionItemPreviewEventDetail as MultiInputSuggestionItemPreviewEventDetail,
+} from "./Input.js";
 
 type MultiInputTokenDeleteEventDetail = {
 	token: Token;
@@ -169,7 +175,7 @@ class MultiInput extends Input {
 		}
 
 		selectedTokens.forEach(token => {
-			this.fireEvent("token-delete", { token });
+			this.fireEvent<MultiInputTokenDeleteEventDetail>("token-delete", { token });
 		});
 	}
 
@@ -182,9 +188,15 @@ class MultiInput extends Input {
 	}
 
 	_tokenizerFocusOut(e: FocusEvent) {
-		if (!this.contains(e.relatedTarget as HTMLElement)) {
+		const isFocusingMorePopover = e.relatedTarget === this.tokenizer.staticAreaItem;
+
+		if (!this.contains(e.relatedTarget as HTMLElement) && !isFocusingMorePopover) {
 			this.tokenizer._tokens.forEach(token => { token.selected = false; });
 			this.tokenizer.scrollToStart();
+		}
+
+		if (e.relatedTarget === this.nativeInput) {
+			this.tokenizer.closeMorePopover();
 		}
 	}
 
@@ -198,6 +210,10 @@ class MultiInput extends Input {
 		this.expandedTokenizer = true;
 		this.focused = true;
 		this.tokenizer.scrollToEnd();
+
+		this.tokenizer._getTokens().forEach(token => {
+			token.selected = false;
+		});
 	}
 
 	_onkeydown(e: KeyboardEvent) {
@@ -205,6 +221,8 @@ class MultiInput extends Input {
 
 		const target = e.target as HTMLInputElement;
 		const isHomeInBeginning = isHome(e) && target.selectionStart === 0;
+		const isCtrl: boolean = e.metaKey || e.ctrlKey;
+		const tokens = this.tokens;
 
 		if (isHomeInBeginning) {
 			this._skipOpenSuggestions = true; // Prevent input focus when navigating through the tokens
@@ -220,6 +238,11 @@ class MultiInput extends Input {
 
 		if (isShow(e)) {
 			this.valueHelpPress();
+		}
+
+		if (isCtrl && e.key.toLowerCase() === "i" && tokens.length > 0) {
+			e.preventDefault();
+			this.tokenizer.openMorePopover();
 		}
 	}
 
@@ -261,6 +284,11 @@ class MultiInput extends Input {
 			}
 
 			return this.tokenizer._fillClipboard(ClipboardDataOperation.copy, selectedTokens);
+		}
+
+		if (isCtrl && e.key.toLowerCase() === "i" && tokens.length > 0) {
+			e.preventDefault();
+			this.tokenizer.openMorePopover();
 		}
 	}
 
@@ -322,7 +350,7 @@ class MultiInput extends Input {
 	onBeforeRendering() {
 		super.onBeforeRendering();
 
-		this.style.setProperty("--_ui5-input-icons-count", `${this.iconsCount}`);
+		this.style.setProperty(getScopedVarName("--_ui5-input-icons-count"), `${this.iconsCount}`);
 		this.tokenizerAvailable = this.tokens && this.tokens.length > 0;
 	}
 
@@ -371,9 +399,21 @@ class MultiInput extends Input {
 	get ariaRoleDescription() {
 		return MultiInput.i18nBundle.getText(MULTIINPUT_ROLEDESCRIPTION_TEXT);
 	}
+
+	get morePopoverOpener(): HTMLElement {
+		if (this.tokens.length === 1 && this.tokens[0].isTruncatable) {
+			return this.tokens[0];
+		}
+
+		return this;
+	}
 }
 
 MultiInput.define();
 
 export default MultiInput;
-export { MultiInputTokenDeleteEventDetail };
+export type {
+	MultiInputTokenDeleteEventDetail,
+	MultiInputSuggestionItemSelectEventDetail,
+	MultiInputSuggestionItemPreviewEventDetail,
+};

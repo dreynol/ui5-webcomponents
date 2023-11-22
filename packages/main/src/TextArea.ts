@@ -176,15 +176,7 @@ class TextArea extends UI5Element implements IFormElement {
 	/**
 	 * Defines the value state of the component.
 	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>None</code></li>
-	 * <li><code>Error</code></li>
-	 * <li><code>Warning</code></li>
-	 * <li><code>Success</code></li>
-	 * <li><code>Information</code></li>
-	 * </ul>
-	 * <br><br>
+	 *
 	 * <b>Note:</b> If <code>maxlength</code> property is set,
 	 * the component turns into "Warning" state once the characters exceeds the limit.
 	 * In this case, only the "Error" state is considered and can be applied.
@@ -374,7 +366,7 @@ class TextArea extends UI5Element implements IFormElement {
 	_keyDown?: boolean;
 	FormSupport?: typeof FormSupportT;
 	previousValue: string;
-	popover?: Popover;
+	valueStatePopover?: Popover;
 
 	static i18nBundle: I18nBundle;
 
@@ -413,7 +405,7 @@ class TextArea extends UI5Element implements IFormElement {
 
 		const FormSupport = getFeature<typeof FormSupportT>("FormSupport");
 		if (FormSupport) {
-			FormSupport.syncNativeHiddenInput(this);
+			FormSupport.syncNativeHiddenTextArea(this);
 		} else if (this.name) {
 			console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
 		}
@@ -460,7 +452,7 @@ class TextArea extends UI5Element implements IFormElement {
 
 	_onfocusout(e: FocusEvent) {
 		const eTarget = e.relatedTarget as HTMLElement;
-		const focusedOutToValueStateMessage = eTarget?.shadowRoot!.querySelector(".ui5-valuestatemessage-root");
+		const focusedOutToValueStateMessage = eTarget?.shadowRoot?.querySelector(".ui5-valuestatemessage-root");
 
 		this.focused = false;
 
@@ -482,6 +474,12 @@ class TextArea extends UI5Element implements IFormElement {
 		}
 
 		this.value = nativeTextArea.value;
+		const valueLength = this.value.length;
+
+		if (e.inputType === "insertFromPaste" && this.maxlength && valueLength > this.maxlength) {
+			nativeTextArea.setSelectionRange(this.maxlength, valueLength);
+		}
+
 		this.fireEvent("input", {});
 
 		// Angular two way data binding
@@ -508,13 +506,13 @@ class TextArea extends UI5Element implements IFormElement {
 	}
 
 	async openPopover() {
-		this.popover = await this._getPopover();
-		this.popover && await this.popover.showAt(this.shadowRoot!.querySelector(".ui5-textarea-root .ui5-textarea-wrapper")!);
+		this.valueStatePopover = await this._getPopover();
+		this.valueStatePopover && await this.valueStatePopover.showAt(this.shadowRoot!.querySelector(".ui5-textarea-root .ui5-textarea-wrapper")!);
 	}
 
 	async closePopover() {
-		this.popover = await this._getPopover();
-		this.popover && this.popover.close();
+		this.valueStatePopover = await this._getPopover();
+		this.valueStatePopover && this.valueStatePopover.close();
 	}
 
 	async _getPopover() {
@@ -576,6 +574,7 @@ class TextArea extends UI5Element implements IFormElement {
 				"ui5-content-native-scrollbars": getEffectiveScrollbarStyle(),
 			},
 			valueStateMsg: {
+				"ui5-valuestatemessage-header": true,
 				"ui5-valuestatemessage--error": this.valueState === ValueState.Error,
 				"ui5-valuestatemessage--warning": this.valueState === ValueState.Warning,
 				"ui5-valuestatemessage--information": this.valueState === ValueState.Information,

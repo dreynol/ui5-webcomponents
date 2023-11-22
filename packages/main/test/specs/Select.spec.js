@@ -35,6 +35,21 @@ describe("Select general interaction", () => {
 		assert.include(selectTextHtml, EXPECTED_SELECTION_TEXT, "Select label is correct.");
 	});
 
+	it("prevents change on selection", async () => {
+		const select = await browser.$("#selectPrevent");
+		const selectText = await browser.$("#selectPrevent").shadow$(".ui5-select-label-root");
+		const EXPECTED_SELECTION_TEXT = "Condensed";
+
+		await select.click();
+		const staticAreaItemClassName = await browser.getStaticAreaItemClassName("#selectPrevent")
+		const secondItem = (await browser.$(`.${staticAreaItemClassName}`).shadow$$("ui5-li"))[1];
+
+		await secondItem.click();
+
+		const selectTextHtml = await selectText.getHTML(false);
+		assert.include(selectTextHtml, EXPECTED_SELECTION_TEXT, "Select label is not changed (reverted on third item).");
+	});
+
 	it("does not fire change, when clicking on selected item", async () => {
 		await browser.url(`test/pages/Select.html`);
 
@@ -524,6 +539,24 @@ describe("Select general interaction", () => {
 		assert.ok(await popover.getProperty("opened"), "Select is opened.");
 		await firstItem.click();
 		assert.notOk(await popover.getProperty("opened"), "Select is closed.");
+	});
+
+	it("Tests if currently selected option is visible in the viewport when keyboard navigation is used", async () => {
+		await browser.setWindowSize(600, 100);
+
+		const select = await browser.$("#warningSelect");
+		const staticAreaItemClassName = await browser.getStaticAreaItemClassName("#warningSelect");
+		const popover = await browser.$(`.${staticAreaItemClassName}`).shadow$("ui5-responsive-popover");
+
+		await select.click();
+		assert.ok(await popover.getProperty("opened"), "Select is opened.");
+
+		await select.keys("ArrowDown");
+		await select.keys("ArrowDown");
+		await select.keys("ArrowDown");
+
+		const selectedOption = await popover.$("ui5-list").$("ui5-li[selected]");
+		assert.ok(await selectedOption.isClickable(), "Selected option is visible in the viewport.");
 	});
 });
 

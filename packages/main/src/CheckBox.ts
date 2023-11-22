@@ -24,7 +24,7 @@ import {
 // Styles
 import checkboxCss from "./generated/themes/CheckBox.css.js";
 import type FormSupport from "./features/InputElementsFormSupport.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
+import type { IFormElement, NativeFormElement } from "./features/InputElementsFormSupport.js";
 
 // Template
 import CheckBoxTemplate from "./generated/templates/CheckBoxTemplate.lit.js";
@@ -222,17 +222,6 @@ class CheckBox extends UI5Element implements IFormElement {
 	/**
 	 * Defines the value state of the component.
 	 *
-	 * <br><br>
-	 * <b>Note:</b>
-	 *
-	 * <ul>
-	 * <li><code>Warning</code></li>
-	 * <li><code>Error</code></li>
-	 * <li><code>None</code>(default)</li>
-	 * <li><code>Success</code></li>
-	 * <li><code>Information</code></li>
-	 * </ul>
-	 *
 	 * @type {sap.ui.webc.base.types.ValueState}
 	 * @name sap.ui.webc.main.CheckBox.prototype.valueState
 	 * @defaultvalue "None"
@@ -243,12 +232,7 @@ class CheckBox extends UI5Element implements IFormElement {
 
 	/**
 	 * Defines whether the component text wraps when there is not enough space.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>None</code> - The text will be truncated with an ellipsis.</li>
-	 * <li><code>Normal</code> - The text will wrap. The words will not be broken based on hyphenation.</li>
-	 * </ul>
+	 * <br><b>Note:</b> for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
 	 *
 	 * @type {sap.ui.webc.main.types.WrappingType}
 	 * @name sap.ui.webc.main.CheckBox.prototype.wrappingType
@@ -320,8 +304,9 @@ class CheckBox extends UI5Element implements IFormElement {
 	_enableFormSupport() {
 		const formSupport = getFeature<typeof FormSupport>("FormSupport");
 		if (formSupport) {
-			formSupport.syncNativeHiddenInput(this, (element: IFormElement, nativeInput: HTMLInputElement) => {
-				nativeInput.disabled = element.disabled || !element.checked;
+			formSupport.syncNativeHiddenInput(this, (element: IFormElement, nativeInput: NativeFormElement) => {
+				nativeInput.disabled = !!element.disabled;
+				(nativeInput as HTMLInputElement).checked = !!element.checked;
 				nativeInput.value = element.checked ? "on" : "";
 			});
 		} else if (this.name) {

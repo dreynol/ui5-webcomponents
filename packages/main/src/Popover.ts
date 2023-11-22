@@ -8,6 +8,7 @@ import DOMReference from "@ui5/webcomponents-base/dist/types/DOMReference.js";
 import { getClosedPopupParent } from "@ui5/webcomponents-base/dist/util/PopupUtils.js";
 import clamp from "@ui5/webcomponents-base/dist/util/clamp.js";
 import Popup from "./Popup.js";
+import type { PopupBeforeCloseEventDetail as PopoverBeforeCloseEventDetail } from "./Popup.js";
 import PopoverPlacementType from "./types/PopoverPlacementType.js";
 import PopoverVerticalAlign from "./types/PopoverVerticalAlign.js";
 import PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
@@ -111,14 +112,6 @@ class Popover extends Popup {
 
 	/**
 	 * Determines on which side the component is placed at.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Left</code></li>
-	 * <li><code>Right</code></li>
-	 * <li><code>Top</code></li>
-	 * <li><code>Bottom</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.main.types.PopoverPlacementType}
 	 * @name sap.ui.webc.main.Popover.prototype.placementType
@@ -130,14 +123,6 @@ class Popover extends Popup {
 
 	/**
 	 * Determines the horizontal alignment of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Center</code></li>
-	 * <li><code>Left</code></li>
-	 * <li><code>Right</code></li>
-	 * <li><code>Stretch</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.main.types.PopoverHorizontalAlign}
 	 * @name sap.ui.webc.main.Popover.prototype.horizontalAlign
@@ -149,14 +134,6 @@ class Popover extends Popup {
 
 	/**
 	 * Determines the vertical alignment of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Center</code></li>
-	 * <li><code>Top</code></li>
-	 * <li><code>Bottom</code></li>
-	 * <li><code>Stretch</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.main.types.PopoverVerticalAlign}
 	 * @name sap.ui.webc.main.Popover.prototype.verticalAlign
@@ -304,6 +281,8 @@ class Popover extends Popup {
 	}
 
 	onAfterRendering() {
+		super.onAfterRendering();
+
 		if (!this.isOpen() && this.open) {
 			let opener;
 
@@ -429,8 +408,12 @@ class Popover extends Popup {
 	}
 
 	_show() {
-		let placement;
+		if (!this.opened) {
+			this._showOutsideViewport();
+		}
+
 		const popoverSize = this.getPopoverSize();
+		let placement;
 
 		if (popoverSize.width === 0 || popoverSize.height === 0) {
 			// size can not be determined properly at this point, popover will be shown with the next reposition
@@ -486,7 +469,6 @@ class Popover extends Popup {
 			top: `${top}px`,
 			left: `${left}px`,
 		});
-		super._show();
 
 		if (this.horizontalAlign === PopoverHorizontalAlign.Stretch && this._width) {
 			this.style.width = this._width;
@@ -511,19 +493,19 @@ class Popover extends Popup {
 	}
 
 	getPopoverSize(): PopoverSize {
-		if (!this.opened) {
-			Object.assign(this.style, {
-				display: "block",
-				top: "-10000px",
-				left: "-10000px",
-			});
-		}
-
 		const rect = this.getBoundingClientRect(),
 			width = rect.width,
 			height = rect.height;
 
 		return { width, height };
+	}
+
+	_showOutsideViewport() {
+		Object.assign(this.style, {
+			display: this._displayProp,
+			top: "-10000px",
+			left: "-10000px",
+		});
 	}
 
 	get arrowDOM() {
@@ -862,3 +844,7 @@ Popover.define();
 export default Popover;
 
 export { instanceOfPopover };
+
+export type {
+	PopoverBeforeCloseEventDetail,
+};

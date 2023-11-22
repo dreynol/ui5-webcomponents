@@ -18,6 +18,7 @@ import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-right.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
+import { Timeout } from "@ui5/webcomponents-base/dist/types.js";
 import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import type { ResponsivePopoverBeforeCloseEventDetail } from "./ResponsivePopover.js";
@@ -27,7 +28,7 @@ import StandardListItem from "./StandardListItem.js";
 import Icon from "./Icon.js";
 import BusyIndicator from "./BusyIndicator.js";
 import type MenuItem from "./MenuItem.js";
-import type { ClickEventDetail } from "./List.js";
+import type { ListItemClickEventDetail } from "./List.js";
 import staticAreaMenuTemplate from "./generated/templates/MenuTemplate.lit.js";
 import {
 	MENU_BACK_BUTTON_ARIA_LABEL,
@@ -42,6 +43,17 @@ type CurrentItem = {
 	position: number,
 	ariaHasPopup: string | undefined,
 }
+
+const MENU_OPEN_DELAY = 300;
+const MENU_CLOSE_DELAY = 400;
+
+type MenuItemClickEventDetail = {
+	item: MenuItem,
+	text: string,
+}
+
+type MenuBeforeOpenEventDetail = { item?: MenuItem };
+type MenuBeforeCloseEventDetail = { escPressed: boolean };
 
 type OpenerStandardListItem = StandardListItem & { associatedItem: MenuItem };
 
@@ -100,16 +112,18 @@ type OpenerStandardListItem = StandardListItem & { associatedItem: MenuItem };
 
 /**
  * Fired when an item is being clicked.
+ * <b>Note:</b> Since 1.17.0 the event is preventable, allowing the menu to remain open after an item is pressed.
  *
  * @event sap.ui.webc.main.Menu#item-click
- * @param {object} item The currently clicked menu item.
- * @param {string} text The text of the currently clicked menu item.
+ * @allowPreventDefault
+ * @param { HTMLElement } item The currently clicked menu item.
+ * @param { string } text The text of the currently clicked menu item.
  * @public
  */
 @event("item-click", {
 	detail: {
 		item: {
-			type: Object,
+			type: HTMLElement,
 		},
 		text: {
 			type: String,
@@ -119,13 +133,21 @@ type OpenerStandardListItem = StandardListItem & { associatedItem: MenuItem };
 
 /**
  * Fired before the menu is opened. This event can be cancelled, which will prevent the menu from opening. <b>This event does not bubble.</b>
+ * <b>Note:</b> Since 1.14.0 the event is also fired before a sub-menu opens.
  *
  * @public
  * @event sap.ui.webc.main.Menu#before-open
  * @allowPreventDefault
  * @since 1.10.0
+ * @param { HTMLElement } item The <code>ui5-menu-item</code> that triggers opening of the sub-menu or undefined when fired upon root menu opening. <b>Note:</b> available since 1.14.0.
  */
-@event("before-open")
+@event("before-open", {
+	detail: {
+		item: {
+			type: HTMLElement,
+		},
+	},
+})
 
 /**
  * Fired after the menu is opened. <b>This event does not bubble.</b>
@@ -287,6 +309,7 @@ class Menu extends UI5Element {
 	items!: Array<MenuItem>;
 
 	static i18nBundle: I18nBundle;
+	_timeout?: Timeout;
 
 	static async onDefine() {
 		Menu.i18nBundle = await getI18nBundle("@ui5/webcomponents");
@@ -342,9 +365,17 @@ class Menu extends UI5Element {
 		this._currentItems.forEach(item => {
 			item.item._siblingsWithChildren = itemsWithChildren;
 			item.item._siblingsWithIcon = itemsWithIcon;
-			if (item.item._subMenu) {
-				item.item._subMenu.busy = item.item.busy;
-				item.item._subMenu.busyDelay = item.item.busyDelay;
+			const subMenu = item.item._subMenu;
+			const menuItem = item.item;
+			if (subMenu && subMenu.busy) {
+				subMenu.innerHTML = "";
+				const fragment = this._clonedItemsFragment(menuItem);
+				subMenu.appendChild(fragment);
+			}
+
+			if (subMenu) {
+				subMenu.busy = item.item.busy;
+				subMenu.busyDelay = item.item.busyDelay;
 			}
 		});
 	}
@@ -437,26 +468,34 @@ class Menu extends UI5Element {
 	_createSubMenu(item: MenuItem, openerId: string) {
 		const ctor = this.constructor as typeof Menu;
 		const subMenu = document.createElement(ctor.getMetadata().getTag()) as Menu;
-		const fragment = document.createDocumentFragment();
 
 		subMenu._isSubMenu = true;
 		subMenu.setAttribute("id", `submenu-${openerId}`);
 		subMenu._parentMenuItem = item;
 		subMenu.busy = item.busy;
 		subMenu.busyDelay = item.busyDelay;
-		const subItems = item.children;
-		let clonedItem,
-			idx;
-		for (idx = 0; idx < subItems.length; idx++) {
-			clonedItem = subItems[idx].cloneNode(true);
-			fragment.appendChild(clonedItem);
-		}
+		const fragment = this._clonedItemsFragment(item);
 		subMenu.appendChild(fragment);
 		this.staticAreaItem!.shadowRoot!.querySelector(".ui5-menu-submenus")!.appendChild(subMenu);
 		item._subMenu = subMenu;
 	}
 
+	_clonedItemsFragment(item: MenuItem) {
+		const fragment = document.createDocumentFragment();
+
+		for (let i = 0; i < item.items.length; ++i) {
+			const clonedItem = item.items[i].cloneNode(true);
+			fragment.appendChild(clonedItem);
+		}
+
+		return fragment;
+	}
+
 	_openItemSubMenu(item: MenuItem, opener: HTMLElement, actionId: string) {
+		const mainMenu = this._findMainMenu(item);
+		mainMenu.fireEvent<MenuBeforeOpenEventDetail>("before-open", {
+			item,
+		}, false, false);
 		item._subMenu!.showAt(opener);
 		item._preventSubMenuClose = true;
 		this._openedSubMenuItem = item;
@@ -509,6 +548,32 @@ class Menu extends UI5Element {
 		this._parentItemsStack.push(item);
 	}
 
+	_startOpenTimeout(item: MenuItem, opener: OpenerStandardListItem, hoverId: string) {
+		// If theres already a timeout, clears it
+		this._clearTimeout();
+
+		// Sets the new timeout
+		this._timeout = setTimeout(() => {
+			this._prepareSubMenuDesktopTablet(item, opener, hoverId);
+		}, MENU_OPEN_DELAY);
+	}
+
+	_startCloseTimeout(item: MenuItem) {
+		// If theres already a timeout, clears it
+		this._clearTimeout();
+
+		// Sets the new timeout
+		this._timeout = setTimeout(() => {
+			this._closeItemSubMenu(item);
+		}, MENU_CLOSE_DELAY);
+	}
+
+	_clearTimeout() {
+		if (this._timeout) {
+			clearTimeout(this._timeout);
+		}
+	}
+
 	_itemMouseOver(e: MouseEvent) {
 		if (isDesktop()) {
 			// respect mouseover only on desktop
@@ -517,7 +582,12 @@ class Menu extends UI5Element {
 			const hoverId = opener.getAttribute("id")!;
 
 			opener.focus();
-			this._prepareSubMenuDesktopTablet(item, opener, hoverId);
+
+			// If there is a pending close operation, cancel it
+			this._clearTimeout();
+
+			// Opens submenu with 300ms delay
+			this._startOpenTimeout(item, opener, hoverId);
 		}
 	}
 
@@ -529,14 +599,17 @@ class Menu extends UI5Element {
 
 	_itemMouseOut(e: MouseEvent) {
 		if (isDesktop()) {
-			// respect mouseover only on desktop
 			const opener = e.target as OpenerStandardListItem;
 			const item = opener.associatedItem;
 
+			// If there is a pending open operation, cancel it
+			this._clearTimeout();
+
+			// Close submenu with 400ms delay
 			if (item && item.hasSubmenu && item._subMenu) {
 				// try to close the sub-menu
 				item._preventSubMenuClose = false;
-				this._closeItemSubMenu(item);
+				this._startCloseTimeout(item);
 			}
 		}
 	}
@@ -560,7 +633,7 @@ class Menu extends UI5Element {
 		}
 	}
 
-	_itemClick(e: CustomEvent<ClickEventDetail>) {
+	_itemClick(e: CustomEvent<ListItemClickEventDetail>) {
 		const opener = e.detail.item as OpenerStandardListItem;
 		const item = opener.associatedItem;
 		const actionId = opener.getAttribute("id")!;
@@ -572,20 +645,33 @@ class Menu extends UI5Element {
 					this._parentMenuItem = undefined;
 				}
 				// fire event if the click is on top-level menu item
-				this.fireEvent("item-click", {
+				const prevented = !this.fireEvent<MenuItemClickEventDetail>("item-click", {
 					"item": item,
 					"text": item.text,
-				});
-				this._popover!.close();
-			} else {
-				// find top-level menu and redirect event to it
-				let parentMenu = item.parentElement as Menu;
-				while (parentMenu._parentMenuItem) {
-					parentMenu._parentMenuItem._preventSubMenuClose = false;
-					this._closeItemSubMenu(parentMenu._parentMenuItem);
-					parentMenu = parentMenu._parentMenuItem.parentElement as Menu;
+				}, true, false);
+
+				if (!prevented) {
+					this._popover!.close();
 				}
-				parentMenu._itemClick(e);
+			} else {
+				const mainMenu = this._findMainMenu(item);
+				const prevented = !mainMenu.fireEvent<MenuItemClickEventDetail>("item-click", {
+					"item": item,
+					"text": item.text,
+				}, true, false);
+
+				if (!prevented) {
+					let openerMenuItem = item;
+					let parentMenu = openerMenuItem.parentElement as Menu;
+					do {
+						openerMenuItem._preventSubMenuClose = false;
+						this._closeItemSubMenu(openerMenuItem);
+						parentMenu = openerMenuItem.parentElement as Menu;
+						openerMenuItem = parentMenu._parentMenuItem as MenuItem;
+					} while (parentMenu._parentMenuItem);
+
+					mainMenu._popover!.close();
+				}
 			}
 		} else if (isPhone()) {
 			// prepares and opens sub-menu on phone
@@ -596,8 +682,17 @@ class Menu extends UI5Element {
 		}
 	}
 
+	_findMainMenu(item: MenuItem) {
+		let parentMenu = item.parentElement as Menu;
+		while (parentMenu._parentMenuItem) {
+			parentMenu = parentMenu._parentMenuItem.parentElement as Menu;
+		}
+
+		return parentMenu;
+	}
+
 	_beforePopoverOpen(e: CustomEvent) {
-		const prevented = !this.fireEvent("before-open", {}, true, false);
+		const prevented = !this.fireEvent<MenuBeforeOpenEventDetail>("before-open", {}, true, false);
 
 		if (prevented) {
 			this.open = false;
@@ -607,11 +702,11 @@ class Menu extends UI5Element {
 
 	_afterPopoverOpen() {
 		this.open = true;
-		this.fireEvent("after-open");
+		this.fireEvent("after-open", {}, false, false);
 	}
 
 	_beforePopoverClose(e: CustomEvent<ResponsivePopoverBeforeCloseEventDetail>) {
-		const prevented = !this.fireEvent("before-close", { escPressed: e.detail.escPressed }, true, false);
+		const prevented = !this.fireEvent<MenuBeforeCloseEventDetail>("before-close", { escPressed: e.detail.escPressed }, true, false);
 
 		if (prevented) {
 			this.open = true;
@@ -627,10 +722,15 @@ class Menu extends UI5Element {
 
 	_afterPopoverClose() {
 		this.open = false;
-		this.fireEvent("after-close");
+		this.fireEvent("after-close", {}, false, false);
 	}
 }
 
 Menu.define();
 
 export default Menu;
+export type {
+	MenuItemClickEventDetail,
+	MenuBeforeCloseEventDetail,
+	MenuBeforeOpenEventDetail,
+};

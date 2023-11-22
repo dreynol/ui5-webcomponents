@@ -55,20 +55,6 @@ describe("TabContainer general interaction", () => {
 		await cbPrevent.click();
 	});
 
-	it("tests custom media ranges", async () => {
-		await browser.setWindowSize(520, 1080);
-		assert.strictEqual(await browser.$("#tabContainerIconOnly").getAttribute("media-range"), "S", "media-range=S");
-
-		await browser.setWindowSize(650, 1080);
-		assert.strictEqual(await browser.$("#tabContainerIconOnly").getAttribute("media-range"), "M", "media-range=M");
-
-		await browser.setWindowSize(1350, 1080);
-		assert.strictEqual(await browser.$("#tabContainerIconOnly").getAttribute("media-range"), "L", "media-range=L");
-
-		await browser.setWindowSize(1650, 1080);
-		assert.strictEqual(await browser.$("#tabContainerIconOnly").getAttribute("media-range"), "XL", "media-range=XL");
-	});
-
 	it("tests if content is scrollable when tabcontainer takes limited height by its parent", async () => {
 		const { tcHeight, tcScrollHeight } = await browser.executeAsync(done => {
 			const scrollableContent = document.getElementById("tc-scrollable-child");
@@ -135,7 +121,7 @@ describe("TabContainer general interaction", () => {
 		await browser.setWindowSize(1000, 1080);
 		const tabcontainer = await browser.$("#tabContainerStartAndEndOverflow");
 		const startOverflow = await tabcontainer.shadow$(".ui5-tc__overflow--start");
-		assert.strictEqual(await startOverflow.getProperty("innerText"), "+11", "11 tabs in start overflow");
+		assert.strictEqual(await startOverflow.getProperty("innerText"), "+12", "12 tabs in start overflow");
 
 		await browser.setWindowSize(800, 1080);
 		assert.strictEqual(await startOverflow.getProperty("innerText"), "+14", "14 tabs in start overflow");
@@ -320,5 +306,19 @@ describe("TabContainer general interaction", () => {
 		assert.ok(await allTabs[2].getProperty("selected"), "Only the third tab should be selected");
 		assert.notOk(await allTabs[3].getProperty("selected"), "The fourth tab should not be selected");
 		assert.notOk(await allTabs[4].getProperty("selected"), "The fifth tab should not be selected");
+	});
+
+	it("tests tabs dom ref", async () => {
+		const productsTabDomRef = await browser.$(() => document.querySelector("[stable-dom-ref='products-ref']").getDomRef());
+		const productsTabStableDomRef = await browser.$(() => document.querySelector("[stable-dom-ref='products-ref']").shadowRoot.firstElementChild);
+
+		// Assert
+		assert.ok(productsTabDomRef.isEqual(productsTabStableDomRef) , "Stable dom ref of the tab is the same as its dom ref");
+
+		const productsTabDomRefInStrip = await browser.$(() => document.querySelector("[stable-dom-ref='products-ref']").getTabInStripDomRef());
+		const productsTabDomRefInStripExpected = await browser.$(() => document.getElementById("tabContainer1").getDomRef().querySelector(".ui5-tab-strip-item:first-child"));
+
+		// Assert
+		assert.ok(productsTabDomRefInStrip.isEqual(productsTabDomRefInStripExpected) , "Tab dom ref in strip should be the first child of the tab container's strip");
 	});
 });

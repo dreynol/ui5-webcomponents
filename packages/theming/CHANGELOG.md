@@ -3,6 +3,243 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.19.1](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0...v1.19.1) (2023-11-17)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.19.0](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.3...v1.19.0) (2023-11-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.19.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.2...v1.19.0-rc.3) (2023-11-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.19.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.1...v1.19.0-rc.2) (2023-10-26)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.19.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.0...v1.19.0-rc.1) (2023-10-19)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.19.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.1-rc.0...v1.19.0-rc.0) (2023-10-12)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+## [1.18.1-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0...v1.18.1-rc.0) (2023-10-05)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.18.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.2...v1.18.0) (2023-10-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.18.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.1...v1.18.0-rc.2) (2023-09-28)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.18.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.0...v1.18.0-rc.1) (2023-09-21)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.18.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0...v1.18.0-rc.0) (2023-09-07)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.17.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.2...v1.17.0) (2023-09-01)
+
+
+### Features
+
+* **ui5-toolbar:** web component introduced ([#7024](https://github.com/SAP/ui5-webcomponents/issues/7024)) ([2f329fe](https://github.com/SAP/ui5-webcomponents/commit/2f329fe2d237d24f05ed140658e39752d6d9d8ae))
+
+
+
+
+
+# [1.17.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.1...v1.17.0-rc.2) (2023-08-24)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.17.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.0...v1.17.0-rc.1) (2023-08-17)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.17.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0...v1.17.0-rc.0) (2023-08-10)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.16.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.4...v1.16.0) (2023-08-03)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.16.0-rc.4](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.3...v1.16.0-rc.4) (2023-08-03)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.16.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.2...v1.16.0-rc.3) (2023-07-27)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.16.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.1...v1.16.0-rc.2) (2023-07-20)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.16.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.0...v1.16.0-rc.1) (2023-07-13)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.16.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.1...v1.16.0-rc.0) (2023-07-06)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.15.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.2...v1.15.0) (2023-06-30)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.15.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.1...v1.15.0-rc.2) (2023-06-22)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.15.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.0...v1.15.0-rc.1) (2023-06-15)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+
+
+
+
+# [1.15.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0...v1.15.0-rc.0) (2023-06-08)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.14.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.2...v1.14.0) (2023-06-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-theming
+
+
+
+
+
+# [1.14.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.1...v1.14.0-rc.2) (2023-06-01)
+
+
+### Features
+
+* **ui5-link:** update visual design according to the latest Horizon spec ([#6988](https://github.com/SAP/ui5-webcomponents/issues/6988)) ([3cce241](https://github.com/SAP/ui5-webcomponents/commit/3cce24166c333f1d8bfbde92bb1226d228ebd709)), closes [#6999](https://github.com/SAP/ui5-webcomponents/issues/6999)
+
+
+
+
+
+# [1.14.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.0...v1.14.0-rc.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* **ui5-token:** adjust styles to latest specification ([#6996](https://github.com/SAP/ui5-webcomponents/issues/6996)) ([20e71fa](https://github.com/SAP/ui5-webcomponents/commit/20e71fadb5c054b07e55659f3467d1bc902cefd9))
+
+
+
+
+
 # [1.14.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.13.2...v1.14.0-rc.0) (2023-05-18)
 
 **Note:** Version bump only for package @ui5/webcomponents-theming

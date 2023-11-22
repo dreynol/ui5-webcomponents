@@ -39,7 +39,7 @@ import Icon from "./Icon.js";
 import Button from "./Button.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import Calendar from "./Calendar.js";
-import type { CalendarChangeEventDetail } from "./Calendar.js";
+import type { CalendarSelectedDatesChangeEventDetail } from "./Calendar.js";
 import CalendarDateComponent from "./CalendarDate.js";
 import Input from "./Input.js";
 import InputType from "./types/InputType.js";
@@ -55,9 +55,14 @@ import datePickerPopoverCss from "./generated/themes/DatePickerPopover.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
 
 type DatePickerChangeEventDetail = {
-	dates: Array<number>;
-	values: Array<string>
-};
+	value: string,
+	valid: boolean,
+}
+
+type DatePickerInputEventDetail = {
+	value: string,
+	valid: boolean,
+}
 
 /**
  * @class
@@ -221,15 +226,6 @@ class DatePicker extends DateComponentBase implements IFormElement {
 
 	/**
 	 * Defines the value state of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>None</code></li>
-	 * <li><code>Error</code></li>
-	 * <li><code>Warning</code></li>
-	 * <li><code>Success</code></li>
-	 * <li><code>Information</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.base.types.ValueState}
 	 * @name sap.ui.webc.main.DatePicker.prototype.valueState
@@ -514,14 +510,15 @@ class DatePicker extends DateComponentBase implements IFormElement {
 	 *
 	 * @param { number } amount
 	 * @param { string } unit
+	 * @param { boolean } preserveDate whether to preserve the day of the month (f.e. 15th of March + 1 month = 15th of April)
 	 * @protected
 	 */
-	_modifyDateValue(amount: number, unit: string) {
+	_modifyDateValue(amount: number, unit: string, preserveDate?: boolean) {
 		if (!this.dateValue) {
 			return;
 		}
 
-		const modifiedDate = modifyDateBy(CalendarDate.fromLocalJSDate(this.dateValue), amount, unit, this._minDate, this._maxDate);
+		const modifiedDate = modifyDateBy(CalendarDate.fromLocalJSDate(this.dateValue), amount, unit, preserveDate, this._minDate, this._maxDate);
 		const newValue = this.formatValue(modifiedDate.toUTCJSDate());
 		this._updateValueAndFireEvents(newValue, true, ["change", "value-changed"]);
 	}
@@ -545,24 +542,29 @@ class DatePicker extends DateComponentBase implements IFormElement {
 		}
 
 		events.forEach((e: string) => {
-			if (!this.fireEvent(e, { value, valid }, true)) {
+			if (!this.fireEvent<DatePickerChangeEventDetail>(e, { value, valid }, true)) {
 				executeEvent = false;
 			}
 		});
 
 		if (!executeEvent && updateValue) {
+			if (this.value !== previousValue && this.value !== this._getInput().value) {
+				return; // If the value was changed in the change event, do not revert it
+			}
+
 			this._getInput().value = previousValue;
+
 			this.value = previousValue;
-			this._updateValueState(); // Change the value state to Error/None, but only if needed
 		}
 	}
 
 	_updateValueState() {
 		const isValid = this._checkValueValidity(this.value);
-		if (!isValid) { // If not valid - always set Error regardless of the current value state
-			this.valueState = ValueState.Error;
-		} else if (isValid && this.valueState === ValueState.Error) { // However if valid, change only Error (but not the others) to None
+
+		if (isValid && this.valueState === ValueState.Error) { // If not valid - always set Error regardless of the current value state
 			this.valueState = ValueState.None;
+		} else if (!isValid) { // However if valid, change only Error (but not the others) to None
+			this.valueState = ValueState.Error;
 		}
 	}
 
@@ -764,7 +766,7 @@ class DatePicker extends DateComponentBase implements IFormElement {
 	 * @param event
 	 * @protected
 	 */
-	onSelectedDatesChange(e: CustomEvent<CalendarChangeEventDetail>) {
+	onSelectedDatesChange(e: CustomEvent<CalendarSelectedDatesChangeEventDetail>) {
 		e.preventDefault();
 		const newValue = e.detail.values && e.detail.values[0];
 		this._updateValueAndFireEvents(newValue, true, ["change", "value-changed"]);
@@ -876,5 +878,7 @@ class DatePicker extends DateComponentBase implements IFormElement {
 DatePicker.define();
 
 export default DatePicker;
-
-export type { DatePickerChangeEventDetail };
+export type {
+	DatePickerChangeEventDetail,
+	DatePickerInputEventDetail,
+};

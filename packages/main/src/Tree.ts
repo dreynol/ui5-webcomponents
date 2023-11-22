@@ -16,9 +16,9 @@ import type {
 	TreeItemBaseStepOutEventDetail,
 } from "./TreeItemBase.js";
 import type {
-	ClickEventDetail as ListItemClickEventDetail,
-	DeleteEventDetail as ListItemDeleteEventDetail,
-	SelectionChangeEventDetail as ListSelectionChangeEventDetail,
+	ListItemClickEventDetail,
+	ListItemDeleteEventDetail,
+	ListSelectionChangeEventDetail,
 } from "./List.js";
 
 // Template
@@ -35,7 +35,7 @@ type TreeItemMouseoverEventDetail = TreeItemEventDetail;
 type TreeItemMouseoutEventDetail = TreeItemEventDetail;
 type TreeItemClickEventDetail = TreeItemEventDetail;
 type TreeItemDeleteEventDetail = TreeItemEventDetail;
-type TreeItemSelectionChangeEventDetail = {
+type TreeSelectionChangeEventDetail = {
 	selectedItems: Array<TreeItemBase>;
 	previouslySelectedItems: Array<TreeItemBase>;
 	targetItem: TreeItemBase;
@@ -198,18 +198,6 @@ class Tree extends UI5Element {
 	 * Defines the mode of the component. Since the tree uses a <code>ui5-list</code> to display its structure,
 	 * the tree modes are exactly the same as the list modes, and are all applicable.
 	 *
-	 * <br><br>
-	 * <b>Note:</b>
-	 *
-	 * <ul>
-	 * <li><code>None</code></li>
-	 * <li><code>SingleSelect</code></li>
-	 * <li><code>SingleSelectBegin</code></li>
-	 * <li><code>SingleSelectEnd</code></li>
-	 * <li><code>MultiSelect</code></li>
-	 * <li><code>Delete</code></li>
-	 * </ul>
-	 *
 	 * @public
 	 * @type {sap.ui.webc.main.types.ListMode}
 	 * @name sap.ui.webc.main.Tree.prototype.mode
@@ -337,6 +325,12 @@ class Tree extends UI5Element {
 		this._prepareTreeItems();
 	}
 
+	onAfterRendering() {
+		// Note: this is a workaround for the problem that the list cannot invalidate itself when its only physical child is a slot (and the list items are inside the slot)
+		// This code should be removed once a framework-level fix is implemented
+		this.shadowRoot!.querySelector<TreeList>("[ui5-tree-list]")!.onBeforeRendering();
+	}
+
 	get list() {
 		return this.getDomRef() as TreeList;
 	}
@@ -420,7 +414,7 @@ class Tree extends UI5Element {
 			item.selected = true;
 		});
 
-		this.fireEvent<TreeItemSelectionChangeEventDetail>("selection-change", {
+		this.fireEvent<TreeSelectionChangeEventDetail>("selection-change", {
 			previouslySelectedItems,
 			selectedItems,
 			targetItem,
@@ -505,5 +499,5 @@ export type {
 	TreeItemMouseoutEventDetail,
 	TreeItemClickEventDetail,
 	TreeItemDeleteEventDetail,
-	TreeItemSelectionChangeEventDetail,
+	TreeSelectionChangeEventDetail,
 };

@@ -7,3 +7,11 @@
 .panel1auto {
     background-color: var(--sapBackgroundColor);
 }
+
+#panel-stickyHeader::part(content) {
+    max-height: 70px;
+}
+
+#panel-expandable::part(header) {
+    color: green;
+}

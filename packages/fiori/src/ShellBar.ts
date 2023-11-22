@@ -12,7 +12,7 @@ import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
 import { renderFinished } from "@ui5/webcomponents-base/dist/Render.js";
 import StandardListItem from "@ui5/webcomponents/dist/StandardListItem.js";
 import List from "@ui5/webcomponents/dist/List.js";
-import type { SelectionChangeEventDetail } from "@ui5/webcomponents/dist/List.js";
+import type { ListSelectionChangeEventDetail } from "@ui5/webcomponents/dist/List.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import Popover from "@ui5/webcomponents/dist/Popover.js";
 import Button from "@ui5/webcomponents/dist/Button.js";
@@ -595,7 +595,7 @@ class ShellBar extends UI5Element {
 		}, delay);
 	}
 
-	_menuItemPress(e: CustomEvent<SelectionChangeEventDetail>) {
+	_menuItemPress(e: CustomEvent<ListSelectionChangeEventDetail>) {
 		this.menuPopover!.close();
 		this.fireEvent<ShellBarMenuItemClickEventDetail>("menu-item-click", {
 			item: e.detail.selectedItems[0],
@@ -719,7 +719,7 @@ class ShellBar extends UI5Element {
 		const width = this.getBoundingClientRect().width;
 		const breakpoints = ShellBar.FIORI_3_BREAKPOINTS;
 
-		const size = breakpoints.find(bp1 => width < bp1) || ShellBar.FIORI_3_BREAKPOINTS[ShellBar.FIORI_3_BREAKPOINTS.length - 1];
+		const size = breakpoints.find(bp1 => width <= bp1) || ShellBar.FIORI_3_BREAKPOINTS[ShellBar.FIORI_3_BREAKPOINTS.length - 1];
 		const mappedSize = ShellBar.FIORI_3_BREAKPOINTS_MAP[size];
 
 		if (this.breakpointSize !== mappedSize) {
@@ -987,7 +987,7 @@ class ShellBar extends UI5Element {
 		const items: Array<IShelBarItemInfo> = [
 			{
 				icon: "search",
-				text: "Search",
+				text: this._searchText,
 				classes: `${this.searchField.length ? "" : "ui5-shellbar-invisible-button"} ui5-shellbar-search-button ui5-shellbar-button`,
 				priority: 4,
 				domOrder: this.searchField.length ? (++domOrder) : -1,
@@ -1021,7 +1021,7 @@ class ShellBar extends UI5Element {
 			}),
 			{
 				icon: "bell",
-				text: "Notifications",
+				text: this._notificationsText,
 				classes: `${this.showNotifications ? "" : "ui5-shellbar-invisible-button"} ui5-shellbar-bell-button ui5-shellbar-button`,
 				priority: 3,
 				styles: {
@@ -1061,7 +1061,7 @@ class ShellBar extends UI5Element {
 			},
 			{
 				icon: "grid",
-				text: "Product Switch",
+				text: this._productsText,
 				classes: `${this.showProductSwitch ? "" : "ui5-shellbar-invisible-button"} ui5-shellbar-button ui5-shellbar-button-product-switch`,
 				priority: 2,
 				styles: {

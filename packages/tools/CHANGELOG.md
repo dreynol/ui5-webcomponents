@@ -3,6 +3,244 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.19.0](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.3...v1.19.0) (2023-11-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.19.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.2...v1.19.0-rc.3) (2023-11-02)
+
+
+### Features
+
+* **framework:** switch default theme from Quartz Light to Morning Ho… ([#7749](https://github.com/SAP/ui5-webcomponents/issues/7749)) ([10dadd7](https://github.com/SAP/ui5-webcomponents/commit/10dadd79e3a93daf29baaed3a5bcebd8c66a0940))
+
+
+
+
+
+# [1.19.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.1...v1.19.0-rc.2) (2023-10-26)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.19.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.0...v1.19.0-rc.1) (2023-10-19)
+
+
+### Bug Fixes
+
+* escape special characters when scoping CSS vars ([#7704](https://github.com/SAP/ui5-webcomponents/issues/7704)) ([8888751](https://github.com/SAP/ui5-webcomponents/commit/888875121b56fa0c7216674acc580620d8e0d720))
+
+
+
+
+
+# [1.19.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.1-rc.0...v1.19.0-rc.0) (2023-10-12)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+## [1.18.1-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0...v1.18.1-rc.0) (2023-10-05)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.18.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.2...v1.18.0) (2023-10-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.18.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.1...v1.18.0-rc.2) (2023-09-28)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.18.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.0...v1.18.0-rc.1) (2023-09-21)
+
+
+### Reverts
+
+* Revert "build: fix dev server page refresh" ([105db9f](https://github.com/SAP/ui5-webcomponents/commit/105db9f3c42e7434c2dc9b0eb967fb45cac9620d))
+
+
+
+
+
+# [1.18.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0...v1.18.0-rc.0) (2023-09-07)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.17.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.2...v1.17.0) (2023-09-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.17.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.1...v1.17.0-rc.2) (2023-08-24)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.17.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.0...v1.17.0-rc.1) (2023-08-17)
+
+
+### Features
+
+* **framework:** scope css variables per runtime and version ([#7449](https://github.com/SAP/ui5-webcomponents/issues/7449)) ([d3f6c2e](https://github.com/SAP/ui5-webcomponents/commit/d3f6c2efba9cfda389ea4d700a375f75b3e2996b))
+
+
+
+
+
+# [1.17.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0...v1.17.0-rc.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* **ui5-illustrated-message:** support collection based illustration loading ([#7318](https://github.com/SAP/ui5-webcomponents/issues/7318)) ([6b52dbd](https://github.com/SAP/ui5-webcomponents/commit/6b52dbd157a3c8198e41c84157e3d9ae89e3386e))
+
+
+
+
+
+# [1.16.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.4...v1.16.0) (2023-08-03)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.16.0-rc.4](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.3...v1.16.0-rc.4) (2023-08-03)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.16.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.2...v1.16.0-rc.3) (2023-07-27)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.16.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.1...v1.16.0-rc.2) (2023-07-20)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.16.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.0...v1.16.0-rc.1) (2023-07-13)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.16.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.1...v1.16.0-rc.0) (2023-07-06)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.15.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.2...v1.15.0) (2023-06-30)
+
+
+### Bug Fixes
+
+* **framework:** missing CSS variables in compact mode / rtl mode ([#7189](https://github.com/SAP/ui5-webcomponents/issues/7189)) ([9b39b9c](https://github.com/SAP/ui5-webcomponents/commit/9b39b9ce5c3720dbb106c5638f858754e11a735f))
+
+
+
+
+
+# [1.15.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.1...v1.15.0-rc.2) (2023-06-22)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.15.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.0...v1.15.0-rc.1) (2023-06-15)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+
+
+
+
+# [1.15.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0...v1.15.0-rc.0) (2023-06-08)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.14.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.2...v1.14.0) (2023-06-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.14.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.1...v1.14.0-rc.2) (2023-06-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
+# [1.14.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.0...v1.14.0-rc.1) (2023-05-25)
+
+**Note:** Version bump only for package @ui5/webcomponents-tools
+
+
+
+
+
 # [1.14.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.13.2...v1.14.0-rc.0) (2023-05-18)
 
 **Note:** Version bump only for package @ui5/webcomponents-tools

@@ -12,6 +12,8 @@ There are several configuration settings that affect all UI5 Web Components glob
 | [language](#language)                         | `ar`, `bg`, `ca`, `cs`, `cy`, `da`, `de`, `el`, `en`, `en_GB`, `es`, `es_MX`, `et`, `fi`, `fr`, `fr_CA`, `hi`, `hr`, `hu`, `in`, `it`, `iw`, `ja`, `kk`, `ko`, `lt`, `lv`, `ms`, `nl`, `no`, `pl`, `pt_PT`, `pt`, `ro`, `ru`, `sh`, `sk`, `sl`, `sv`, `th`, `tr`, `uk`, `vi`, `zh_CN`, `zh_TW` | N/A (`null`)  | Language to be used for translatable texts                           | Components and icons with translatable texts                     |
 | [animationMode](#animationMode)               | `full`, `basic`, `minimal`, `none`                                                                                                                                                                                                                                                             | `full`        | Amount/intensity of animations to be played for some components      | Components with animations (`ui5-panel`, `ui5-carousel`, etc.) |
 | [calendarType](#calendarType)                 | `Gregorian`, `Islamic`, `Buddhist`, `Japanese`, `Persian`                                                                                                                                                                                                                                      | `Gregorian`   | Default calendar type to be used for date-related components         | Date/time components (`ui5-date-picker`, etc.)                 |
+| [secondaryCalendarType](#calendarType)                 | `Gregorian`, `Islamic`, `Buddhist`, `Japanese`, `Persian`                                                                                                                                                                                                                                      | `undefined`   | Default secondary calendar type to be used for date-related components         | Date/time components (`ui5-date-picker`, etc.)                 |
+
 | [noConflict](#noConflict)                     | `true`, `false`                                                                                                                                                                                                                                                                                | `false`       | When set to true, all events will be fired with a `ui5-` prefix only | Components that fire events (most do)                            |
 | [formatSettings](#formatSettings)             | See the [Format settings](#formatSettings) section below                                                                                                                                                                                                                                       | `{}`          | Allows to override locale-specific configuration                     | Date/time components (`ui5-date-picker`, etc.)                 |
 | [fetchDefaultLanguage](#fetchDefaultLanguage) | `true`, `false`                                                                                                                                                                                                                                                                                | `false`       | Whether to fetch assets even for the default language                | Framework                                                        |
@@ -20,11 +22,11 @@ There are several configuration settings that affect all UI5 Web Components glob
 <a name="theme"></a>
 
 The `theme` setting values above are the technical names of the supported themes:
-- The `sap_horizon` is known as `Morning Horizon` and it's the latest theme currently available as a preview version.
+- The `sap_horizon` is known as `Morning Horizon` and it's the latest theme and default theme.
 - The `sap_horizon_dark` is known as `Evening Horizon`.
 - The `sap_horizon_hcb` is known as `High Contrast Black`.
 - The `sap_horizon_hcw` is known as `High Contrast White`.
-- The `sap_fiori_3` is known as `Quartz Light` and it`s the default theme.
+- The `sap_fiori_3` is known as `Quartz Light`.
 - The `sap_fiori_3_dark` is known as `Quartz Dark`.
 - The `sap_fiori_3_hcb` is known as `Quartz High Contrast Black`.
 - The `sap_fiori_3_hcw` is known as `Quartz High Contrast White`.

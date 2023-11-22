@@ -126,11 +126,23 @@ class CalendarHeader extends UI5Element {
 	}
 
 	onPrevButtonClick(e: MouseEvent) {
+		if (this.isPrevButtonDisabled) {
+			e.preventDefault();
+			return;
+		}
+
 		this.fireEvent("previous-press", e);
+		e.preventDefault();
 	}
 
 	onNextButtonClick(e: MouseEvent) {
+		if (this.isNextButtonDisabled) {
+			e.preventDefault();
+			return;
+		}
+
 		this.fireEvent("next-press", e);
+		e.preventDefault();
 	}
 
 	onMonthButtonClick(e: MouseEvent) {
@@ -176,7 +188,7 @@ class CalendarHeader extends UI5Element {
 	}
 
 	get hasSecondaryCalendarType() {
-		return !!this.secondaryCalendarType;
+		return !!this.secondaryCalendarType && this.secondaryCalendarType !== this.primaryCalendarType;
 	}
 
 	get classes() {

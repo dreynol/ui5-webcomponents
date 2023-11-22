@@ -6,6 +6,7 @@ import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import type { ClassMap } from "@ui5/webcomponents-base/dist/types.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
+import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import {
 	isPhone,
@@ -45,7 +46,7 @@ import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import type SuggestionItem from "./SuggestionItem.js";
-import type { InputSuggestionText, SuggestionComponent } from "./features/InputSuggestions.js";
+import type { InputSuggestion, SuggestionComponent } from "./features/InputSuggestions.js";
 import type InputSuggestions from "./features/InputSuggestions.js";
 import type FormSupportT from "./features/InputElementsFormSupport.js";
 import type { IFormElement } from "./features/InputElementsFormSupport.js";
@@ -73,6 +74,7 @@ import {
 	INPUT_SUGGESTIONS_ONE_HIT,
 	INPUT_SUGGESTIONS_MORE_HITS,
 	INPUT_SUGGESTIONS_NO_HIT,
+	INPUT_CLEAR_ICON_ACC_NAME,
 } from "./generated/i18n/i18n-defaults.js";
 
 // Styles
@@ -116,16 +118,16 @@ type InputEventDetail = {
 	inputType?: string;
 }
 
-type SuggestionItemSelectEventDetail = {
+type InputSuggestionItemSelectEventDetail = {
 	item: SuggestionItem;
 }
 
-type SuggestionItemPreviewEventDetail = {
+type InputSuggestionItemPreviewEventDetail = {
 	item: SuggestionItem;
 	targetRef: SuggestionListItem;
 }
 
-type SuggestionScrollEventDetail = {
+type InputSuggestionScrollEventDetail = {
 	scrollTop: number;
 	scrollContainer: HTMLElement;
 }
@@ -335,8 +337,6 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 
 	/**
 	 * Defines the HTML type of the component.
-	 * Available options are: <code>Text</code>, <code>Email</code>,
-	 * <code>Number</code>, <code>Password</code>, <code>Tel</code>, and <code>URL</code>.
 	 * <br><br>
 	 * <b>Notes:</b>
 	 * <ul>
@@ -383,15 +383,6 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 
 	/**
 	 * Defines the value state of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>None</code></li>
-	 * <li><code>Error</code></li>
-	 * <li><code>Warning</code></li>
-	 * <li><code>Success</code></li>
-	 * <li><code>Information</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.base.types.ValueState}
 	 * @name sap.ui.webc.main.Input.prototype.valueState
@@ -637,7 +628,7 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 	typedInValue: string;
 	lastConfirmedValue: string
 	isTyping: boolean
-	suggestionsTexts: Array<InputSuggestionText>;
+	suggestionObjects: Array<InputSuggestion>;
 	_handleResizeBound: ResizeObserverCallback;
 	_keepInnerValue: boolean;
 	_shouldAutocomplete?: boolean;
@@ -687,7 +678,7 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 		this.isTyping = false;
 
 		// Suggestions array initialization
-		this.suggestionsTexts = [];
+		this.suggestionObjects = [];
 
 		this._handleResizeBound = this._handleResize.bind(this);
 
@@ -712,11 +703,11 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 
 		if (this.showSuggestions) {
 			this.enableSuggestions();
-			this.suggestionsTexts = this.Suggestions!.defaultSlotProperties(this.typedInValue);
+			this.suggestionObjects = this.Suggestions!.defaultSlotProperties(this.typedInValue);
 		}
 
 		this.effectiveShowClearIcon = (this.showClearIcon && !!this.value && !this.readonly && !this.disabled);
-		this.style.setProperty("--_ui5-input-icons-count", `${this.iconsCount}`);
+		this.style.setProperty(getScopedVarName("--_ui5-input-icons-count"), `${this.iconsCount}`);
 
 		this.FormSupport = getFeature<typeof FormSupportT>("FormSupport");
 		const hasItems = !!this.suggestionItems.length;
@@ -1074,7 +1065,7 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 	}
 
 	_scroll(e: CustomEvent<PopupScrollEventDetail>) {
-		this.fireEvent<SuggestionScrollEventDetail>("suggestion-scroll", {
+		this.fireEvent<InputSuggestionScrollEventDetail>("suggestion-scroll", {
 			scrollTop: e.detail.scrollTop,
 			scrollContainer: e.detail.targetRef,
 		});
@@ -1320,7 +1311,7 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 		this.valueBeforeItemPreview = "";
 		this.suggestionSelectionCanceled = false;
 
-		this.fireEvent<SuggestionItemSelectEventDetail>(INPUT_EVENTS.SUGGESTION_ITEM_SELECT, { item });
+		this.fireEvent<InputSuggestionItemSelectEventDetail>(INPUT_EVENTS.SUGGESTION_ITEM_SELECT, { item });
 
 		this.isTyping = false;
 		this.openOnMobile = false;
@@ -1476,7 +1467,7 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 
 	onItemPreviewed(item: SuggestionListItem) {
 		this.previewSuggestion(item);
-		this.fireEvent<SuggestionItemPreviewEventDetail>("suggestion-item-preview", {
+		this.fireEvent<InputSuggestionItemPreviewEventDetail>("suggestion-item-preview", {
 			item: this.getSuggestionByListItem(item),
 			targetRef: item,
 		});
@@ -1501,13 +1492,9 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 	}
 
 	announceSelectedItem() {
-		const invisibleText = this.shadowRoot!.querySelector(`#${this._id}-selectionText`)!;
+		const invisibleText = this.shadowRoot!.querySelector(`[id="${this._id}-selectionText"]`)!;
 
-		if (this.Suggestions && this.Suggestions._isItemOnTarget()) {
-			invisibleText.textContent = this.itemSelectionAnnounce;
-		} else {
-			invisibleText.textContent = "";
-		}
+		invisibleText.textContent = this.itemSelectionAnnounce;
 	}
 
 	get _readonly() {
@@ -1516,6 +1503,10 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 
 	get _headerTitleText() {
 		return Input.i18nBundle.getText(INPUT_SUGGESTIONS_TITLE);
+	}
+
+	get clearIconAccessibleName() {
+		return Input.i18nBundle.getText(INPUT_CLEAR_ICON_ACC_NAME);
 	}
 
 	get inputType() {
@@ -1664,7 +1655,9 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 
 	get availableSuggestionsCount() {
 		if (this.showSuggestions && (this.value || this.Suggestions!.isOpened())) {
-			switch (this.suggestionsTexts.length) {
+			const nonGroupItems = this.suggestionObjects.filter(item => !item.groupItem);
+
+			switch (nonGroupItems.length) {
 			case 0:
 				return Input.i18nBundle.getText(INPUT_SUGGESTIONS_NO_HIT);
 
@@ -1672,7 +1665,7 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 				return Input.i18nBundle.getText(INPUT_SUGGESTIONS_ONE_HIT);
 
 			default:
-				return Input.i18nBundle.getText(INPUT_SUGGESTIONS_MORE_HITS, this.suggestionsTexts.length);
+				return Input.i18nBundle.getText(INPUT_SUGGESTIONS_MORE_HITS, nonGroupItems.length);
 			}
 		}
 
@@ -1784,3 +1777,8 @@ class Input extends UI5Element implements SuggestionComponent, IFormElement {
 Input.define();
 
 export default Input;
+export type {
+	InputSuggestionScrollEventDetail,
+	InputSuggestionItemSelectEventDetail,
+	InputSuggestionItemPreviewEventDetail,
+};

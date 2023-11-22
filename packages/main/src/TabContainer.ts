@@ -21,9 +21,9 @@ import {
 	isLeft,
 	isUp,
 } from "@ui5/webcomponents-base/dist/Keys.js";
-import MediaRange from "@ui5/webcomponents-base/dist/MediaRange.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-up.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import {
@@ -38,7 +38,7 @@ import Button from "./Button.js";
 import Icon from "./Icon.js";
 import List from "./List.js";
 import type Tab from "./Tab.js";
-import type { ClickEventDetail } from "./List.js";
+import type { ListItemClickEventDetail } from "./List.js";
 import type CustomListItem from "./CustomListItem.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import TabContainerTabsPlacement from "./types/TabContainerTabsPlacement.js";
@@ -229,17 +229,10 @@ class TabContainer extends UI5Element {
 	/**
 	 * Defines the alignment of the content and the <code>additionalText</code> of a tab.
 	 *
-	 * <br><br>
+	 * <br>
 	 * <b>Note:</b>
 	 * The content and the <code>additionalText</code> would be displayed vertically by default,
 	 * but when set to <code>Inline</code>, they would be displayed horizontally.
-	 *
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Standard</code></li>
-	 * <li><code>Inline</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.main.types.TabLayout}
 	 * @name sap.ui.webc.main.TabContainer.prototype.tabLayout
@@ -253,17 +246,10 @@ class TabContainer extends UI5Element {
 	 * Defines the overflow mode of the header (the tab strip). If you have a large number of tabs, only the tabs that can fit on screen will be visible.
 	 * All other tabs that can 't fit on the screen are available in an overflow tab "More".
 	 *
-	 * <br><br>
+	 * <br>
 	 * <b>Note:</b>
 	 * Only one overflow at the end would be displayed by default,
 	 * but when set to <code>StartAndEnd</code>, there will be two overflows on both ends, and tab order will not change on tab selection.
-	 *
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>End</code></li>
-	 * <li><code>StartAndEnd</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.main.types.TabsOverflowMode}
 	 * @name sap.ui.webc.main.TabContainer.prototype.tabsOverflowMode
@@ -305,13 +291,6 @@ class TabContainer extends UI5Element {
 	 * layout for most scenarios. Set to <code>Bottom</code> only when the component is at the
 	 * bottom of the page and you want the tab strip to act as a menu.
 	 *
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Top</code></li>
-	 * <li><code>Bottom</code></li>
-	 * </ul>
-	 *
 	 * @type {sap.ui.webc.main.types.TabContainerTabsPlacement}
 	 * @name sap.ui.webc.main.TabContainer.prototype.tabsPlacement
 	 * @defaultvalue "Top"
@@ -320,15 +299,6 @@ class TabContainer extends UI5Element {
 	 */
 	@property({ type: TabContainerTabsPlacement, defaultValue: TabContainerTabsPlacement.Top })
 	tabsPlacement!: `${TabContainerTabsPlacement}`;
-
-	/**
-	 * Defines the current media query size.
-	 *
-	 * @type {string}
-	 * @private
-	 */
-	@property()
-	mediaRange!: string;
 
 	@property({ type: Object })
 	_selectedTab!: Tab;
@@ -478,18 +448,14 @@ class TabContainer extends UI5Element {
 			this.responsivePopover.close();
 		}
 
+		// invalidate
 		this._width = this.offsetWidth;
-		this._updateMediaRange(this._width);
-	}
-
-	_updateMediaRange(width: number) {
-		this.mediaRange = MediaRange.getCurrentRange(MediaRange.RANGESETS.RANGE_4STEPS, width);
 	}
 
 	_setItemsPrivateProperties(items: Array<ITab>) {
 		// set real dom ref to all items, then return only the tabs for further processing
 		const allTabs = items.filter(item => {
-			item._getElementInStrip = () => this.getDomRef()!.querySelector(`*[data-ui5-stable=${item.stableDomRef}]`);
+			item._getElementInStrip = () => this.getDomRef()!.querySelector(`[id="${item._id}"]`);
 			return !item.isSeparator;
 		});
 
@@ -554,7 +520,7 @@ class TabContainer extends UI5Element {
 		let tabInstance = (button as TabContainerExpandButton).tab;
 
 		if (tabInstance) {
-			tabInstance.focus({ focusVisible: true } as FocusOptions);
+			tabInstance.focus();
 		}
 
 		if (e.type === "keydown" && !(e.target as Tab)._realTab.isSingleClickArea) {
@@ -647,7 +613,7 @@ class TabContainer extends UI5Element {
 		}
 	}
 
-	async _onOverflowListItemClick(e: CustomEvent<ClickEventDetail>) {
+	async _onOverflowListItemClick(e: CustomEvent<ListItemClickEventDetail>) {
 		e.preventDefault(); // cancel the item selection
 
 		this._onItemSelect(e.detail.item.id.slice(0, -3)); // strip "-li" from end of id
@@ -656,7 +622,7 @@ class TabContainer extends UI5Element {
 		await renderFinished();
 
 		const selectedTopLevel = this._getRootTab(this._selectedTab);
-		selectedTopLevel.getTabInStripDomRef()!.focus({ focusVisible: true } as FocusOptions);
+		selectedTopLevel.getTabInStripDomRef()!.focus();
 	}
 
 	/**
@@ -833,8 +799,8 @@ class TabContainer extends UI5Element {
 			}
 
 			tab._style = {
-				"--_ui5-tab-indentation-level": level,
-				"--_ui5-tab-extra-indent": extraIndent ? 1 : null,
+				[getScopedVarName("--_ui5-tab-indentation-level")]: level,
+				[getScopedVarName("--_ui5-tab-extra-indent")]: extraIndent ? 1 : null,
 			};
 		});
 	}

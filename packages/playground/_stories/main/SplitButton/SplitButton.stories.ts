@@ -16,7 +16,7 @@ const component = "ui5-split-button";
 
 export default {
 	title: "Main/SplitButton",
-	component,
+	component: "SplitButton",
 	parameters: {
 		docs: {
 			page: DocsPage({ ...componentInfo, component })
@@ -38,30 +38,35 @@ const Template: UI5StoryArgs<SplitButton, StoryArgsSlots> = (args) => html`<ui5-
 export const Basic = Template.bind({});
 Basic.args = {
 	default: "Default",
+	accessibleName: "Split Button with Accessible Name",
 };
 
-export const Disabled = Template.bind({});
-Disabled.storyName = "Disabled SplitButton";
-Disabled.args = {
-	default: "Disabled",
-	disabled: true,
+export const OpeningMenu = Template.bind(this);
+OpeningMenu.args = {
+	default: "Open Menu",
 };
+OpeningMenu.decorators = [
+	(story) => {
+		return html`
+		<ui5-menu id="menuInSplitBtnDefaultAction">
+			<ui5-menu-item text="Edit" icon="add"></ui5-menu-item>
+			<ui5-menu-item text="Save" icon="save"></ui5-menu-item>
+			<ui5-menu-item text="Delete" icon="delete"></ui5-menu-item>
+		</ui5-menu>
+	${story()}
+	<script>
+		var splitBtnWithMenuDefaultAction = document.querySelector("ui5-split-button");
+		var menuInSplitBtn = document.getElementById("menuInSplitBtnDefaultAction");
+		splitBtnWithMenuDefaultAction.addEventListener("ui5-arrow-click", function () {
+			menuInSplitBtn.open ? menuInSplitBtn.close() : menuInSplitBtn.showAt(splitBtnWithMenuDefaultAction);
+		});
+	</script>`;}
+];
 
-export const Design = Template.bind({});
-Design.args = {
-	default: "Attention",
-	design: ButtonDesign.Attention,
-};
-
-export const WithIcon = Template.bind({});
-WithIcon.args = {
-	default: "Icon",
-	icon: "add",
-};
-
-export const WithActiveIcon = Template.bind({});
-WithActiveIcon.args = {
-	default: "Press Me",
-	icon: "add",
-	activeIcon: "accept",
-};
+export const DifferentDesigns: StoryFn = () => html`
+	<ui5-split-button design="${ButtonDesign.Emphasized}"> Emphasized </ui5-split-button>
+	<ui5-split-button design="${ButtonDesign.Attention}"> Attention </ui5-split-button>
+	<ui5-split-button design="${ButtonDesign.Positive}"> Positive </ui5-split-button>
+	<ui5-split-button design="${ButtonDesign.Negative}"> Negative </ui5-split-button>
+	<ui5-split-button design="${ButtonDesign.Transparent}"> Transparent </ui5-split-button>
+`;

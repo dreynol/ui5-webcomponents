@@ -3,6 +3,304 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.19.1](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0...v1.19.1) (2023-11-17)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.19.0](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.3...v1.19.0) (2023-11-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.19.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.2...v1.19.0-rc.3) (2023-11-02)
+
+
+### Bug Fixes
+
+* **ui5-view-settings-dialog:** improve settings management ([#7769](https://github.com/SAP/ui5-webcomponents/issues/7769)) ([33cdb86](https://github.com/SAP/ui5-webcomponents/commit/33cdb86b34a3cb6e1b849a186a8c8c1652eb5bca)), closes [#7752](https://github.com/SAP/ui5-webcomponents/issues/7752)
+
+
+
+
+
+# [1.19.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.1...v1.19.0-rc.2) (2023-10-26)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.19.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.19.0-rc.0...v1.19.0-rc.1) (2023-10-19)
+
+
+### Bug Fixes
+
+* **ui5-flexible-column-layout:** wrong focus fixed ([#7586](https://github.com/SAP/ui5-webcomponents/issues/7586)) ([721cc0b](https://github.com/SAP/ui5-webcomponents/commit/721cc0b312fb76142dea97712b21343b7b93337e))
+
+
+
+
+
+# [1.19.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.1-rc.0...v1.19.0-rc.0) (2023-10-12)
+
+
+### Bug Fixes
+
+* **ui5-page:** adjust Horizon themes ([#7685](https://github.com/SAP/ui5-webcomponents/issues/7685)) ([39ccfe6](https://github.com/SAP/ui5-webcomponents/commit/39ccfe63d07b74bb50eb46a419de34fa1461bc6c))
+* **ui5-shellbar:** apply correct height to horizon high contrast themes ([#7655](https://github.com/SAP/ui5-webcomponents/issues/7655)) ([b72f012](https://github.com/SAP/ui5-webcomponents/commit/b72f0124f9b3ebe74cceeaaaf69abd6711ced0e5))
+* **ui5-shellbar:** horizon theme update ([#7623](https://github.com/SAP/ui5-webcomponents/issues/7623)) ([ff04434](https://github.com/SAP/ui5-webcomponents/commit/ff04434c9c00b29367faff22d187edb55186eccd))
+* **ui5-shellbar:** often failing unit test ([#7677](https://github.com/SAP/ui5-webcomponents/issues/7677)) ([a14d57c](https://github.com/SAP/ui5-webcomponents/commit/a14d57c2c25c714983ee3cb0899c8ec72a677b55)), closes [#7673](https://github.com/SAP/ui5-webcomponents/issues/7673)
+
+
+### Features
+
+* **ui5-illustrated-message:** enable vertical responsiveness ([#7672](https://github.com/SAP/ui5-webcomponents/issues/7672)) ([45244aa](https://github.com/SAP/ui5-webcomponents/commit/45244aacdc4fa846175d8a097ae242256e32a5b4)), closes [#6492](https://github.com/SAP/ui5-webcomponents/issues/6492)
+
+
+
+
+
+## [1.18.1-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0...v1.18.1-rc.0) (2023-10-05)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.18.0](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.2...v1.18.0) (2023-10-02)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.18.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.1...v1.18.0-rc.2) (2023-09-28)
+
+
+### Bug Fixes
+
+* **ui5-media-gallery:** added new horizon theme parameters ([#7575](https://github.com/SAP/ui5-webcomponents/issues/7575)) ([25dbb4b](https://github.com/SAP/ui5-webcomponents/commit/25dbb4bd79890143021b9ecd3033665ea82cd6fa))
+
+
+
+
+
+# [1.18.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.18.0-rc.0...v1.18.0-rc.1) (2023-09-21)
+
+
+### Bug Fixes
+
+* **ui5-dialog:** fix background and shadow of slotted ui5-bar ([#7421](https://github.com/SAP/ui5-webcomponents/issues/7421)) ([2746460](https://github.com/SAP/ui5-webcomponents/commit/2746460ebd0d6517e8eedadde30b74e424c17a85)), closes [#7418](https://github.com/SAP/ui5-webcomponents/issues/7418)
+* **ui5-upload-collection-item:** align thumbnail to top ([#7582](https://github.com/SAP/ui5-webcomponents/issues/7582)) ([edeab49](https://github.com/SAP/ui5-webcomponents/commit/edeab49e3f7b63b3aee358983ea1fb9ff586ea3c)), closes [#7551](https://github.com/SAP/ui5-webcomponents/issues/7551)
+* **ui5-upload-collеction:** align buttons to avoid extra space when size is small ([#7491](https://github.com/SAP/ui5-webcomponents/issues/7491)) ([6594cd5](https://github.com/SAP/ui5-webcomponents/commit/6594cd5df91f31f31efc740846670df4a1c1933d))
+
+
+
+
+
+# [1.18.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0...v1.18.0-rc.0) (2023-09-07)
+
+
+### Bug Fixes
+
+* **ui5-shellbar:** align notification counter ([#7490](https://github.com/SAP/ui5-webcomponents/issues/7490)) ([f8975a6](https://github.com/SAP/ui5-webcomponents/commit/f8975a67f81b62d90db1e508a85c3c894e995e95)), closes [#7208](https://github.com/SAP/ui5-webcomponents/issues/7208)
+
+
+
+
+
+# [1.17.0](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.2...v1.17.0) (2023-09-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.17.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.1...v1.17.0-rc.2) (2023-08-24)
+
+
+### Bug Fixes
+
+* **ui5-page:** enhance storybook samples ([#7448](https://github.com/SAP/ui5-webcomponents/issues/7448)) ([d0b8b01](https://github.com/SAP/ui5-webcomponents/commit/d0b8b01c053853915646b077860a247400cff691))
+
+
+
+
+
+# [1.17.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.17.0-rc.0...v1.17.0-rc.1) (2023-08-17)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.17.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0...v1.17.0-rc.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* **ui5-illustrated-message:** support collection based illustration loading ([#7318](https://github.com/SAP/ui5-webcomponents/issues/7318)) ([6b52dbd](https://github.com/SAP/ui5-webcomponents/commit/6b52dbd157a3c8198e41c84157e3d9ae89e3386e))
+* **ui5-shellbar:** button focus outline adjustment ([#7389](https://github.com/SAP/ui5-webcomponents/issues/7389)) ([3b7c711](https://github.com/SAP/ui5-webcomponents/commit/3b7c711875303be0bb995c80545a9786b2ec511c)), closes [#7220](https://github.com/SAP/ui5-webcomponents/issues/7220)
+* **ui5-side-navigation:** allow overstyling of border-radius ([#7400](https://github.com/SAP/ui5-webcomponents/issues/7400)) ([16ca431](https://github.com/SAP/ui5-webcomponents/commit/16ca43197ee7e9d522c813933c660b7dfe2a6ea3)), closes [#7308](https://github.com/SAP/ui5-webcomponents/issues/7308)
+
+
+
+
+
+# [1.16.0](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.4...v1.16.0) (2023-08-03)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.16.0-rc.4](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.3...v1.16.0-rc.4) (2023-08-03)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.16.0-rc.3](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.2...v1.16.0-rc.3) (2023-07-27)
+
+
+### Bug Fixes
+
+* **ui5-upload-collection:** correct visualization of "mode" property ([#7252](https://github.com/SAP/ui5-webcomponents/issues/7252)) ([9ca02dd](https://github.com/SAP/ui5-webcomponents/commit/9ca02ddae31ca45dfc734906e1f0da2413ceac40)), closes [#7111](https://github.com/SAP/ui5-webcomponents/issues/7111)
+
+
+
+
+
+# [1.16.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.1...v1.16.0-rc.2) (2023-07-20)
+
+
+### Features
+
+* **ui5-wizard:** progress navigator title and optional text truncation ([#7263](https://github.com/SAP/ui5-webcomponents/issues/7263)) ([74077d1](https://github.com/SAP/ui5-webcomponents/commit/74077d1f16cb01347b01d1d55ef333789f5601f0))
+
+
+
+
+
+# [1.16.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.16.0-rc.0...v1.16.0-rc.1) (2023-07-13)
+
+
+### Bug Fixes
+
+* **ui5-shellbar:** primary and secondary titles alignment ([#7215](https://github.com/SAP/ui5-webcomponents/issues/7215)) ([9c32e30](https://github.com/SAP/ui5-webcomponents/commit/9c32e308ed5397ce40fd6ffa7c9b0e23573be75b)), closes [#7153](https://github.com/SAP/ui5-webcomponents/issues/7153) [#7107](https://github.com/SAP/ui5-webcomponents/issues/7107)
+
+
+
+
+
+# [1.16.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.1...v1.16.0-rc.0) (2023-07-06)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.15.0](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.2...v1.15.0) (2023-06-30)
+
+
+### Bug Fixes
+
+* **ui5-shellbar:** align notification counter badge ([#7208](https://github.com/SAP/ui5-webcomponents/issues/7208)) ([1ee67f5](https://github.com/SAP/ui5-webcomponents/commit/1ee67f570ac722983859690fb602c5b62498d6d5))
+* **ui5-shellbar:** overflow action text translated ([#7218](https://github.com/SAP/ui5-webcomponents/issues/7218)) ([31af59c](https://github.com/SAP/ui5-webcomponents/commit/31af59c6667149798f619cce5eba9d456c29f452))
+* **ui5-shellbar:** tweaked breakpoint size "S" responsive padding ([#7219](https://github.com/SAP/ui5-webcomponents/issues/7219)) ([af597d1](https://github.com/SAP/ui5-webcomponents/commit/af597d1bc9d3a8e1bd6e79a39eebd84e57416c70))
+* **ui5-view-settings-dialog:** fix footer buttons position ([#7270](https://github.com/SAP/ui5-webcomponents/issues/7270)) ([e569e6b](https://github.com/SAP/ui5-webcomponents/commit/e569e6b424cc186e22c5972c45d6f11c081505d5))
+
+
+
+
+
+# [1.15.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.1...v1.15.0-rc.2) (2023-06-22)
+
+
+### Bug Fixes
+
+* **ui5-page, ui5-wizard:** apply scrollbar styling ([#7224](https://github.com/SAP/ui5-webcomponents/issues/7224)) ([09eb5be](https://github.com/SAP/ui5-webcomponents/commit/09eb5beec006eeb9787740014cefa0335e8603c9))
+* **ui5-wizard:** prevent throwing exception in the console ([#7204](https://github.com/SAP/ui5-webcomponents/issues/7204)) ([c684135](https://github.com/SAP/ui5-webcomponents/commit/c684135fd64b453a639b0ce29593f03ae02ceac6))
+
+
+### Features
+
+* **ui5-side-navigation:** update Horizon theme design ([#7186](https://github.com/SAP/ui5-webcomponents/issues/7186)) ([819d153](https://github.com/SAP/ui5-webcomponents/commit/819d153ba5d82c0e48a642d2ee21ccc0fb61e253)), closes [#7160](https://github.com/SAP/ui5-webcomponents/issues/7160)
+
+
+
+
+
+# [1.15.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.15.0-rc.0...v1.15.0-rc.1) (2023-06-15)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+
+
+
+
+# [1.15.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0...v1.15.0-rc.0) (2023-06-08)
+
+
+### Bug Fixes
+
+* **ui5-bar:** apply correct box-shadow parameter ([#7150](https://github.com/SAP/ui5-webcomponents/issues/7150)) ([5f9ba23](https://github.com/SAP/ui5-webcomponents/commit/5f9ba23d9c28b2860c43e4396575609f6f6ff1e8))
+* **ui5-bar:** correct padding values in dialog ([#7046](https://github.com/SAP/ui5-webcomponents/issues/7046)) ([b20c946](https://github.com/SAP/ui5-webcomponents/commit/b20c946a00a91cc25eb709f839ccaa12998bf58e))
+* **ui5-illustrated-message:** text update in Survey ([#7146](https://github.com/SAP/ui5-webcomponents/issues/7146)) ([a4299ce](https://github.com/SAP/ui5-webcomponents/commit/a4299ce1249a547c89a2335325422944974455cd))
+* **ui5-shellbar:** improve RTL styling of searchField ([#7089](https://github.com/SAP/ui5-webcomponents/issues/7089)) ([9373abf](https://github.com/SAP/ui5-webcomponents/commit/9373abfd0114650069855419f1caeb2fc5462114)), closes [#7065](https://github.com/SAP/ui5-webcomponents/issues/7065)
+* **ui5-upload-collection:** item-delete event and delete mode docs are now updated ([#7106](https://github.com/SAP/ui5-webcomponents/issues/7106)) ([b12bccb](https://github.com/SAP/ui5-webcomponents/commit/b12bccb72bdcc63a966bbb54b0d044436e01cb50))
+
+
+
+
+
+# [1.14.0](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.2...v1.14.0) (2023-06-01)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
+# [1.14.0-rc.2](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.1...v1.14.0-rc.2) (2023-06-01)
+
+
+### Features
+
+* **ui5-wizard:** introduce contentLayout property ([#7006](https://github.com/SAP/ui5-webcomponents/issues/7006)) ([66e9c3d](https://github.com/SAP/ui5-webcomponents/commit/66e9c3d83a945ae80e32d8614084b732cabd2bea))
+
+
+
+
+
+# [1.14.0-rc.1](https://github.com/SAP/ui5-webcomponents/compare/v1.14.0-rc.0...v1.14.0-rc.1) (2023-05-25)
+
+**Note:** Version bump only for package @ui5/webcomponents-fiori
+
+
+
+
+
 # [1.14.0-rc.0](https://github.com/SAP/ui5-webcomponents/compare/v1.13.2...v1.14.0-rc.0) (2023-05-18)
 
 

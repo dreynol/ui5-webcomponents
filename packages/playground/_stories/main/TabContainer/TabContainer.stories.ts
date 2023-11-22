@@ -1,7 +1,7 @@
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import type { Meta, StoryFn } from "@storybook/web-components";
+import type { Meta } from "@storybook/web-components";
 import argTypes, { componentInfo } from "./argTypes.js";
 import type { StoryArgsSlots } from "./argTypes.js";
 import type { UI5StoryArgs } from "../../../types.js";
@@ -12,9 +12,9 @@ import TabLayout from "@ui5/webcomponents/dist/types/TabLayout.js";
 const component = "ui5-tabcontainer";
 
 export default {
-	title: "Main/TabContainer",
-	component,
-	subcomponents: { "Tab": "ui5-tab", "TabSeparator": "ui5-tab-separator" },
+	title: "Main/Tab Container",
+	component: "TabContainer",
+	subcomponents: { "Tab": "Tab", "TabSeparator": "TabSeparator" },
 	parameters: {
 		docs: {
 			page: DocsPage({ ...componentInfo, component })
@@ -95,16 +95,6 @@ TextOnlyEndOverflow.args = {
 <ui5-tab text="Tab 21"></ui5-tab>
 <ui5-tab text="Tab 22"></ui5-tab>
 <ui5-tab text="Tab 23"></ui5-tab>`,
-};
-
-export const WithAdditionalText = Template.bind({});
-WithAdditionalText.args = {
-	collapsed: true,
-	fixed: true,
-	default: `<ui5-tab text="Info" additional-text="3"></ui5-tab>
-<ui5-tab text="Attachments" additional-text="24" selected></ui5-tab>
-<ui5-tab text="Notes" additional-text="16"></ui5-tab>
-<ui5-tab text="People" additional-text="34"></ui5-tab>`,
 };
 
 export const InlineTabLayout = Template.bind({});

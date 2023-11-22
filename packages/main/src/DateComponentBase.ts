@@ -5,7 +5,7 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import { fetchCldr } from "@ui5/webcomponents-base/dist/asset-registries/LocaleData.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import { getCalendarType } from "@ui5/webcomponents-base/dist/config/CalendarType.js";
+import { getCalendarType, getSecondaryCalendarType } from "@ui5/webcomponents-base/dist/config/CalendarType.js";
 import DateFormat from "@ui5/webcomponents-localization/dist/DateFormat.js";
 import getCachedLocaleDataInstance from "@ui5/webcomponents-localization/dist/getCachedLocaleDataInstance.js";
 import CalendarType from "@ui5/webcomponents-base/dist/types/CalendarType.js";
@@ -114,6 +114,10 @@ class DateComponentBase extends UI5Element {
 		return this.primaryCalendarType || getCalendarType() || localeData.getPreferredCalendarType();
 	}
 
+	get _secondaryCalendarType() {
+		return this.secondaryCalendarType || getSecondaryCalendarType();
+	}
+
 	get _minDate() {
 		let minDate;
 
@@ -140,6 +144,10 @@ class DateComponentBase extends UI5Element {
 
 	get _isPattern() {
 		return this._formatPattern !== "medium" && this._formatPattern !== "short" && this._formatPattern !== "long";
+	}
+
+	get hasSecondaryCalendarType() {
+		return !!this.secondaryCalendarType && this.secondaryCalendarType !== this.primaryCalendarType;
 	}
 
 	_getMinMaxCalendarDateFromString(date: string) {

@@ -1,3 +1,5 @@
+const dns = require("node:dns");
+
 exports.config = {
 	//
 	// ====================
@@ -107,8 +109,7 @@ exports.config = {
 	// Services take over a specific job you don't want to take care of. They enhance
 	// your test setup with almost no effort. Unlike plugins, they don't add new
 	// commands. Instead, they hook themselves up into the test process.
-	services: ['chromedriver', 'devtools',
-		['static-server', {
+	services: ['chromedriver', ['static-server', {
 			folders: [
 				{ mount: '/', path: './dist' },
 			],
@@ -161,6 +162,9 @@ exports.config = {
 	 */
 	// beforeSession: function (config, capabilities, specs) {
 	// },
+	beforeSession: () => {
+        dns.setDefaultResultOrder('ipv4first');
+    },
 	/**
 	 * Gets executed before test execution begins. At this point you can access to all global
 	 * variables like `browser`. It is the perfect place to define custom commands.

@@ -26,6 +26,7 @@ import AvatarColorScheme from "./types/AvatarColorScheme.js";
 
 // Icon
 import "@ui5/webcomponents-icons/dist/employee.js";
+import "@ui5/webcomponents-icons/dist/alert.js";
 
 /**
  * @class
@@ -70,7 +71,8 @@ import "@ui5/webcomponents-icons/dist/employee.js";
 })
 /**
 * Fired on mouseup, space and enter if avatar is interactive
-*
+* <b>Note:</b> The event will not be fired if the <code>disabled</code>
+* property is set to <code>true</code>.
 * @event
 * @private
 * @since 1.0.0-rc.11
@@ -78,7 +80,22 @@ import "@ui5/webcomponents-icons/dist/employee.js";
 @event("click")
 class Avatar extends UI5Element implements ITabbable {
 	/**
+	 * Defines whether the component is disabled.
+	 * A disabled component can't be pressed or
+	 * focused, and it is not in the tab chain.
+	 *
+	 * @type {boolean}
+	 * @name sap.ui.webc.main.Avatar.prototype.disabled
+	 * @defaultvalue false
+	 * @public
+	 */
+	@property({ type: Boolean })
+	disabled!: boolean;
+
+	/**
 	 * Defines if the avatar is interactive (focusable and pressable).
+	 * <b>Note:</b> This property won't have effect if the <code>disabled</code>
+	 * property is set to <code>true</code>.
 	 * @type {boolean}
 	 * @name sap.ui.webc.main.Avatar.prototype.interactive
 	 * @defaultValue false
@@ -93,6 +110,13 @@ class Avatar extends UI5Element implements ITabbable {
 	 */
 	@property({ type: Boolean })
 	focused!: boolean;
+
+	/**
+	 * Indicates if the elements is pressed
+	 * @private
+	 */
+	@property({ type: Boolean })
+	pressed!: boolean;
 
 	/**
 	 * Defines the name of the UI5 Icon, that will be displayed.
@@ -117,6 +141,33 @@ class Avatar extends UI5Element implements ITabbable {
 	icon!: string;
 
 	/**
+	 * Defines the name of the fallback icon, which should be displayed in the following cases:
+	 * <ul>
+	 * 	<li>If the initials are not valid (more than 3 letters, unsupported languages or empty initials).</li>
+	 * 	<li>If there are three initials and they do not fit in the shape (e.g. WWW for some of the sizes).</li>
+	 * 	<li>If the image src is wrong.</li>
+	 * </ul>
+	 *
+	 * <br>
+	 * <b>Note:</b> If not set, a default fallback icon "employee" is displayed.
+	 * <br>
+	 * <b>Note:</b> You should import the desired icon first, then use its name as "fallback-icon".
+	 * <br><br>
+	 * import "@ui5/webcomponents-icons/dist/{icon_name}.js"
+	 * <br>
+	 * <pre>&lt;ui5-avatar fallback-icon="alert"></pre>
+	 * <br>
+	 *
+	 * See all the available icons in the <ui5-link target="_blank" href="https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html">Icon Explorer</ui5-link>.
+	 * @type {string}
+	 * @name sap.ui.webc.main.Avatar.prototype.fallbackIcon
+	 * @defaultvalue ""
+	 * @public
+	 */
+	@property()
+	fallbackIcon!: string;
+
+	/**
 	 * Defines the displayed initials.
 	 * <br>
 	 * Up to three Latin letters can be displayed as initials.
@@ -131,12 +182,7 @@ class Avatar extends UI5Element implements ITabbable {
 
 	/**
 	 * Defines the shape of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Circle</code></li>
-	 * <li><code>Square</code></li>
-	 * </ul>
+	 *
 	 * @type {sap.ui.webc.main.types.AvatarShape}
 	 * @name sap.ui.webc.main.Avatar.prototype.shape
 	 * @defaultvalue "Circle"
@@ -147,15 +193,7 @@ class Avatar extends UI5Element implements ITabbable {
 
 	/**
 	 * Defines predefined size of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>XS</code></li>
-	 * <li><code>S</code></li>
-	 * <li><code>M</code></li>
-	 * <li><code>L</code></li>
-	 * <li><code>XL</code></li>
-	 * </ul>
+	 *
 	 * @type {sap.ui.webc.main.types.AvatarSize}
 	 * @name sap.ui.webc.main.Avatar.prototype.size
 	 * @defaultvalue "S"
@@ -172,21 +210,7 @@ class Avatar extends UI5Element implements ITabbable {
 
 	/**
 	 * Defines the background color of the desired image.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>Accent1</code></li>
-	 * <li><code>Accent2</code></li>
-	 * <li><code>Accent3</code></li>
-	 * <li><code>Accent4</code></li>
-	 * <li><code>Accent5</code></li>
-	 * <li><code>Accent6</code></li>
-	 * <li><code>Accent7</code></li>
-	 * <li><code>Accent8</code></li>
-	 * <li><code>Accent9</code></li>
-	 * <li><code>Accent10</code></li>
-	 * <li><code>Placeholder</code></li>
-	 * </ul>
+	 *
 	 * @type {sap.ui.webc.main.types.AvatarColorScheme}
 	 * @name sap.ui.webc.main.Avatar.prototype.colorScheme
 	 * @defaultvalue "Accent6"
@@ -292,7 +316,7 @@ class Avatar extends UI5Element implements ITabbable {
 	}
 
 	get tabindex() {
-		return this._tabIndex || (this.interactive ? "0" : "-1");
+		return this._tabIndex || (this._interactive ? "0" : "-1");
 	}
 
 	/**
@@ -320,11 +344,23 @@ class Avatar extends UI5Element implements ITabbable {
 	}
 
 	get _role() {
-		return this.interactive ? "button" : undefined;
+		return this._interactive ? "button" : "img";
 	}
 
 	get _ariaHasPopup() {
 		return this._getAriaHasPopup();
+	}
+
+	get _fallbackIcon() {
+		if (this.fallbackIcon === "") {
+			this.fallbackIcon = "employee";
+		}
+
+		return this.fallbackIcon;
+	}
+
+	get _interactive() {
+		return this.interactive && !this.disabled;
 	}
 
 	get validInitials() {
@@ -357,7 +393,7 @@ class Avatar extends UI5Element implements ITabbable {
 	 }
 
 	onBeforeRendering() {
-		this._onclick = this.interactive ? this._onClickHandler.bind(this) : undefined;
+		this._onclick = this._interactive ? this._onClickHandler.bind(this) : undefined;
 	}
 
 	async onAfterRendering() {
@@ -403,16 +439,16 @@ class Avatar extends UI5Element implements ITabbable {
 	_onClickHandler(e: MouseEvent) {
 		// prevent the native event and fire custom event to ensure the noConfict "ui5-click" is fired
 		e.stopPropagation();
-		this.fireEvent("click");
+		this._fireClick();
 	}
 
 	_onkeydown(e: KeyboardEvent) {
-		if (!this.interactive) {
+		if (!this._interactive) {
 			return;
 		}
 
 		if (isEnter(e)) {
-			this.fireEvent("click");
+			this._fireClick();
 		}
 
 		if (isSpace(e)) {
@@ -421,9 +457,14 @@ class Avatar extends UI5Element implements ITabbable {
 	}
 
 	_onkeyup(e: KeyboardEvent) {
-		if (this.interactive && !e.shiftKey && isSpace(e)) {
-			this.fireEvent("click");
+		if (this._interactive && !e.shiftKey && isSpace(e)) {
+			this._fireClick();
 		}
+	}
+
+	_fireClick() {
+		this.fireEvent("click");
+		this.pressed = !this.pressed;
 	}
 
 	_onfocusout() {
@@ -431,13 +472,13 @@ class Avatar extends UI5Element implements ITabbable {
 	}
 
 	_onfocusin() {
-		if (this.interactive) {
+		if (this._interactive) {
 			this.focused = true;
 		}
 	}
 
 	_getAriaHasPopup() {
-		if (!this.interactive || this.ariaHaspopup === "") {
+		if (!this._interactive || this.ariaHaspopup === "") {
 			return;
 		}
 

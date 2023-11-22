@@ -1,5 +1,6 @@
 ![UI5 icon](https://raw.githubusercontent.com/SAP/ui5-webcomponents/main/docs/images/UI5_logo_wide.png)
 
+
 # UI5 Web Components - Create Package
 
 [![npm Package Version](https://badge.fury.io/js/%40ui5%2Fwebcomponents.svg)](https://www.npmjs.com/package/@ui5/webcomponents)
@@ -18,8 +19,8 @@ Usage:
 
 Options:
     --name <string>     - defines the package name
-    --componentName <string>      - defines the component class name that will be created in your new package
-    --tag <string>      - defines the tag name of the sample web component that will be created in your new package. The tag will be derived from the component name if not provided. 
+    --component-name <string>      - defines the component class name that will be created in your new package
+    --tag <string>      - defines the tag name of the sample web component that will be created in your new package. The tag will be derived from the component name if not provided.
     --enable-typescript - enables TypeScript support for the package
     --skip              - skips configuration and generates package with a default value for each parameter that wasn't passed
 ```
@@ -34,6 +35,7 @@ Usage:
     yarn create @ui5/webcomponents-package [OPTIONS]
 Options:
     --name <string>     - defines the package name
+    --component-name <string>      - defines the component class name that will be created in your new package
     --tag <string>      - defines the tag name of the sample web component that will be created in your new package
     --enable-typescript - enables TypeScript support for the package
     --skip              - skips configuration and generates package with a default value for each parameter that wasn't passed

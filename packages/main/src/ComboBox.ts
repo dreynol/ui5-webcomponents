@@ -10,6 +10,7 @@ import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import InvisibleMessageMode from "@ui5/webcomponents-base/dist/types/InvisibleMessageMode.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import announce from "@ui5/webcomponents-base/dist/util/InvisibleMessage.js";
+import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import "@ui5/webcomponents-icons/dist/not-editable.js";
@@ -68,7 +69,7 @@ import Icon from "./Icon.js";
 import Popover from "./Popover.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import List from "./List.js";
-import type { ClickEventDetail } from "./List.js";
+import type { ListItemClickEventDetail } from "./List.js";
 import BusyIndicator from "./BusyIndicator.js";
 import Button from "./Button.js";
 import StandardListItem from "./StandardListItem.js";
@@ -226,6 +227,18 @@ class ComboBox extends UI5Element {
 	value!: string;
 
 	/**
+	 * Defines whether the value will be autocompleted to match an item
+	 *
+	 * @type {boolean}
+	 * @name sap.ui.webc.main.ComboBox.prototype.noTypeahead
+	 * @defaultvalue false
+	 * @public
+	 * @since 1.19.0
+	 */
+	@property({ type: Boolean })
+	noTypeahead!: boolean;
+
+	/**
 	 * Defines the "live" value of the component.
 	 * <br><br>
 	 * <b>Note:</b> If we have an item e.g. "Bulgaria", "B" is typed, "ulgaria" is typed ahead, value will be "Bulgaria", filterValue will be "B".
@@ -266,15 +279,6 @@ class ComboBox extends UI5Element {
 
 	/**
 	 * Defines the value state of the component.
-	 * <br><br>
-	 * Available options are:
-	 * <ul>
-	 * <li><code>None</code></li>
-	 * <li><code>Error</code></li>
-	 * <li><code>Warning</code></li>
-	 * <li><code>Success</code></li>
-	 * <li><code>Information</code></li>
-	 * </ul>
 	 *
 	 * @type {sap.ui.webc.base.types.ValueState}
 	 * @name sap.ui.webc.main.ComboBox.prototype.valueState
@@ -322,7 +326,6 @@ class ComboBox extends UI5Element {
 
 	/**
 	 * Defines the filter type of the component.
-	 * Available options are: <code>StartsWithPerTerm</code>, <code>StartsWith</code>, <code>Contains</code> and <code>None</code>.
 	 *
 	 * @type {sap.ui.webc.main.types.ComboBoxFilter}
 	 * @name sap.ui.webc.main.ComboBox.prototype.filter
@@ -351,7 +354,7 @@ class ComboBox extends UI5Element {
 	 *
 	 * @type {string}
 	 * @name sap.ui.webc.main.ComboBox.prototype.accessibleName
-	 * @defaultvalue: ""
+	 * @defaultvalue ""
 	 * @public
 	 * @since 1.0.0-rc.15
 	 */
@@ -464,7 +467,7 @@ class ComboBox extends UI5Element {
 
 		const slottedIconsCount = this.icon.length || 0;
 		const arrowDownIconsCount = this.readonly ? 0 : 1;
-		this.style.setProperty("--_ui5-input-icons-count", `${slottedIconsCount + arrowDownIconsCount}`);
+		this.style.setProperty(getScopedVarName("--_ui5-input-icons-count"), `${slottedIconsCount + arrowDownIconsCount}`);
 	}
 
 	async onAfterRendering() {
@@ -665,7 +668,7 @@ class ComboBox extends UI5Element {
 			"historyUndo",
 		];
 
-		return !allowedEventTypes.includes(eventType);
+		return !this.noTypeahead && !allowedEventTypes.includes(eventType);
 	}
 
 	_startsWithMatchingItems(str: string): Array<IComboBoxItem> {
@@ -766,6 +769,7 @@ class ComboBox extends UI5Element {
 
 		if (this.focused && indexOfItem === -1 && this.hasValueStateText && isOpen) {
 			this._isValueStateFocused = true;
+			this._announceValueStateText();
 			this.focused = false;
 			return;
 		}
@@ -789,6 +793,7 @@ class ComboBox extends UI5Element {
 			this._clearFocus();
 			this._itemFocused = false;
 			this._isValueStateFocused = true;
+			this._announceValueStateText();
 			this._filteredItems[0].selected = false;
 			return;
 		}
@@ -812,6 +817,7 @@ class ComboBox extends UI5Element {
 			this._clearFocus();
 			this._itemFocused = false;
 			this._isValueStateFocused = true;
+			this._announceValueStateText();
 			return;
 		}
 
@@ -835,6 +841,7 @@ class ComboBox extends UI5Element {
 			this._clearFocus();
 			this._itemFocused = false;
 			this._isValueStateFocused = true;
+			this._announceValueStateText();
 			return;
 		}
 
@@ -992,8 +999,12 @@ class ComboBox extends UI5Element {
 		const currentlyFocusedItem = this.items.find(item => item.focused);
 		const shouldSelectionBeCleared = currentlyFocusedItem && currentlyFocusedItem.isGroupItem;
 
+		const itemToBeSelected = this._filteredItems.find(item => {
+			return !item.isGroupItem && (item.text === this.value) && !shouldSelectionBeCleared;
+		});
+
 		this._filteredItems = this._filteredItems.map(item => {
-			item.selected = !item.isGroupItem && (item.text === this.value) && !shouldSelectionBeCleared;
+			item.selected = item === itemToBeSelected;
 			return item;
 		});
 	}
@@ -1013,7 +1024,7 @@ class ComboBox extends UI5Element {
 		e.preventDefault();
 	}
 
-	_selectItem(e: CustomEvent<ClickEventDetail>) {
+	_selectItem(e: CustomEvent<ListItemClickEventDetail>) {
 		const listItem = e.detail.item as ComboBoxListItem;
 
 		this._selectedItemText = listItem.mappedItem.text;
@@ -1053,15 +1064,24 @@ class ComboBox extends UI5Element {
 
 	_announceSelectedItem(indexOfItem: number) {
 		const currentItem = this._filteredItems[indexOfItem];
+		const nonGroupItems = this._filteredItems.filter(item => !item.isGroupItem);
 		const currentItemAdditionalText = currentItem.additionalText || "";
 		const isGroupItem = currentItem?.isGroupItem;
-		const itemPositionText = ComboBox.i18nBundle.getText(LIST_ITEM_POSITION, indexOfItem + 1, this._filteredItems.length);
+		const itemPositionText = ComboBox.i18nBundle.getText(LIST_ITEM_POSITION, nonGroupItems.indexOf(currentItem) + 1, nonGroupItems.length);
 		const groupHeaderText = ComboBox.i18nBundle.getText(LIST_ITEM_GROUP_HEADER);
 
 		if (isGroupItem) {
-			announce(`${groupHeaderText} ${currentItem.text} ${itemPositionText}`, InvisibleMessageMode.Polite);
+			announce(`${groupHeaderText} ${currentItem.text}`, InvisibleMessageMode.Polite);
 		} else {
 			announce(`${currentItemAdditionalText} ${itemPositionText}`.trim(), InvisibleMessageMode.Polite);
+		}
+	}
+
+	_announceValueStateText() {
+		const valueStateText = this.shouldDisplayDefaultValueStateMessage ? this.valueStateDefaultText : this.valueStateMessageText.map(el => el.textContent).join(" ");
+
+		if (valueStateText) {
+			announce(valueStateText, InvisibleMessageMode.Polite);
 		}
 	}
 

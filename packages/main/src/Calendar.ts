@@ -1,4 +1,5 @@
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
+import type { ChangeInfo } from "@ui5/webcomponents-base/dist/UI5Element.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
@@ -45,7 +46,7 @@ interface ICalendarPicker {
 	_lastYear?: number,
 }
 
-type CalendarChangeEventDetail = {
+type CalendarSelectedDatesChangeEventDetail = {
 	values: Array<string>,
 	dates: Array<number>,
 	timestamp: number | undefined,
@@ -257,6 +258,8 @@ class Calendar extends CalendarPart {
 	@property({ type: CalendarPickersMode, defaultValue: CalendarPickersMode.DAY_MONTH_YEAR, noAttribute: true })
 	_pickersMode!: CalendarPickersMode;
 
+	_valueIsProcessed!: boolean
+
 	/**
 	 * Defines the selected date or dates (depending on the <code>selectionMode</code> property)
 	 * for this calendar as instances of <code>ui5-date</code>.
@@ -280,6 +283,11 @@ class Calendar extends CalendarPart {
 		}).filter((date): date is number => !!date);
 	}
 
+	constructor() {
+		super();
+
+		this._valueIsProcessed = false;
+	}
 	/**
 	 * @private
 	 */
@@ -315,6 +323,14 @@ class Calendar extends CalendarPart {
 
 	onBeforeRendering() {
 		this._normalizeCurrentPicker();
+
+		if (!this._valueIsProcessed) {
+			if (this._selectedDatesTimestamps) {
+				this.timestamp = this._selectedDatesTimestamps[0];
+			}
+
+			this._valueIsProcessed = true;
+		}
 	}
 
 	async onAfterRendering() {
@@ -337,7 +353,13 @@ class Calendar extends CalendarPart {
 			this._headerYearButtonText = String(yearFormat.format(this._localDate, true));
 		}
 
-		this.secondaryCalendarType && this._setSecondaryCalendarTypeButtonText();
+		this._secondaryCalendarType && this._setSecondaryCalendarTypeButtonText();
+	}
+
+	onInvalidation(changeInfo: ChangeInfo) {
+		if (changeInfo.reason === "childchange") {
+			this._valueIsProcessed = false;
+		}
 	}
 
 	/**
@@ -378,7 +400,7 @@ class Calendar extends CalendarPart {
 	}
 
 	_setSecondaryCalendarTypeButtonText() {
-		const yearFormatSecType = DateFormat.getDateInstance({ format: "y", calendarType: this.secondaryCalendarType });
+		const yearFormatSecType = DateFormat.getDateInstance({ format: "y", calendarType: this._secondaryCalendarType });
 
 		if (this._currentPicker === "year") {
 			const rangeStart = new CalendarDate(this._calendarDate, this._primaryCalendarType);
@@ -386,9 +408,9 @@ class Calendar extends CalendarPart {
 			rangeStart.setYear(this._currentPickerDOM._firstYear!);
 			rangeEnd.setYear(this._currentPickerDOM._lastYear!);
 
-			const rangeStartSecType = transformDateToSecondaryType(this.primaryCalendarType, this.secondaryCalendarType, rangeStart.valueOf() / 1000, true)
+			const rangeStartSecType = transformDateToSecondaryType(this.primaryCalendarType, this._secondaryCalendarType, rangeStart.valueOf() / 1000, true)
 				.firstDate;
-			const rangeEndSecType = transformDateToSecondaryType(this.primaryCalendarType, this.secondaryCalendarType, rangeEnd.valueOf() / 1000, true)
+			const rangeEndSecType = transformDateToSecondaryType(this.primaryCalendarType, this._secondaryCalendarType, rangeEnd.valueOf() / 1000, true)
 				.lastDate;
 			this._headerYearButtonTextSecType = `${yearFormatSecType.format(rangeStartSecType.toLocalJSDate(), true)} - ${yearFormatSecType.format(rangeEndSecType.toLocalJSDate(), true)}`;
 		} else {
@@ -397,14 +419,14 @@ class Calendar extends CalendarPart {
 	}
 
 	get secondaryCalendarTypeButtonText() {
-		if (!this.secondaryCalendarType) {
+		if (!this.hasSecondaryCalendarType) {
 			return;
 		}
 
 		const localDate = new Date(this._timestamp * 1000);
-		const secondYearFormat = DateFormat.getDateInstance({ format: "y", calendarType: this.secondaryCalendarType });
-		const dateInSecType = transformDateToSecondaryType(this._primaryCalendarType, this.secondaryCalendarType, this._timestamp);
-		const secondMonthInfo = convertMonthNumbersToMonthNames(dateInSecType.firstDate.getMonth(), dateInSecType.lastDate.getMonth(), this.secondaryCalendarType);
+		const secondYearFormat = DateFormat.getDateInstance({ format: "y", calendarType: this._secondaryCalendarType });
+		const dateInSecType = transformDateToSecondaryType(this._primaryCalendarType, this._secondaryCalendarType, this._timestamp);
+		const secondMonthInfo = convertMonthNumbersToMonthNames(dateInSecType.firstDate.getMonth(), dateInSecType.lastDate.getMonth(), this._secondaryCalendarType);
 		const secondYearText = secondYearFormat.format(localDate, true);
 
 		return {
@@ -441,7 +463,7 @@ class Calendar extends CalendarPart {
 			return this.getFormat().format(calendarDate.toUTCJSDate(), true);
 		});
 
-		const defaultPrevented = !this.fireEvent<CalendarChangeEventDetail>("selected-dates-change", { timestamp: this.timestamp, dates: [...selectedDates], values: datesValues }, true);
+		const defaultPrevented = !this.fireEvent<CalendarSelectedDatesChangeEventDetail>("selected-dates-change", { timestamp: this.timestamp, dates: [...selectedDates], values: datesValues }, true);
 		if (!defaultPrevented) {
 			this._setSelectedDates(selectedDates);
 		}
@@ -517,5 +539,5 @@ Calendar.define();
 export default Calendar;
 export type {
 	ICalendarPicker,
-	CalendarChangeEventDetail,
+	CalendarSelectedDatesChangeEventDetail,
 };

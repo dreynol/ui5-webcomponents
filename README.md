@@ -20,15 +20,16 @@
  - **Elegant**: being *custom HTML elements*, they hide implementation complexity behind a single HTML tag, making them easily usable with the standard DOM APIs.
 
 ## Where can I see them in action?
-- [Playground and API Reference](https://sap.github.io/ui5-webcomponents/playground/components)
+- [Playground and API Reference](https://sap.github.io/ui5-webcomponents/playground/)
 
 ## More Resources
 - [UI5 Web Components Home Page](https://sap.github.io/ui5-webcomponents)
 - [Configuring UI5 Web Components](./docs/2-advanced/01-configuration.md)
-- [Customizing with `UI Theme Designer`](./docs/3-customizing/01-theme.md)
+- [Customizing with `UI Theme Designer`](./docs/3-customizing/02-theme.md)
 - [Developing Custom UI5 Web Components](./docs/5-development/02-custom-UI5-Web-Components.md)
 - [Creating a Custom UI5 Web Components Package](./docs/5-development/01-custom-UI5-Web-Components-Packages.md)
 - [Micro-Frontends and Custom Elements Scoping](./docs/2-advanced/03-scoping.md)
+- [Release Management](./docs/Release%20Management.md)
 - [F.A.Q.](./docs/FAQ.md)
 
 ## Related Projects
@@ -59,6 +60,11 @@ UI5 remains what it is: the best choice for…
 UI5 Web Components which makes using them in React even more comfortable. The current version of React (`react 18`) has some
 shortcomings when it comes to handling Custom Elements, namely the binding of `boolean` attributes as well as adding event listeners to custom event names like `selection-change`. With the help of UI5 Web Components for React, you can use the UI5 Web Components in React as if they were native React components. In addition to that, this library is also offering TypeScript definitions for all components, some complex layout components built on top of UI5 Web Components as well as Charting Components.
 
+### UI5 Web Components for Angular
+
+[UI5 Web Components for Angular](https://github.com/SAP/ui5-webcomponents-ngx) is a wrapper implementation around
+UI5 Web Components which to make it work with Angular without needing to use the `CUSTOM_ELEMENTS_SCHEMA` or `NO_ERRORS_SCHEMA` schemas.
+Moreover, all Angular-specific features, such as two-way data binding and Angular Form support, work out of the box.
 
 ## How to Use
 
@@ -83,9 +89,8 @@ shortcomings when it comes to handling Custom Elements, namely the binding of `b
 	For more information, see [Importing UI5 Web Components](./docs/1-getting-started/02-importing-components.md) and [Understanding UI5 Web Components APIs](./docs/1-getting-started/03-understanding-components-APIs.md).
 
 ## Typescript Support
-Since 1.11 we are providing Typescript definitions for all public APIs.
-However, the **Typescript support is experimental and subject to change**. If you consume the web components via Typescript, you might have to adjust your code before the Typescript definitions become final and officially supported. 
-Please, share any kind of feedback about the provided types in GitHub.
+TypeScript Support is enabled for both component development and component consumption.
+Since version `1.11.0`, we have been providing TypeScript definitions under an experimental flag, and starting from version `1.19.0`, all TypeScript definitions are considered `stable`. 
 
 ### Is there a CDN I can use?
 

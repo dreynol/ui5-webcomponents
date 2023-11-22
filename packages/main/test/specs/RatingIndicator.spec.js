@@ -116,10 +116,29 @@ describe("Rating Indicator general interaction", () => {
 		assert.strictEqual(await ratingIndicatorList.getAttribute("aria-hidden"), "true", "aria-hidden is set");
 	});
 
-	it("Tests ACC attrs - title attribute provided", async () => {
+	it("Tests ACC attrs - tooltip property", async () => {
 		const ratingIndicator = await browser.$("#rating-indicator-title").shadow$(".ui5-rating-indicator-root");
 		const TOOLTIP = "Test";
 
-		assert.strictEqual(await ratingIndicator.getAttribute("title"), TOOLTIP, "The title attribute is rendered in the inner div as well.");
+		assert.strictEqual(await ratingIndicator.getAttribute("title"), TOOLTIP, "The tooltip property is rendered as a title in the inner div.");
+	});
+
+	it("Tests ACC attrs - required property add aria-description", async () => {
+		const ratingIndicatorRoot = await browser.$("#rating-indicator-required").shadow$(".ui5-rating-indicator-root");
+		let resourceBundleText = null;
+
+		resourceBundleText = await browser.executeAsync(done => {
+			const ratingIndicator = document.getElementById("rating-indicator-required");
+			done(ratingIndicator.constructor.i18nBundle.getText(window["sap-ui-webcomponents-bundle"].defaultTexts.RATING_INDICATOR_ARIA_DESCRIPTION));
+		});
+
+		assert.strictEqual(await ratingIndicatorRoot.getAttribute("aria-description"), resourceBundleText, "aria-description is correctly set");
+	});
+
+	it("Tests ACC attrs - accessible-name-ref", async () => {
+		const ratingIndicator = await browser.$("#rating-indicator-acc-name-ref");
+		const expectedText = await browser.$("#label-acc-name-ref").getText();
+
+		assert.strictEqual(await ratingIndicator.shadow$(".ui5-rating-indicator-root").getAttribute("aria-label"), expectedText, "aria-label should be the text of the label.");
 	});
 });

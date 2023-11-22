@@ -15,8 +15,8 @@ const component = "ui5-segmented-button";
 
 export default {
 	title: "Main/SegmentedButton",
-	component,
-	subcomponents: {'SegmentedButtonItem' : 'ui5-segmented-button-item'},
+	component: "SegmentedButton",
+	subcomponents: {'SegmentedButtonItem' : 'SegmentedButtonItem'},
 	parameters: {
 		docs: {
 			page: DocsPage({ ...componentInfo, component })
@@ -27,6 +27,7 @@ export default {
 
 const Template: UI5StoryArgs<SegmentedButton, StoryArgsSlots> = (args) => html`<ui5-segmented-button
 	accessible-name="${ifDefined(args.accessibleName)}"
+	mode="${ifDefined(args.mode)}"
 >
 	${unsafeHTML(args.default)}
 </ui5-segmented-button>`;
@@ -41,17 +42,7 @@ Basic.args = {
 
 export const WithIcons = Template.bind({});
 WithIcons.args = {
-	default: `<ui5-segmented-button-item icon="employee" pressed=""></ui5-segmented-button-item>
-<ui5-segmented-button-item icon="menu"></ui5-segmented-button-item>
-<ui5-segmented-button-item icon="factory"></ui5-segmented-button-item>`,
-};
-
-export const WithMoreItems = Template.bind({});
-WithMoreItems.storyName = "More Segmented Button Items";
-WithMoreItems.args = {
-	default: `<ui5-segmented-button-item>Item</ui5-segmented-button-item>
-<ui5-segmented-button-item pressed="">Pressed SegmentedButtonItem With Bigger Text</ui5-segmented-button-item>
-<ui5-segmented-button-item>Item</ui5-segmented-button-item>
-<ui5-segmented-button-item>SegmentedButtonItem</ui5-segmented-button-item>
-<ui5-segmented-button-item>Press me</ui5-segmented-button-item>`,
+	default: `<ui5-segmented-button-item icon="bold-text" pressed=""></ui5-segmented-button-item>
+<ui5-segmented-button-item icon="underline-text"></ui5-segmented-button-item>
+<ui5-segmented-button-item icon="italic-text"></ui5-segmented-button-item>`,
 };
