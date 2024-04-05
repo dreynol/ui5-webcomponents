@@ -1,5 +1,6 @@
 dist/resources
 dist/test-resources
+jsdoc-dist
 src/generated
 src/**/*.ts
 lib/

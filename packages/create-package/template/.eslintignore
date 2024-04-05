@@ -2,4 +2,5 @@
 dist
 test
 src/generated
+jsdoc-dist
 .eslintrc.js
