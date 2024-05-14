@@ -1,7 +1,5 @@
-commit e570031c7986b4f9005c8628fdd87cac0c7fcd94
-Author: Boyan Rakilovski <boyan.rakilovski@sap.com>
-Date:   Tue May 14 10:13:27 2024 +0300
+commit bcb3008187fb0e66d7ddeb6bb048857382d414a2
+Author: Petar Dimov <32839090+dimovpetar@users.noreply.github.com>
+Date:   Tue May 14 11:04:00 2024 +0300
 
-    fix(ui5-date-picker): display initial view properly (#8910)
-    
-    Fixes: #8893
+    fix(ui5-side-navigation): overflow menu items are now displayed (#8948)
