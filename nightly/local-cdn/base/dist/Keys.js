@@ -162,6 +162,7 @@ const isF4 = (event) => {
     return event.key === "F4" && !hasModifierKeys(event);
 };
 const isF4Shift = (event) => (event.key ? event.key === "F4" : event.keyCode === KeyCodes.F4) && checkModifierKeys(event, false, false, true);
+const isF10Shift = (event) => (event.key ? event.key === "F10" : event.keyCode === KeyCodes.F10) && checkModifierKeys(event, false, false, true);
 const isF6Next = (event) => ((event.key ? event.key === "F6" : event.keyCode === KeyCodes.F6) && checkModifierKeys(event, false, false, false))
     || ((event.key ? (event.key === "ArrowDown" || event.key === "Down") : event.keyCode === KeyCodes.ARROW_DOWN) && checkModifierKeys(event, true, true, false));
 const isF6Previous = (event) => ((event.key ? event.key === "F6" : event.keyCode === KeyCodes.F6) && checkModifierKeys(event, false, false, true))
@@ -180,5 +181,5 @@ const getCtrlKey = (event) => !!(event.metaKey || event.ctrlKey); // double nega
 const checkModifierKeys = (event, bCtrlKey, bAltKey, bShiftKey) => event.shiftKey === bShiftKey && event.altKey === bAltKey && getCtrlKey(event) === bCtrlKey;
 const isNumber = (event) => ((event.key ? "0123456789".indexOf(event.key) !== -1 : event.keyCode >= KeyCodes.DIGIT_0 && event.keyCode <= KeyCodes.DIGIT_9) && checkModifierKeys(event, false, false, false));
 const isColon = (event) => ((event.key ? event.key === ":" : event.keyCode === KeyCodes.COLON) && checkModifierKeys(event, false, false, true));
-export { isEnter, isEnterShift, isSpace, isSpaceShift, isSpaceCtrl, isLeft, isRight, isUp, isDown, isLeftCtrl, isRightCtrl, isUpCtrl, isDownCtrl, isUpShift, isDownShift, isUpAlt, isDownAlt, isLeftShift, isRightShift, isLeftShiftCtrl, isRightShiftCtrl, isUpShiftCtrl, isDownShiftCtrl, isHome, isEnd, isPlus, isMinus, isHomeCtrl, isEndCtrl, isHomeShift, isEndShift, isEscape, isTabNext, isTabPrevious, isBackSpace, isDelete, isShow, isF2, isF4, isF4Shift, isF6Previous, isF6Next, isF7, isPageUp, isPageDown, isPageUpShift, isPageUpAlt, isPageDownShift, isPageDownAlt, isPageUpShiftCtrl, isPageDownShiftCtrl, isShift, isCtrlA, isCtrlV, isKeyA, isKeyP, isDeleteShift, isInsertShift, isInsertCtrl, isNumber, isColon, };
+export { isEnter, isEnterShift, isSpace, isSpaceShift, isSpaceCtrl, isLeft, isRight, isUp, isDown, isLeftCtrl, isRightCtrl, isUpCtrl, isDownCtrl, isUpShift, isDownShift, isUpAlt, isDownAlt, isLeftShift, isRightShift, isLeftShiftCtrl, isRightShiftCtrl, isUpShiftCtrl, isDownShiftCtrl, isHome, isEnd, isPlus, isMinus, isHomeCtrl, isEndCtrl, isHomeShift, isEndShift, isEscape, isTabNext, isTabPrevious, isBackSpace, isDelete, isShow, isF2, isF4, isF4Shift, isF10Shift, isF6Previous, isF6Next, isF7, isPageUp, isPageDown, isPageUpShift, isPageUpAlt, isPageDownShift, isPageDownAlt, isPageUpShiftCtrl, isPageDownShiftCtrl, isShift, isCtrlA, isCtrlV, isKeyA, isKeyP, isDeleteShift, isInsertShift, isInsertCtrl, isNumber, isColon, };
 //# sourceMappingURL=Keys.js.map

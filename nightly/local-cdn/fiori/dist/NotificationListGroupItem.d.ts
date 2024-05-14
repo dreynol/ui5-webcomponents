@@ -1,9 +1,6 @@
 import NotificationListItemBase from "./NotificationListItemBase.js";
-import type { NotificationListItemBaseCloseEventDetail as NotificationListGroupItemCloseEventDetail } from "./NotificationListItemBase.js";
 import "@ui5/webcomponents-icons/dist/navigation-right-arrow.js";
 import "@ui5/webcomponents-icons/dist/navigation-down-arrow.js";
-import "@ui5/webcomponents-icons/dist/overflow.js";
-import "@ui5/webcomponents-icons/dist/decline.js";
 type NotificationListGroupItemToggleEventDetail = {
     item: NotificationListGroupItem;
 };
@@ -17,19 +14,34 @@ type NotificationListGroupItemToggleEventDetail = {
  * The component consists of:
  *
  * - `Toggle` button to expand and collapse the group
- * - `Priority` icon to display the priority of the group
  * - `TitleText` to entitle the group
- * - Custom actions - with the use of `ui5-notification-action`
  * - Items of the group
  *
  * ### Usage
  * The component can be used in a standard `ui5-list`.
  *
+ * ### Keyboard Handling
+ * The `ui5-li-notification-group` provides advanced keyboard handling.
+ *
+ * #### Basic Navigation
+ * When a list is focused, the user can use the following keyboard shortcuts in order to navigate:
+ *
+ * - [Up] or [Down] - navigates up or down the items
+ * - [Home] - navigates to the first item
+ * - [End] - navigates to the last item
+ *
+ * #### Fast Navigation
+ * This component provides fast navigation when the header is focused using the following keyboard shortcuts:
+ *
+ * - [Space] - toggles expand / collapse of the group
+ * - [Plus] - expands the group
+ * - [Minus] - collapses the group
+ * - [Right] - expands the group
+ * - [Left] - collapses the group
+ *
  * ### ES6 Module Import
  *
  * `import "@ui5/webcomponents/dist/NotificationListGroupItem.js";`
- *
- * `import "@ui5/webcomponents/dist/NotificationAction.js";` (optional)
  * @constructor
  * @extends NotificationListItemBase
  * @since 1.0.0-rc.8
@@ -43,12 +55,6 @@ declare class NotificationListGroupItem extends NotificationListItemBase {
      */
     collapsed: boolean;
     /**
-     * Defines if the items `counter` would be displayed.
-     * @default false
-     * @public
-     */
-    showCounter: boolean;
-    /**
      * Defines the items of the `ui5-li-notification-group`,
      * usually `ui5-li-notification` items.
      * @public
@@ -56,27 +62,25 @@ declare class NotificationListGroupItem extends NotificationListItemBase {
     items: Array<NotificationListItemBase>;
     onBeforeRendering(): void;
     /**
-     * Clears child items busy state to show a single busy over the entire group,
+     * Clears child items loading state to show a single loading over the entire group,
      * instead of multiple BusyIndicator instances
      */
     clearChildBusyIndicator(): void;
-    get itemsCount(): number;
-    get overflowBtnAccessibleName(): string;
-    get closeBtnAccessibleName(): string;
     get toggleBtnAccessibleName(): string;
-    get priorityText(): string;
     get accInvisibleText(): string;
-    get readText(): string;
+    get expandText(): string;
     get groupText(): string;
-    get counterText(): string;
     get ariaLabelledBy(): string;
     get _ariaExpanded(): boolean;
     get groupCollapsedIcon(): "navigation-right-arrow" | "navigation-down-arrow";
+    get groupCollapsedTooltip(): "expand arrow" | "collapse arrow";
+    toggleCollapsed(): void;
     /**
      * Event handlers
      *
      */
-    _onBtnToggleClick(): void;
+    _onHeaderToggleClick(): void;
+    _onkeydown(e: KeyboardEvent): void;
 }
 export default NotificationListGroupItem;
-export type { NotificationListGroupItemToggleEventDetail, NotificationListGroupItemCloseEventDetail, };
+export type { NotificationListGroupItemToggleEventDetail, };

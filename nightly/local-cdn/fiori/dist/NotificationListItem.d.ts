@@ -1,9 +1,19 @@
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import WrappingType from "@ui5/webcomponents/dist/types/WrappingType.js";
+import type Menu from "@ui5/webcomponents/dist/Menu.js";
+import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
+import NotificationListItemImportance from "./types/NotificationListItemImportance.js";
 import NotificationListItemBase from "./NotificationListItemBase.js";
 import "@ui5/webcomponents-icons/dist/overflow.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
-import type { NotificationListItemBaseCloseEventDetail as NotificationListItemCloseEventDetail } from "./NotificationListItemBase.js";
+import "@ui5/webcomponents-icons/dist/high-priority.js";
+import "@ui5/webcomponents-icons/dist/message-success.js";
+import "@ui5/webcomponents-icons/dist/message-information.js";
+import "@ui5/webcomponents-icons/dist/message-error.js";
+import "@ui5/webcomponents-icons/dist/message-warning.js";
+type NotificationListItemCloseEventDetail = {
+    item: HTMLElement;
+};
 type NotificationListItemPressEventDetail = {
     item: NotificationListItem;
 };
@@ -13,7 +23,7 @@ type NotificationListItemPressEventDetail = {
  * ### Overview
  * The `ui5-li-notification` is a type of list item, meant to display notifications.
  *
- * The component has a rich set of various properties that allows the user to set `avatar`, `titleText`, descriptive `content`
+ * The component has a rich set of various properties that allows the user to set `avatar`, `menu`, `titleText`, descriptive `content`
  * and `footnotes` to fully describe a notification.
  *
  * The user can:
@@ -21,16 +31,31 @@ type NotificationListItemPressEventDetail = {
  * - display a `Close` button
  * - can control whether the `titleText` and `description` should wrap or truncate
  * and display a `ShowMore` button to switch between less and more information
- * - add custom actions by using the `ui5-notification-action` component
+ * - add actions by using the `ui5-menu` component
+ *
+ * **Note:** Adding custom actions by using the `ui5-notification-action` component is deprecated as of version 2.0!
  *
  * ### Usage
  * The component can be used in a standard `ui5-list`.
+ *
+ * ### Keyboard Handling
+ *
+ * #### Basic Navigation
+ * The user can use the following keyboard shortcuts to perform actions (such as select, delete):
+ *
+ * - [Enter] - select an item (trigger "item-click" event)
+ * - [Delete] - close an item (trigger "item-close" event)
+ *
+ * #### Fast Navigation
+ * This component provides a fast navigation using the the following keyboard shortcuts:
+ *
+ * - [Shift] + [Enter] - 'More'/'Less' link will be triggered
+ * - [Shift] + [F10] - 'Menu' (Actions) button will be triggered (clicked)
  *
  * ### ES6 Module Import
  *
  * `import "@ui5/webcomponents/dist/NotificationListItem.js";`
  *
- * `import "@ui5/webcomponents/dist/NotificationAction.js";` (optional)
  * @constructor
  * @extends NotificationListItemBase
  * @since 1.0.0-rc.8
@@ -49,6 +74,24 @@ declare class NotificationListItem extends NotificationListItemBase {
     * @since 1.0.0-rc.15
     */
     wrappingType: `${WrappingType}`;
+    /**
+     * Defines the status indicator of the item.
+     * @default "None"
+     * @public
+     */
+    state: `${ValueState}`;
+    /**
+     * Defines if the `Close` button would be displayed.
+     * @default false
+     * @public
+     */
+    showClose: boolean;
+    /**
+     * Defines the `Important` label of the item.
+     * @default "Standard"
+     * @public
+     */
+    importance: `${NotificationListItemImportance}`;
     /**
     * Defines the state of the `titleText` and `description`,
     * if less or more information is displayed.
@@ -72,6 +115,15 @@ declare class NotificationListItem extends NotificationListItemBase {
     */
     avatar: Array<HTMLElement>;
     /**
+    * Defines the menu, displayed in the `ui5-li-notification`.
+    *
+    * **Note:** Use this for implementing actions.
+    *
+    * **Note:** Should be used instead `u5-notification-action`, which is deprecated as of version 2.0.
+    * @public
+    */
+    menu: Array<HTMLElement>;
+    /**
     * Defines the elements, displayed in the footer of the of the component.
     * @public
     */
@@ -90,10 +142,13 @@ declare class NotificationListItem extends NotificationListItemBase {
     constructor();
     onEnterDOM(): void;
     onExitDOM(): void;
+    get hasState(): boolean;
     get hasDesc(): boolean;
+    get hasImportance(): boolean;
+    get contentClasses(): "ui5-nli-content ui5-nli-content-with-importance" | "ui5-nli-content";
     get hasFootNotes(): boolean;
     get showMoreText(): string;
-    get overflowBtnAccessibleName(): string;
+    get menuBtnAccessibleName(): string;
     get closeBtnAccessibleName(): string;
     get hideShowMore(): true | undefined;
     get descriptionDOM(): HTMLElement | null;
@@ -107,8 +162,20 @@ declare class NotificationListItem extends NotificationListItemBase {
         showDivider: boolean;
     }[];
     get ariaLabelledBy(): string;
-    get priorityText(): string;
+    get ariaDescribedBy(): string;
+    get itemClasses(): string;
+    get statusIconName(): string;
+    get statusIconDesign(): string;
+    get importanceText(): string;
+    get stateText(): string;
     get accInvisibleText(): string;
+    get accInfo(): {
+        accessibilityAttributes: {
+            hasPopup: string;
+        };
+    };
+    get menuButtonDOM(): HTMLElement;
+    get showMenu(): boolean;
     /**
      * Event handlers
      */
@@ -116,6 +183,10 @@ declare class NotificationListItem extends NotificationListItemBase {
     _onShowMoreClick(e: MouseEvent): void;
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
+    _onBtnCloseClick(): void;
+    _onBtnMenuClick(): void;
+    openMenu(): void;
+    getMenu(): Menu;
     /**
      * Private
      */
