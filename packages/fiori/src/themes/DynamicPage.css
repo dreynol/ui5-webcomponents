@@ -18,6 +18,7 @@
 .ui5-dynamic-page-scroll-container {
     overflow-y: auto;
     height: 100%;
+    scroll-padding-top: var(--ui5_dynamic_page_scroll-padding-top);
 }
 
 /* Automatically fit content that has height: 100% */
