@@ -74,6 +74,7 @@ let SideNavigationSelectableItemBase = class SideNavigationSelectableItemBase ex
         this.sideNavigation?.focusItem(this);
     }
     _activate(e) {
+        e.stopPropagation();
         if (this.isOverflow) {
             this.fireEvent("click");
         }

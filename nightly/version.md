@@ -1,5 +1,5 @@
-commit 92b3cf820754cb45053430de5b172e34fa698106
-Author: Georgieva <lidiya.georgieva@sap.com>
-Date:   Tue May 14 13:27:07 2024 +0300
+commit 0dd36ca4b84c3b73fbb9c9cd44cee3d7b6e97d2a
+Author: Petar Dimov <32839090+dimovpetar@users.noreply.github.com>
+Date:   Tue May 14 14:39:27 2024 +0300
 
-    fix(ui5-tag): add colors for Quartz high contrast themes for Set 2 (#8952)
+    fix(ui5-side-navigation-item): click event is no longer fired twice (#8944)
