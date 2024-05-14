@@ -9,7 +9,6 @@ import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
-import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
 import { isDesktop, isSafari } from "@ui5/webcomponents-base/dist/Device.js";
@@ -18,9 +17,9 @@ import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/Ari
 import "@ui5/webcomponents-icons/dist/accept.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import "@ui5/webcomponents-icons/dist/less.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import Icon from "./Icon.js";
 import SwitchDesign from "./types/SwitchDesign.js";
+import { FORM_CHECKABLE_REQUIRED } from "./generated/i18n/i18n-defaults.js";
 // Template
 import SwitchTemplate from "./generated/templates/SwitchTemplate.lit.js";
 // Styles
@@ -54,22 +53,17 @@ import switchCss from "./generated/themes/Switch.css.js";
  * @csspart handle - Used to style the handle of the switch
  */
 let Switch = Switch_1 = class Switch extends UI5Element {
-    onBeforeRendering() {
-        this._enableFormSupport();
+    get formValidityMessage() {
+        return Switch_1.i18nBundle.getText(FORM_CHECKABLE_REQUIRED);
     }
-    _enableFormSupport() {
-        const formSupport = getFeature("FormSupport");
-        if (formSupport) {
-            formSupport.syncNativeHiddenInput(this, (element, nativeInput) => {
-                const switchComponent = element;
-                nativeInput.checked = !!switchComponent.checked;
-                nativeInput.disabled = !!switchComponent.disabled;
-                nativeInput.value = switchComponent.checked ? "on" : "";
-            });
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
+    get formValidity() {
+        return { valueMissing: this.required && !this.checked };
+    }
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.checked ? "on" : null;
     }
     get sapNextIcon() {
         return this.checked ? "accept" : "less";
@@ -178,12 +172,10 @@ __decorate([
 __decorate([
     property()
 ], Switch.prototype, "name", void 0);
-__decorate([
-    slot()
-], Switch.prototype, "formSupport", void 0);
 Switch = Switch_1 = __decorate([
     customElement({
         tag: "ui5-switch",
+        formAssociated: true,
         languageAware: true,
         styles: switchCss,
         renderer: litRender,

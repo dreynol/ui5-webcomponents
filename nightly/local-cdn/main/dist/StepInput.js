@@ -14,7 +14,6 @@ import { isUp, isDown, isUpCtrl, isDownCtrl, isUpShift, isDownShift, isUpShiftCt
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import Float from "@ui5/webcomponents-base/dist/types/Float.js";
 import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
@@ -75,6 +74,12 @@ const INITIAL_SPEED = 120; // milliseconds
  * @public
  */
 let StepInput = StepInput_1 = class StepInput extends UI5Element {
+    async formElementAnchor() {
+        return (await this.getFocusDomRefAsync())?.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.value.toString();
+    }
     static async onDefine() {
         StepInput_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
@@ -129,13 +134,6 @@ let StepInput = StepInput_1 = class StepInput extends UI5Element {
         this._setButtonState();
         if (this._previousValue === undefined) {
             this._previousValue = this.value;
-        }
-        const formSupport = getFeature("FormSupport");
-        if (formSupport) {
-            formSupport.syncNativeHiddenInput(this);
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
         }
     }
     get input() {
@@ -459,12 +457,10 @@ __decorate([
 __decorate([
     slot()
 ], StepInput.prototype, "valueStateMessage", void 0);
-__decorate([
-    slot()
-], StepInput.prototype, "formSupport", void 0);
 StepInput = StepInput_1 = __decorate([
     customElement({
         tag: "ui5-step-input",
+        formAssociated: true,
         renderer: litRender,
         styles: StepInputCss,
         template: StepInputTemplate,

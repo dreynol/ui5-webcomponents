@@ -47,6 +47,7 @@ declare abstract class UI5Element extends HTMLElement {
     };
     _doNotSyncAttributes: Set<string>;
     _state: State;
+    _internals?: ElementInternals;
     _getRealDomRef?: () => HTMLElement;
     static template?: TemplateFunction;
     static _metadata: UI5ElementMetadata;
@@ -139,6 +140,8 @@ declare abstract class UI5Element extends HTMLElement {
      * @private
      */
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
+    formAssociatedCallback(): void;
+    static get formAssociated(): boolean;
     /**
      * @private
      */
@@ -358,6 +361,10 @@ declare abstract class UI5Element extends HTMLElement {
      * @public
      */
     static getMetadata(): UI5ElementMetadata;
+    get validity(): ValidityState | undefined;
+    get validationMessage(): string | undefined;
+    checkValidity(): boolean | undefined;
+    reportValidity(): boolean | undefined;
 }
 /**
  * Always use duck-typing to cover all runtimes on the page.

@@ -51,6 +51,17 @@ import CalendarDateRange from "./CalendarDateRange.js";
  * @public
  */
 let DateRangePicker = DateRangePicker_1 = class DateRangePicker extends DatePicker {
+    get formFormattedValue() {
+        const values = this._splitValueByDelimiter(this.value || "").filter(Boolean);
+        if (values.length) {
+            const formData = new FormData();
+            for (let i = 0; i < values.length; i++) {
+                formData.append(this.name, values[i]);
+            }
+            return formData;
+        }
+        return this.value;
+    }
     constructor() {
         super();
         this._prevDelimiter = null;

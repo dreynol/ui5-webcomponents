@@ -180,7 +180,7 @@ declare class Panel extends UI5Element {
     get ariaLabelledbyReference(): string | undefined;
     get fixedPanelAriaLabelledbyReference(): string | undefined;
     get headerAriaLevel(): string;
-    get headerTabIndex(): "0" | "-1";
+    get headerTabIndex(): "-1" | "0";
     get headingWrapperAriaLevel(): string | undefined;
     get headingWrapperRole(): "heading" | undefined;
     get nonFixedInternalHeader(): boolean;

@@ -3,6 +3,7 @@ import type { ClassMap } from "@ui5/webcomponents-base/dist/types.js";
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import "@ui5/webcomponents-icons/dist/not-editable.js";
 import "@ui5/webcomponents-icons/dist/error.js";
@@ -12,8 +13,6 @@ import "@ui5/webcomponents-icons/dist/information.js";
 import type SuggestionItem from "./SuggestionItem.js";
 import type { InputSuggestion, SuggestionComponent } from "./features/InputSuggestions.js";
 import type InputSuggestions from "./features/InputSuggestions.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 import type SuggestionListItem from "./SuggestionListItem.js";
 import type { PopupScrollEventDetail } from "./Popup.js";
 import InputType from "./types/InputType.js";
@@ -108,7 +107,7 @@ type InputSuggestionScrollEventDetail = {
  * @extends UI5Element
  * @public
  */
-declare class Input extends UI5Element implements SuggestionComponent, IFormElement {
+declare class Input extends UI5Element implements SuggestionComponent, IFormInputElement {
     /**
      * Defines whether the component is in disabled state.
      *
@@ -195,14 +194,9 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormElem
      */
     valueState: `${ValueState}`;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the component so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      */
@@ -307,12 +301,6 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormElem
      */
     icon: Array<IIcon>;
     /**
-     * The slot is used for native `input` HTML element to enable form submit,
-     * when `name` property is set.
-     * @private
-     */
-    formSupport: Array<HTMLElement>;
-    /**
      * Defines the value state message that will be displayed as pop up under the component.
      * The value state message slot should contain only one root element.
      *
@@ -342,13 +330,16 @@ declare class Input extends UI5Element implements SuggestionComponent, IFormElem
     _keyDown?: boolean;
     _isKeyNavigation?: boolean;
     Suggestions?: InputSuggestions;
-    FormSupport?: typeof FormSupportT;
     _selectedText?: string;
     _clearIconClicked?: boolean;
     _focusedAfterClear: boolean;
     _performTextSelection?: boolean;
     _isLatestValueFromSuggestions: boolean;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | string | null;
     constructor();
     onEnterDOM(): void;
     onExitDOM(): void;

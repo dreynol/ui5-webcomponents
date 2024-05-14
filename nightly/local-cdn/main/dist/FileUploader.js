@@ -11,7 +11,6 @@ import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import { getEventMark } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
@@ -51,12 +50,18 @@ import ValueStateMessageCss from "./generated/themes/ValueStateMessage.css.js";
  * @public
  */
 let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
-    static get formAssociated() {
-        return true;
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
     }
-    constructor() {
-        super();
-        this._internals = this.attachInternals && this.attachInternals();
+    get formFormattedValue() {
+        if (this.files) {
+            const formData = new FormData();
+            for (let i = 0; i < this.files.length; i++) {
+                formData.append(this.name, this.files[i]);
+            }
+            return formData;
+        }
+        return null;
     }
     _onmouseover() {
         this.content.forEach(item => {
@@ -118,30 +123,11 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         }
         return FileUploader_1._emptyFilesList;
     }
-    onBeforeRendering() {
-        this._enableFormSupport();
-    }
     onAfterRendering() {
         if (!this.value) {
             this._input.value = "";
         }
         this.toggleValueStatePopover(this.shouldOpenValueStateMessagePopover);
-    }
-    _enableFormSupport() {
-        const formSupport = getFeature("FormSupport");
-        if (formSupport) {
-            if (this._canUseNativeFormSupport) {
-                this._setFormValue();
-            }
-            else {
-                formSupport.syncNativeFileInput(this, (element, nativeInput) => {
-                    nativeInput.disabled = !!element.disabled;
-                }, this._onChange.bind(this));
-            }
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
     }
     _onChange(e) {
         const changedFiles = e.target.files;
@@ -154,15 +140,6 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
         this.value = Array.from(files || []).reduce((acc, currFile) => {
             return `${acc}"${currFile.name}" `;
         }, "");
-    }
-    _setFormValue() {
-        const formData = new FormData();
-        if (this.files) {
-            for (let i = 0; i < this.files.length; i++) {
-                formData.append(this.name, this.files[i]);
-            }
-        }
-        this._internals.setFormValue(formData);
     }
     toggleValueStatePopover(open) {
         if (open) {
@@ -204,13 +181,6 @@ let FileUploader = FileUploader_1 = class FileUploader extends UI5Element {
     }
     get titleText() {
         return FileUploader_1.i18nBundle.getText(FILEUPLOADER_TITLE);
-    }
-    get _canUseNativeFormSupport() {
-        return !!(this._internals && this._internals.setFormValue);
-    }
-    get _keepInputInShadowDOM() {
-        // only put input in the light dom when ui5-file-uploader is placed inside form and there is no support for form elements
-        return this._canUseNativeFormSupport || !this.name;
     }
     get _input() {
         return (this.shadowRoot.querySelector("input[type=file]") || this.querySelector("input[type=file][data-ui5-form-support]"));
@@ -311,13 +281,11 @@ __decorate([
 __decorate([
     slot()
 ], FileUploader.prototype, "valueStateMessage", void 0);
-__decorate([
-    slot()
-], FileUploader.prototype, "formSupport", void 0);
 FileUploader = FileUploader_1 = __decorate([
     customElement({
         tag: "ui5-file-uploader",
         languageAware: true,
+        formAssociated: true,
         renderer: litRender,
         styles: [
             FileUploaderCss,

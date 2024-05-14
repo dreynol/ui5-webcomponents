@@ -1,4 +1,5 @@
 import type { ResizeObserverCallback } from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import "@ui5/webcomponents-icons/dist/date-time.js";
 import type ResponsivePopover from "./ResponsivePopover.js";
 import type { CalendarSelectionChangeEventDetail } from "./Calendar.js";
@@ -73,7 +74,7 @@ type PreviewValues = {
  * @since 1.0.0-rc.7
  * @public
  */
-declare class DateTimePicker extends DatePicker {
+declare class DateTimePicker extends DatePicker implements IFormInputElement {
     /**
      * Defines the visibility of the time view in `phoneMode`.
      * For more information, see the `phoneMode` property.

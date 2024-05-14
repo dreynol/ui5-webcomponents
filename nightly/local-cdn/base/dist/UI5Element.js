@@ -17,6 +17,7 @@ import { getSlotName, getSlottedNodesList } from "./util/SlotsHelper.js";
 import arraysAreEqual from "./util/arraysAreEqual.js";
 import { markAsRtlAware } from "./locale/RTLAwareRegistry.js";
 import executeTemplate from "./renderer/executeTemplate.js";
+import { attachFormElementInternals, setFormValue } from "./features/InputElementsFormSupport.js";
 let autoId = 0;
 const elementTimeouts = new Map();
 const uniqueDependenciesCache = new Map();
@@ -291,6 +292,9 @@ class UI5Element extends HTMLElement {
                     reason: "children",
                 });
                 invalidated = true;
+                if (ctor.getMetadata().isFormAssociated()) {
+                    setFormValue(this);
+                }
             }
         }
         // If none of the slots had an invalidation due to changes to immediate children,
@@ -391,6 +395,16 @@ class UI5Element extends HTMLElement {
             }
             this[nameInCamelCase] = newPropertyValue;
         }
+    }
+    formAssociatedCallback() {
+        const ctor = this.constructor;
+        if (!ctor.getMetadata().isFormAssociated()) {
+            return;
+        }
+        attachFormElementInternals(this);
+    }
+    static get formAssociated() {
+        return this.getMetadata().isFormAssociated();
     }
     /**
      * @private
@@ -847,6 +861,9 @@ class UI5Element extends HTMLElement {
                             newValue: value,
                             oldValue: oldState,
                         });
+                        if (ctor.getMetadata().isFormAssociated()) {
+                            setFormValue(this);
+                        }
                         this._updateAttribute(prop, value);
                     }
                 },
@@ -952,6 +969,10 @@ class UI5Element extends HTMLElement {
         this._metadata = new UI5ElementMetadata(mergedMetadata);
         return this._metadata;
     }
+    get validity() { return this._internals?.validity; }
+    get validationMessage() { return this._internals?.validationMessage; }
+    checkValidity() { return this._internals?.checkValidity(); }
+    reportValidity() { return this._internals?.reportValidity(); }
 }
 /**
  * Returns the metadata object for this UI5 Web Component Class

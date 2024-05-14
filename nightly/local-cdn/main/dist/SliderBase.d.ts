@@ -24,6 +24,15 @@ declare abstract class SliderBase extends UI5Element {
      */
     max: number;
     /**
+     * Determines the name by which the component will be identified upon submission in an HTML form.
+     *
+     * **Note:** This property is only applicable within the context of an HTML Form element.
+     * @default ""
+     * @public
+     * @since 2.0.0
+     */
+    name: string;
+    /**
      * Defines the size of the slider's selection intervals (e.g. min = 0, max = 10, step = 5 would result in possible selection of the values 0, 5, 10).
      *
      * **Note:** If set to 0 the slider handle movement is disabled. When negative number or value other than a number, the component fallbacks to its default value.
@@ -87,6 +96,7 @@ declare abstract class SliderBase extends UI5Element {
     _oldMax?: number;
     _labelWidth: number;
     _labelValues?: Array<string>;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
     constructor();
     _handleMove(e: TouchEvent | MouseEvent): void;
     _handleUp(): void;
@@ -277,7 +287,7 @@ declare abstract class SliderBase extends UI5Element {
     get _effectiveStep(): number;
     get _effectiveMin(): number;
     get _effectiveMax(): number;
-    get _tabIndex(): "0" | "-1";
+    get _tabIndex(): "-1" | "0";
     get _ariaLabelledByHandleRefs(): string;
 }
 export default SliderBase;

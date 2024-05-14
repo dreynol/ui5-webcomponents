@@ -1,8 +1,7 @@
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 import "@ui5/webcomponents-icons/dist/appointment-2.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import DateComponentBase from "./DateComponentBase.js";
@@ -104,7 +103,7 @@ type DatePickerInputEventDetail = {
  * @extends DateComponentBase
  * @public
  */
-declare class DatePicker extends DateComponentBase implements IFormElement {
+declare class DatePicker extends DateComponentBase implements IFormInputElement {
     /**
      * Defines a formatted date value.
      * @default ""
@@ -149,14 +148,9 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      */
     placeholder?: string;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the component so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      */
@@ -206,15 +200,12 @@ declare class DatePicker extends DateComponentBase implements IFormElement {
      * @public
      */
     valueStateMessage: Array<HTMLElement>;
-    /**
-     * The slot is used to render native `input` HTML element within Light DOM to enable form submit,
-     * when `name` property is set.
-     * @private
-     */
-    formSupport: Array<HTMLElement>;
     responsivePopover?: ResponsivePopover;
-    FormSupport?: typeof FormSupportT;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | string | null;
     /**
      * @protected
      */

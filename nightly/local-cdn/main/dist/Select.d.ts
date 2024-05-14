@@ -8,10 +8,10 @@ import "@ui5/webcomponents-icons/dist/information.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import type { Timeout } from "@ui5/webcomponents-base/dist/types.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type { ListItemClickEventDetail } from "./List.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import Popover from "./Popover.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 import type ListItemBase from "./ListItemBase.js";
 import type SelectMenu from "./SelectMenu.js";
 import type { SelectMenuOptionClick, SelectMenuChange } from "./SelectMenu.js";
@@ -81,7 +81,7 @@ type SelectLiveChangeEventDetail = {
  * @public
  * @since 0.8.0
  */
-declare class Select extends UI5Element implements IFormElement {
+declare class Select extends UI5Element implements IFormInputElement {
     static i18nBundle: I18nBundle;
     /**
      * Defines a reference (ID or DOM element) of component's menu of options
@@ -102,15 +102,9 @@ declare class Select extends UI5Element implements IFormElement {
      */
     disabled: boolean;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
-     * The value of the component will be the value of the currently selected `ui5-option`.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the `ui5-select` so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      */
@@ -197,12 +191,6 @@ declare class Select extends UI5Element implements IFormElement {
      */
     options: Array<IOption>;
     /**
-     * The slot is used to render native `input` HTML element within Light DOM to enable form submit,
-     * when `name` property is set.
-     * @private
-     */
-    formSupport: Array<HTMLElement>;
-    /**
      * Defines the value state message that will be displayed as pop up under the component.
      *
      * **Note:** If not specified, a default text (in the respective language) will be displayed.
@@ -235,6 +223,10 @@ declare class Select extends UI5Element implements IFormElement {
     _onMenuChange: (e: CustomEvent<SelectMenuChange>) => void;
     _attachMenuListeners: (menu: HTMLElement) => void;
     _detachMenuListeners: (menu: HTMLElement) => void;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): string | null;
     constructor();
     onBeforeRendering(): void;
     onAfterRendering(): void;
@@ -278,7 +270,6 @@ declare class Select extends UI5Element implements IFormElement {
     _getSelectMenu(): SelectMenu | undefined;
     attachMenuListeners(menu: HTMLElement): void;
     detachMenuListeners(menu: HTMLElement): void;
-    _enableFormSupport(): void;
     _onkeydown(e: KeyboardEvent): void;
     _handleKeyboardNavigation(e: KeyboardEvent): void;
     _selectTypedItem(text: string): void;
@@ -331,7 +322,7 @@ declare class Select extends UI5Element implements IFormElement {
     get isDisabled(): true | undefined;
     get _headerTitleText(): string;
     get _currentlySelectedOption(): IOption;
-    get _effectiveTabIndex(): "0" | "-1";
+    get _effectiveTabIndex(): "-1" | "0";
     /**
     * This method is relevant for sap_horizon theme only
     */

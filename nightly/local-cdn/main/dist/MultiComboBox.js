@@ -26,9 +26,9 @@ import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
+import { submitForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import MultiComboBoxItem, { isInstanceOfMultiComboBoxItem } from "./MultiComboBoxItem.js";
 import MultiComboBoxGroupItem from "./MultiComboBoxGroupItem.js";
 import ListItemGroupHeader from "./ListItemGroupHeader.js";
@@ -42,7 +42,7 @@ import StandardListItem from "./StandardListItem.js";
 import ToggleButton from "./ToggleButton.js";
 import * as Filters from "./Filters.js";
 import Button from "./Button.js";
-import { VALUE_STATE_SUCCESS, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_INFORMATION, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, INPUT_SUGGESTIONS_TITLE, SELECT_OPTIONS, SHOW_SELECTED_BUTTON, MULTICOMBOBOX_DIALOG_OK_BUTTON, VALUE_STATE_ERROR_ALREADY_SELECTED, MCB_SELECTED_ITEMS, INPUT_CLEAR_ICON_ACC_NAME, } from "./generated/i18n/i18n-defaults.js";
+import { VALUE_STATE_SUCCESS, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_INFORMATION, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, INPUT_SUGGESTIONS_TITLE, SELECT_OPTIONS, SHOW_SELECTED_BUTTON, MULTICOMBOBOX_DIALOG_OK_BUTTON, VALUE_STATE_ERROR_ALREADY_SELECTED, MCB_SELECTED_ITEMS, INPUT_CLEAR_ICON_ACC_NAME, FORM_MIXED_TEXTFIELD_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 // Templates
 import MultiComboBoxTemplate from "./generated/templates/MultiComboBoxTemplate.lit.js";
 // Styles
@@ -98,6 +98,28 @@ import "./types/PopoverHorizontalAlign.js";
  * @csspart token-\{index\} - Used to style each token(where `token-0` corresponds to the first item)
  */
 let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
+    get formValidityMessage() {
+        return MultiComboBox_1.i18nBundle.getText(FORM_MIXED_TEXTFIELD_REQUIRED);
+    }
+    get formValidity() {
+        const selectedItems = (this.items || []).filter(item => item.selected);
+        return { valueMissing: this.required && !this.value && !selectedItems.length };
+    }
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        const selectedItems = (this.items || []).filter(item => item.selected);
+        if (selectedItems.length) {
+            const formData = new FormData();
+            formData.append(this.name, this.value);
+            for (let i = 0; i < selectedItems.length; i++) {
+                formData.append(this.name, selectedItems[i].text);
+            }
+            return formData;
+        }
+        return this.value;
+    }
     constructor() {
         super();
         this._filteredItems = [];
@@ -112,7 +134,6 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
         this.valueBeforeAutoComplete = "";
         this._lastValue = this.getAttribute("value") || "";
         this.currentItemIdx = -1;
-        this.FormSupport = undefined;
     }
     onEnterDOM() {
         ResizeHandler.register(this, this._handleResizeBound);
@@ -686,8 +707,8 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
         const matchingItem = this.items.find(item => (item.text.toLowerCase() === lowerCaseValue && !item.isGroupItem));
         const oldValueState = this.valueState;
         const innerInput = this._innerInput;
-        if (this.FormSupport) {
-            this.FormSupport.triggerFormSubmit(this);
+        if (this._internals?.form) {
+            submitForm(this);
         }
         if (matchingItem) {
             if (matchingItem.selected) {
@@ -931,7 +952,6 @@ let MultiComboBox = MultiComboBox_1 = class MultiComboBox extends UI5Element {
             });
         }
         this._effectiveShowClearIcon = (this.showClearIcon && !!this.value && !this.readonly && !this.disabled);
-        this.FormSupport = getFeature("FormSupport");
         this._inputLastValue = value;
         if (input && !input.value) {
             this.valueBeforeAutoComplete = "";
@@ -1289,6 +1309,9 @@ __decorate([
     property()
 ], MultiComboBox.prototype, "value", void 0);
 __decorate([
+    property()
+], MultiComboBox.prototype, "name", void 0);
+__decorate([
     property({ type: Boolean })
 ], MultiComboBox.prototype, "noTypeahead", void 0);
 __decorate([
@@ -1385,6 +1408,7 @@ MultiComboBox = MultiComboBox_1 = __decorate([
     customElement({
         tag: "ui5-multi-combobox",
         languageAware: true,
+        formAssociated: true,
         renderer: litRender,
         template: MultiComboBoxTemplate,
         styles: [

@@ -102,7 +102,7 @@ declare class Toast extends UI5Element {
     _onmouseover(): void;
     _onmouseleave(): void;
     _onkeydown(e: KeyboardEvent): void;
-    get _tabindex(): "0" | "-1";
+    get _tabindex(): "-1" | "0";
     onEnterDOM(): void;
     onExitDOM(): void;
 }

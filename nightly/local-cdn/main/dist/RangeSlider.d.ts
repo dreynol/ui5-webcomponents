@@ -1,4 +1,5 @@
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import SliderBase from "./SliderBase.js";
 type AriaHandlesText = {
     startHandleText?: string;
@@ -59,7 +60,7 @@ type AffectedValue = "startValue" | "endValue";
  * @csspart progress-bar - Used to style the progress bar, which shows the progress of the `ui5-range-slider`.
  * @csspart handle - Used to style the handles of the `ui5-range-slider`.
  */
-declare class RangeSlider extends SliderBase {
+declare class RangeSlider extends SliderBase implements IFormInputElement {
     /**
      * Defines start point of a selection - position of a first handle on the slider.
      * @default 0
@@ -91,6 +92,7 @@ declare class RangeSlider extends SliderBase {
     _selectedRange?: number;
     _reversedValues: boolean;
     static i18nBundle: I18nBundle;
+    get formFormattedValue(): FormData;
     constructor();
     get tooltipStartValue(): string;
     get tooltipEndValue(): string;

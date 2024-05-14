@@ -11,6 +11,7 @@ import "@ui5/webcomponents-icons/dist/error.js";
 import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import MultiComboBoxItem from "./MultiComboBoxItem.js";
 import Tokenizer from "./Tokenizer.js";
 import type { TokenizerTokenDeleteEventDetail } from "./Tokenizer.js";
@@ -20,7 +21,6 @@ import ResponsivePopover from "./ResponsivePopover.js";
 import List from "./List.js";
 import type { ListSelectionChangeEventDetail } from "./List.js";
 import ComboBoxFilter from "./types/ComboBoxFilter.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
 import type ListItemBase from "./ListItemBase.js";
 import { InputEventDetail } from "./Input.js";
 import PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
@@ -85,7 +85,7 @@ type MultiComboboxItemWithSelection = {
  * @since 0.11.0
  * @csspart token-\{index\} - Used to style each token(where `token-0` corresponds to the first item)
  */
-declare class MultiComboBox extends UI5Element {
+declare class MultiComboBox extends UI5Element implements IFormInputElement {
     /**
      * Defines the value of the component.
      *
@@ -96,6 +96,17 @@ declare class MultiComboBox extends UI5Element {
      * @public
      */
     value: string;
+    /**
+     * Determines the name by which the component will be identified upon submission in an HTML form.
+     *
+     * **Note:** This property is only applicable within the context of an HTML Form element.
+     * **Note:** When the component is used inside a form element,
+     * the value is sent as the first element in the form data, even if it's empty.
+     * @default ""
+     * @public
+     * @since 2.0.0
+     */
+    name: string;
     /**
      * Defines whether the value will be autcompleted to match an item
      * @default false
@@ -246,8 +257,11 @@ declare class MultiComboBox extends UI5Element {
     _itemToFocus?: IMultiComboBoxItem;
     _itemsBeforeOpen: Array<MultiComboboxItemWithSelection>;
     selectedItems: Array<IMultiComboBoxItem>;
-    FormSupport?: typeof FormSupportT;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | string | null;
     constructor();
     onEnterDOM(): void;
     onExitDOM(): void;

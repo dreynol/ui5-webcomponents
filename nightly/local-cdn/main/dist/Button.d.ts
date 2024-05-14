@@ -3,7 +3,7 @@ import type { AccessibilityAttributes, PassiveEventListenerObject } from "@ui5/w
 import type { ITabbable } from "@ui5/webcomponents-base/dist/delegate/ItemNavigation.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { I18nText } from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
+import type { IFormElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import ButtonDesign from "./types/ButtonDesign.js";
 import ButtonType from "./types/ButtonType.js";
 import ButtonAccessibleRole from "./types/ButtonAccessibleRole.js";
@@ -47,7 +47,7 @@ type ButtonAccessibilityAttributes = Pick<AccessibilityAttributes, "expanded" | 
  * @implements { IButton }
  * @public
  */
-declare class Button extends UI5Element implements IFormElement, IButton {
+declare class Button extends UI5Element implements IButton, IFormElement {
     /**
      * Defines the component design.
      * @default "Default"
@@ -82,8 +82,7 @@ declare class Button extends UI5Element implements IFormElement, IButton {
      * When set to `true`, the component will
      * automatically submit the nearest HTML form element on `press`.
      *
-     * **Note:** For the `submits` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
+     * **Note:** This property is only applicable within the context of an HTML Form element.`
      * @default false
      * @public
      * @deprecated Set the "type" property to "Submit" to achieve the same result. The "submits" property is ignored if "type" is set to any value other than "Button".
@@ -133,8 +132,7 @@ declare class Button extends UI5Element implements IFormElement, IButton {
     /**
      * Defines whether the button has special form-related functionality.
      *
-     * **Note:** For the `type` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default "Button"
      * @public
      * @since 1.15.0
@@ -211,7 +209,7 @@ declare class Button extends UI5Element implements IFormElement, IButton {
     _onfocusout(): void;
     _onfocusin(e: FocusEvent): void;
     _setActiveState(active: boolean): void;
-    get _hasPopup(): ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+    get _hasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     get hasButtonType(): boolean;
     get iconMode(): "" | IconMode.Decorative;
     get isIconOnly(): boolean;

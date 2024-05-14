@@ -5,8 +5,8 @@ import "@ui5/webcomponents-icons/dist/accept.js";
 import "@ui5/webcomponents-icons/dist/complete.js";
 import "@ui5/webcomponents-icons/dist/border.js";
 import "@ui5/webcomponents-icons/dist/tri-state.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import WrappingType from "./types/WrappingType.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 /**
  * @class
  *
@@ -49,7 +49,7 @@ import type { IFormElement } from "./features/InputElementsFormSupport.js";
  * @csspart label - Used to style the label of the `ui5-checkbox`
  * @csspart icon - Used to style the icon of the `ui5-checkbox`
  */
-declare class CheckBox extends UI5Element implements IFormElement {
+declare class CheckBox extends UI5Element implements IFormInputElement {
     /**
      * Receives id(or many ids) of the elements that label the component
      * @default ""
@@ -148,14 +148,9 @@ declare class CheckBox extends UI5Element implements IFormElement {
      */
     wrappingType: `${WrappingType}`;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the component so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      */
@@ -165,18 +160,14 @@ declare class CheckBox extends UI5Element implements IFormElement {
      * @private
      */
     active: boolean;
-    /**
-     * The slot is used to render native `input` HTML element within Light DOM to enable form submit,
-     * when `name` property is set.
-     * @private
-     */
-    formSupport: Array<HTMLElement>;
     static i18nBundle: I18nBundle;
     _deactivate: () => void;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): "on" | null;
     constructor();
-    onBeforeRendering(): void;
     onEnterDOM(): void;
-    _enableFormSupport(): void;
     _onclick(): void;
     _onmousedown(): void;
     _onmouseup(): void;

@@ -1,18 +1,13 @@
-commit e451cdc3709553dcb780f637463dc1b29e8f2971
-Author: Georgieva <lidiya.georgieva@sap.com>
-Date:   Tue May 14 13:02:34 2024 +0300
+commit c8e68d59e51c6ab56328062ac8bce7889b30062d
+Author: Nayden Naydenov <31909318+nnaydenow@users.noreply.github.com>
+Date:   Tue May 14 13:02:50 2024 +0300
 
-    feat(ui5-li-notification): implement new design (#8426)
+    feat(ui5-*): integrate element internals in input components (#8685)
     
-    * feat(ui5-li-notification-*): implement new design
+    Integrate the ElementInternals feature into UI5 web components. This enhancement allows input-like web components to behave as native input elements within HTML forms. As a result, the `features/InputElementsFormSupport.js` feature is now redundant and has been removed.
     
-    There is new design for the Notifications.
-    In the current pull request we implement the changes for the Notification Item:
-    - new slot "menu" is introduced (to replace the ui5-notification-action)
-    - ui5-notification-action is deprecated
-      (still will be visualized, but will be completely removed in future)
-    - if there is only one action it will go on the overflow
-      (bafore it was rendered as separate button)
-    - sampes are updated
+    Changes in `@customElement` decorator: Added new `formAssociated` flag attaches internals to the component when the component is associated with form (placed inside form).
     
-    BGSOFUIRODOPI-3226
+    BREAKING CHANGE: The `features/InputElementsFormSupport.js` feature has been deleted and now, form elements works natively in form elements.
+    
+    Related: #8461

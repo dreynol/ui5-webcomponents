@@ -19,6 +19,7 @@ import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { isUp, isDown, isSpace, isEnter, isBackSpace, isDelete, isEscape, isTabNext, isPageUp, isPageDown, isHome, isEnd, } from "@ui5/webcomponents-base/dist/Keys.js";
 import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import { submitForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import { getAssociatedLabelForTexts, getAllAccessibleNameRefTexts, registerUI5Element, deregisterUI5Element, } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import { getCaretPosition, setCaretPosition } from "@ui5/webcomponents-base/dist/util/Caret.js";
 import getActiveElement from "@ui5/webcomponents-base/dist/util/getActiveElement.js";
@@ -35,7 +36,7 @@ import "./types/PopoverHorizontalAlign.js";
 // Templates
 import InputTemplate from "./generated/templates/InputTemplate.lit.js";
 import { StartsWith } from "./Filters.js";
-import { VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, INPUT_SUGGESTIONS, INPUT_SUGGESTIONS_TITLE, INPUT_SUGGESTIONS_ONE_HIT, INPUT_SUGGESTIONS_MORE_HITS, INPUT_SUGGESTIONS_NO_HIT, INPUT_CLEAR_ICON_ACC_NAME, } from "./generated/i18n/i18n-defaults.js";
+import { VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, INPUT_SUGGESTIONS, INPUT_SUGGESTIONS_TITLE, INPUT_SUGGESTIONS_ONE_HIT, INPUT_SUGGESTIONS_MORE_HITS, INPUT_SUGGESTIONS_NO_HIT, INPUT_CLEAR_ICON_ACC_NAME, FORM_TEXTFIELD_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import inputStyles from "./generated/themes/Input.css.js";
 import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverCommon.css.js";
@@ -97,6 +98,18 @@ var INPUT_ACTIONS;
  * @public
  */
 let Input = Input_1 = class Input extends UI5Element {
+    get formValidityMessage() {
+        return Input_1.i18nBundle.getText(FORM_TEXTFIELD_REQUIRED);
+    }
+    get formValidity() {
+        return { valueMissing: this.required && !this.value };
+    }
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.value;
+    }
     constructor() {
         super();
         // Indicates if there is selected suggestionItem.
@@ -146,7 +159,6 @@ let Input = Input_1 = class Input extends UI5Element {
         }
         this._effectiveShowClearIcon = (this.showClearIcon && !!this.value && !this.readonly && !this.disabled);
         this.style.setProperty(getScopedVarName("--_ui5-input-icons-count"), `${this.iconsCount}`);
-        this.FormSupport = getFeature("FormSupport");
         const hasItems = !!this.suggestionItems.length;
         const hasValue = !!this.value;
         const isFocused = this.shadowRoot.querySelector("input") === getActiveElement();
@@ -164,12 +176,6 @@ let Input = Input_1 = class Input extends UI5Element {
         }
         else {
             this.open = hasValue && hasItems && isFocused && this.isTyping;
-        }
-        if (this.FormSupport) {
-            this.FormSupport.syncNativeHiddenInput(this);
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
         }
         const value = this.value;
         const innerInput = this.getInputDOMRefSync();
@@ -294,8 +300,8 @@ let Input = Input_1 = class Input extends UI5Element {
         }
         if (!suggestionItemPressed) {
             this.lastConfirmedValue = this.value;
-            if (this.FormSupport) {
-                this.FormSupport.triggerFormSubmit(this);
+            if (this._internals?.form) {
+                submitForm(this);
             }
             return;
         }
@@ -1082,9 +1088,6 @@ __decorate([
     slot()
 ], Input.prototype, "icon", void 0);
 __decorate([
-    slot()
-], Input.prototype, "formSupport", void 0);
-__decorate([
     slot({
         type: HTMLElement,
         invalidateOnChildChange: true,
@@ -1094,6 +1097,7 @@ Input = Input_1 = __decorate([
     customElement({
         tag: "ui5-input",
         languageAware: true,
+        formAssociated: true,
         renderer: litRender,
         template: InputTemplate,
         styles: [

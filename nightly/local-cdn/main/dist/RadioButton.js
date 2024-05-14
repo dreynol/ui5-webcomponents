@@ -6,11 +6,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var RadioButton_1;
 import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
-import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
@@ -23,7 +21,7 @@ import WrappingType from "./types/WrappingType.js";
 // Template
 import RadioButtonTemplate from "./generated/templates/RadioButtonTemplate.lit.js";
 // i18n
-import { VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, RADIO_BUTTON_GROUP_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
+import { VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, FORM_SELECTABLE_REQUIRED2, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import radioButtonCss from "./generated/themes/RadioButton.css.js";
 let isGlobalHandlerAttached = false;
@@ -60,12 +58,20 @@ let activeRadio;
  * @csspart inner-ring - Used to style the inner ring of the `ui5-radio-button`.
  */
 let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
-    static get formAssociated() {
-        return true;
+    get formValidityMessage() {
+        return RadioButton_1.i18nBundle.getText(FORM_SELECTABLE_REQUIRED2);
+    }
+    get formValidity() {
+        return { valueMissing: this._groupRequired && !this._groupChecked };
+    }
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.checked ? (this.value || "on") : null;
     }
     constructor() {
         super();
-        this._internals = this.attachInternals();
         this._deactivate = () => {
             if (activeRadio) {
                 activeRadio.active = false;
@@ -79,9 +85,8 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
     static async onDefine() {
         RadioButton_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
-    onBeforeRendering() {
+    onAfterRendering() {
         this.syncGroup();
-        this._enableFormSupport();
     }
     onEnterDOM() {
         if (isDesktop()) {
@@ -117,24 +122,6 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
         }
         this._name = this.name;
         this._checked = this.checked;
-    }
-    _enableFormSupport() {
-        const formSupport = getFeature("FormSupport");
-        if (formSupport) {
-            this._setFormValue();
-        }
-        else if (this.value) {
-            console.warn(`In order for the "value" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
-    }
-    _setFormValue() {
-        this._internals.setFormValue(this.checked ? this.value : null);
-    }
-    _resetFormValidity() {
-        this._internals.setValidity({});
-    }
-    _invalidateForm() {
-        this._internals.setValidity({ valueMissing: true }, this.radioButtonGroupRequiredText, this.shadowRoot.firstElementChild);
     }
     _onclick() {
         return this.toggle();
@@ -236,9 +223,6 @@ let RadioButton = RadioButton_1 = class RadioButton extends UI5Element {
                 return "";
         }
     }
-    get radioButtonGroupRequiredText() {
-        return RadioButton_1.i18nBundle.getText(RADIO_BUTTON_GROUP_REQUIRED);
-    }
     get effectiveTabIndex() {
         const tabindex = this.getAttribute("tabindex");
         if (this.disabled) {
@@ -290,12 +274,16 @@ __decorate([
     property({ type: Boolean })
 ], RadioButton.prototype, "active", void 0);
 __decorate([
-    slot()
-], RadioButton.prototype, "formSupport", void 0);
+    property({ type: Boolean, noAttribute: true })
+], RadioButton.prototype, "_groupChecked", void 0);
+__decorate([
+    property({ type: Boolean, noAttribute: true })
+], RadioButton.prototype, "_groupRequired", void 0);
 RadioButton = RadioButton_1 = __decorate([
     customElement({
         tag: "ui5-radio-button",
         languageAware: true,
+        formAssociated: true,
         renderer: litRender,
         template: RadioButtonTemplate,
         styles: radioButtonCss,

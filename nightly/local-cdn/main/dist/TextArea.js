@@ -17,7 +17,6 @@ import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import { getEffectiveAriaLabelText, getAssociatedLabelForTexts } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import getEffectiveScrollbarStyle from "@ui5/webcomponents-base/dist/util/getEffectiveScrollbarStyle.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { isEscape } from "@ui5/webcomponents-base/dist/Keys.js";
 import Popover from "./Popover.js";
 import Icon from "./Icon.js";
@@ -27,7 +26,7 @@ import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import TextAreaTemplate from "./generated/templates/TextAreaTemplate.lit.js";
-import { VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, TEXTAREA_CHARACTERS_LEFT, TEXTAREA_CHARACTERS_EXCEEDED, } from "./generated/i18n/i18n-defaults.js";
+import { VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, TEXTAREA_CHARACTERS_LEFT, TEXTAREA_CHARACTERS_EXCEEDED, FORM_TEXTFIELD_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import styles from "./generated/themes/TextArea.css.js";
 import valueStateMessageStyles from "./generated/themes/ValueStateMessage.css.js";
@@ -51,6 +50,18 @@ import browserScrollbarCSS from "./generated/themes/BrowserScrollbar.css.js";
  * @csspart textarea - Used to style the native textarea
  */
 let TextArea = TextArea_1 = class TextArea extends UI5Element {
+    get formValidityMessage() {
+        return TextArea_1.i18nBundle.getText(FORM_TEXTFIELD_REQUIRED);
+    }
+    get formValidity() {
+        return { valueMissing: this.required && !this.value };
+    }
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.value;
+    }
     static async onDefine() {
         TextArea_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
@@ -76,13 +87,6 @@ let TextArea = TextArea_1 = class TextArea extends UI5Element {
         this._mirrorText = this._tokenizeText(this.value);
         this.exceeding = !!this._exceededTextProps.leftCharactersCount && this._exceededTextProps.leftCharactersCount < 0;
         this._setCSSParams();
-        const FormSupport = getFeature("FormSupport");
-        if (FormSupport) {
-            FormSupport.syncNativeHiddenTextArea(this);
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
     }
     onAfterRendering() {
         const nativeTextArea = this.getInputDomRef();
@@ -383,12 +387,10 @@ __decorate([
 __decorate([
     slot()
 ], TextArea.prototype, "valueStateMessage", void 0);
-__decorate([
-    slot()
-], TextArea.prototype, "formSupport", void 0);
 TextArea = TextArea_1 = __decorate([
     customElement({
         tag: "ui5-textarea",
+        formAssociated: true,
         languageAware: true,
         styles: [browserScrollbarCSS, styles, valueStateMessageStyles],
         renderer: litRender,

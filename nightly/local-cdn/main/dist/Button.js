@@ -13,12 +13,12 @@ import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import { markEvent } from "@ui5/webcomponents-base/dist/MarkedEvents.js";
 import { getIconAccessibleName } from "@ui5/webcomponents-base/dist/asset-registries/Icons.js";
 import { isDesktop, isSafari, } from "@ui5/webcomponents-base/dist/Device.js";
 import willShowContent from "@ui5/webcomponents-base/dist/util/willShowContent.js";
+import { submitForm, resetForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import ButtonDesign from "./types/ButtonDesign.js";
 import ButtonType from "./types/ButtonType.js";
 import ButtonAccessibleRole from "./types/ButtonAccessibleRole.js";
@@ -91,13 +91,6 @@ let Button = Button_1 = class Button extends UI5Element {
         }
     }
     async onBeforeRendering() {
-        const formSupport = getFeature("FormSupport");
-        if (this.type !== ButtonType.Button && !formSupport) {
-            console.warn(`In order for the "type" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
-        if (this.submits && !formSupport) {
-            console.warn(`In order for the "submits" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
         this.iconOnly = this.isIconOnly;
         this.hasIcon = !!this.icon;
         this.buttonTitle = this.tooltip || await getIconAccessibleName(this.icon);
@@ -107,12 +100,11 @@ let Button = Button_1 = class Button extends UI5Element {
             return;
         }
         markEvent(e, "button");
-        const formSupport = getFeature("FormSupport");
-        if (formSupport && this._isSubmit) {
-            formSupport.triggerFormSubmit(this);
+        if (this._isSubmit) {
+            submitForm(this);
         }
-        if (formSupport && this._isReset) {
-            formSupport.triggerFormReset(this);
+        if (this._isReset) {
+            resetForm(this);
         }
         if (isSafari()) {
             this.getDomRef()?.focus();
@@ -289,6 +281,7 @@ __decorate([
 Button = Button_1 = __decorate([
     customElement({
         tag: "ui5-button",
+        formAssociated: true,
         languageAware: true,
         renderer: litRender,
         template: ButtonTemplate,

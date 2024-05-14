@@ -1,5 +1,6 @@
 /// <reference types="openui5" />
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js";
@@ -76,7 +77,7 @@ type TimePickerInputEventDetail = TimePickerChangeInputEventDetail;
  * @public
  * @since 1.0.0-rc.6
  */
-declare class TimePicker extends UI5Element {
+declare class TimePicker extends UI5Element implements IFormInputElement {
     /**
      * Defines a formatted time value.
      * @default undefined
@@ -85,6 +86,15 @@ declare class TimePicker extends UI5Element {
      * @public
      */
     value?: string;
+    /**
+     * Determines the name by which the component will be identified upon submission in an HTML form.
+     *
+     * **Note:** This property is only applicable within the context of an HTML Form element.
+     * @default ""
+     * @public
+     * @since 2.0.0
+     */
+    name: string;
     /**
      * Defines the value state of the component.
      * @default "None"
@@ -140,6 +150,8 @@ declare class TimePicker extends UI5Element {
     tempValue?: string;
     static i18nBundle: I18nBundle;
     static onDefine(): Promise<void>;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): FormData | string | null;
     onBeforeRendering(): void;
     get dateAriaDescription(): string;
     get accInfo(): {

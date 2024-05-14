@@ -71,6 +71,9 @@ import { SLIDER_ARIA_DESCRIPTION, } from "./generated/i18n/i18n-defaults.js";
  * @csspart handle - Used to style the handle of the `ui5-slider`.
  */
 let Slider = Slider_1 = class Slider extends SliderBase {
+    get formFormattedValue() {
+        return this.value.toString();
+    }
     constructor() {
         super();
         this._progressPercentage = 0;
@@ -284,6 +287,7 @@ Slider = Slider_1 = __decorate([
     customElement({
         tag: "ui5-slider",
         languageAware: true,
+        formAssociated: true,
         template: SliderTemplate,
         dependencies: [Icon],
     })

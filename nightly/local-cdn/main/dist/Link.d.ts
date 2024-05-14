@@ -164,7 +164,7 @@ declare class Link extends UI5Element implements ITabbable {
     get linkTypeText(): string;
     get parsedRef(): string | undefined;
     get effectiveAccRole(): string;
-    get _hasPopup(): ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+    get _hasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     static onDefine(): Promise<void>;
     _onclick(e: MouseEvent | KeyboardEvent): void;
     _onfocusin(e: FocusEvent): void;

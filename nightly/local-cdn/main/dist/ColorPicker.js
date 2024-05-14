@@ -51,6 +51,12 @@ const PICKER_POINTER_WIDTH = 6.5;
  * @public
  */
 let ColorPicker = ColorPicker_1 = class ColorPicker extends UI5Element {
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.value;
+    }
     static async onDefine() {
         ColorPicker_1.i18nBundle = await getI18nBundle("@ui5/webcomponents");
     }
@@ -361,6 +367,9 @@ __decorate([
     property({ validator: CSSColor, defaultValue: "rgba(255, 255, 255, 1)" })
 ], ColorPicker.prototype, "value", void 0);
 __decorate([
+    property()
+], ColorPicker.prototype, "name", void 0);
+__decorate([
     property({ defaultValue: "ffffff", noAttribute: true })
 ], ColorPicker.prototype, "hex", void 0);
 __decorate([
@@ -391,6 +400,7 @@ ColorPicker = ColorPicker_1 = __decorate([
     customElement({
         tag: "ui5-color-picker",
         renderer: litRender,
+        formAssociated: true,
         styles: ColorPickerCss,
         template: ColorPickerTemplate,
         dependencies: [

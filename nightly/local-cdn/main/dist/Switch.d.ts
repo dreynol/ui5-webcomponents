@@ -1,10 +1,10 @@
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import type { ClassMap } from "@ui5/webcomponents-base/dist/types.js";
 import "@ui5/webcomponents-icons/dist/accept.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
 import "@ui5/webcomponents-icons/dist/less.js";
-import type { IFormElement } from "./features/InputElementsFormSupport.js";
 import SwitchDesign from "./types/SwitchDesign.js";
 /**
  * @class
@@ -34,7 +34,7 @@ import SwitchDesign from "./types/SwitchDesign.js";
  * @csspart text-off - Used to style the `textOff` property text
  * @csspart handle - Used to style the handle of the switch
  */
-declare class Switch extends UI5Element implements IFormElement {
+declare class Switch extends UI5Element implements IFormInputElement {
     /**
      * Defines the component design.
      *
@@ -116,28 +116,19 @@ declare class Switch extends UI5Element implements IFormElement {
      */
     required: boolean;
     /**
-     * Determines the name with which the component will be submitted in an HTML form.
+     * Determines the name by which the component will be identified upon submission in an HTML form.
      *
-     * **Important:** For the `name` property to have effect, you must add the following import to your project:
-     * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-     *
-     * **Note:** When set, a native `input` HTML element
-     * will be created inside the component so that it can be submitted as
-     * part of an HTML form. Do not use this property unless you need to submit a form.
+     * **Note:** This property is only applicable within the context of an HTML Form element.
      * @default ""
      * @public
      * @since 1.16.0
      */
     name: string;
-    /**
-     * The slot is used to render native `input` HTML element within Light DOM to enable form submit, when `Switch` is a part of HTML form.
-     * @private
-     * @since 1.16.0
-     */
-    formSupport: Array<HTMLElement>;
     static i18nBundle: I18nBundle;
-    onBeforeRendering(): void;
-    _enableFormSupport(): void;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): "on" | null;
     get sapNextIcon(): "less" | "accept";
     _onclick(): void;
     _onkeydown(e: KeyboardEvent): void;

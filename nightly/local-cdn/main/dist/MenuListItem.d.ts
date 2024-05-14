@@ -42,7 +42,7 @@ declare class MenuListItem extends CustomListItem {
     get _siblingsWithIcon(): boolean;
     get _focusable(): boolean;
     get _accInfo(): {
-        ariaHaspopup: "dialog" | "menu" | "grid" | "listbox" | "tree" | undefined;
+        ariaHaspopup: "dialog" | "grid" | "listbox" | "menu" | "tree" | undefined;
         role: string;
         ariaExpanded?: boolean | undefined;
         ariaLevel?: number | undefined;

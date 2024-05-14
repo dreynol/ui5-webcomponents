@@ -31,6 +31,9 @@ let SliderBase = SliderBase_1 =
  * @public
  */
 class SliderBase extends UI5Element {
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
     constructor() {
         super();
         this.notResized = false;
@@ -519,6 +522,9 @@ __decorate([
 __decorate([
     property({ validator: Float, defaultValue: 100 })
 ], SliderBase.prototype, "max", void 0);
+__decorate([
+    property()
+], SliderBase.prototype, "name", void 0);
 __decorate([
     property({ validator: Float, defaultValue: 1 })
 ], SliderBase.prototype, "step", void 0);

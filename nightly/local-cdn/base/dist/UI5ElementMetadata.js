@@ -207,6 +207,12 @@ class UI5ElementMetadata {
         return this.metadata.shadowRootOptions || {};
     }
     /**
+     * Determines whether this UI5 Element has any theme dependant carachteristics.
+     */
+    isFormAssociated() {
+        return !!this.metadata.formAssociated;
+    }
+    /**
      * Matches a changed entity (property/slot) with the given name against the "invalidateOnChildChange" configuration
      * and determines whether this should cause and invalidation
      *

@@ -149,16 +149,16 @@ declare class AvatarGroup extends UI5Element {
     get _customOverflowButton(): IButton | undefined;
     get _ariaLabelText(): string;
     get _overflowButtonAriaLabelText(): string | undefined;
-    get _containerAriaHasPopup(): ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+    get _containerAriaHasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     get _overflowButtonAccAttributes(): {
-        hasPopup: ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+        hasPopup: ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     };
     get _role(): "button" | "group";
     get _hiddenStartIndex(): number;
     get _overflowBtnHidden(): boolean;
     get _isGroup(): boolean;
     get _itemsCount(): number;
-    get _groupTabIndex(): "0" | "-1";
+    get _groupTabIndex(): "-1" | "0";
     get _overflowButton(): Button | null;
     /**
      * Return the effective overflow button width
@@ -211,7 +211,7 @@ declare class AvatarGroup extends UI5Element {
     _overflowItems(): void;
     _getNextBackgroundColor(): number;
     _setHiddenItems(hiddenItems: number): void;
-    _getAriaHasPopup(): ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+    _getAriaHasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
 }
 export default AvatarGroup;
 export type { AvatarGroupClickEventDetail, AvatarGroupAccessibilityAttributes, IAvatarGroupItem, };

@@ -72,6 +72,12 @@ import rangeSliderStyles from "./generated/themes/RangeSlider.css.js";
  * @csspart handle - Used to style the handles of the `ui5-range-slider`.
  */
 let RangeSlider = RangeSlider_1 = class RangeSlider extends SliderBase {
+    get formFormattedValue() {
+        const formData = new FormData();
+        formData.append(this.name, this.startValue.toString());
+        formData.append(this.name, this.endValue.toString());
+        return formData;
+    }
     constructor() {
         super();
         this._isPressInCurrentRange = false;
@@ -712,6 +718,7 @@ RangeSlider = RangeSlider_1 = __decorate([
     customElement({
         tag: "ui5-range-slider",
         languageAware: true,
+        formAssociated: true,
         template: RangeSliderTemplate,
         dependencies: [Icon],
         styles: [SliderBase.styles, rangeSliderStyles],

@@ -156,7 +156,6 @@ import "./CustomListItem.js";
 import "./ListItemGroupHeader.js";
 import "./ListItemGroup.js";
 // Features
-import "./features/InputElementsFormSupport.js";
 import "./features/ColorPaletteMoreColors.js";
 import "./features/InputSuggestions.js";
 // @ts-ignore

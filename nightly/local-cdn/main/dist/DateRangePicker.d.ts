@@ -1,3 +1,4 @@
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import DatePicker from "./DatePicker.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import type { DatePickerChangeEventDetail as DateRangePickerChangeEventDetail, DatePickerInputEventDetail as DateRangePickerInputEventDetail } from "./DatePicker.js";
@@ -34,7 +35,7 @@ import type { CalendarSelectionChangeEventDetail } from "./Calendar.js";
  * @since 1.0.0-rc.8
  * @public
  */
-declare class DateRangePicker extends DatePicker {
+declare class DateRangePicker extends DatePicker implements IFormInputElement {
     /**
     * Determines the symbol which separates the dates.
     * If not supplied, the default time interval delimiter for the current locale will be used.
@@ -48,6 +49,7 @@ declare class DateRangePicker extends DatePicker {
     */
     _tempValue: string;
     private _prevDelimiter;
+    get formFormattedValue(): string | FormData;
     constructor();
     /**
      * **Note:** The getter method is inherited and not supported. If called it will return an empty value.

@@ -41,6 +41,22 @@ import "@ui5/webcomponents-icons/dist/value-help.js";
  * @public
  */
 let MultiInput = MultiInput_1 = class MultiInput extends Input {
+    get formValidity() {
+        const tokens = (this.tokens || []);
+        return { valueMissing: this.required && !this.value && !tokens.length };
+    }
+    get formFormattedValue() {
+        const tokens = (this.tokens || []);
+        if (tokens.length) {
+            const formData = new FormData();
+            formData.append(this.name, this.value);
+            for (let i = 0; i < tokens.length; i++) {
+                formData.append(this.name, tokens[i].text);
+            }
+            return formData;
+        }
+        return this.value;
+    }
     constructor() {
         super();
         // Prevent suggestions' opening.
@@ -243,12 +259,16 @@ __decorate([
     property({ type: Boolean })
 ], MultiInput.prototype, "tokenizerAvailable", void 0);
 __decorate([
-    slot()
+    property()
+], MultiInput.prototype, "name", void 0);
+__decorate([
+    slot({ type: HTMLElement })
 ], MultiInput.prototype, "tokens", void 0);
 MultiInput = MultiInput_1 = __decorate([
     customElement({
         tag: "ui5-multi-input",
         renderer: litRender,
+        formAssociated: true,
         template: MultiInputTemplate,
         styles: [Input.styles, styles],
         dependencies: [

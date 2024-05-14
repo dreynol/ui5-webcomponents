@@ -9,12 +9,10 @@ import { isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import UI5Element from "@ui5/webcomponents-base/dist/UI5Element.js";
 import customElement from "@ui5/webcomponents-base/dist/decorators/customElement.js";
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
-import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
 import litRender from "@ui5/webcomponents-base/dist/renderer/LitRenderer.js";
 import { getI18nBundle } from "@ui5/webcomponents-base/dist/i18nBundle.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import { isSpace, isEnter } from "@ui5/webcomponents-base/dist/Keys.js";
 import "@ui5/webcomponents-icons/dist/accept.js";
@@ -24,7 +22,7 @@ import "@ui5/webcomponents-icons/dist/tri-state.js";
 import Icon from "./Icon.js";
 import Label from "./Label.js";
 import WrappingType from "./types/WrappingType.js";
-import { VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_SUCCESS, } from "./generated/i18n/i18n-defaults.js";
+import { VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_SUCCESS, FORM_CHECKABLE_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 // Styles
 import checkboxCss from "./generated/themes/CheckBox.css.js";
 // Template
@@ -74,6 +72,18 @@ let activeCb;
  * @csspart icon - Used to style the icon of the `ui5-checkbox`
  */
 let CheckBox = CheckBox_1 = class CheckBox extends UI5Element {
+    get formValidityMessage() {
+        return CheckBox_1.i18nBundle.getText(FORM_CHECKABLE_REQUIRED);
+    }
+    get formValidity() {
+        return { valueMissing: this.required && !this.checked };
+    }
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.checked ? "on" : null;
+    }
     constructor() {
         super();
         this._deactivate = () => {
@@ -86,25 +96,9 @@ let CheckBox = CheckBox_1 = class CheckBox extends UI5Element {
             isGlobalHandlerAttached = true;
         }
     }
-    onBeforeRendering() {
-        this._enableFormSupport();
-    }
     onEnterDOM() {
         if (isDesktop()) {
             this.setAttribute("desktop", "");
-        }
-    }
-    _enableFormSupport() {
-        const formSupport = getFeature("FormSupport");
-        if (formSupport) {
-            formSupport.syncNativeHiddenInput(this, (element, nativeInput) => {
-                nativeInput.disabled = !!element.disabled;
-                nativeInput.checked = !!element.checked;
-                nativeInput.value = element.checked ? "on" : "";
-            });
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
         }
     }
     _onclick() {
@@ -272,13 +266,11 @@ __decorate([
 __decorate([
     property({ type: Boolean })
 ], CheckBox.prototype, "active", void 0);
-__decorate([
-    slot()
-], CheckBox.prototype, "formSupport", void 0);
 CheckBox = CheckBox_1 = __decorate([
     customElement({
         tag: "ui5-checkbox",
         languageAware: true,
+        formAssociated: true,
         renderer: litRender,
         template: CheckBoxTemplate,
         styles: checkboxCss,

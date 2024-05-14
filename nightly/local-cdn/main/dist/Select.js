@@ -15,7 +15,6 @@ import connectToComponent from "@ui5/webcomponents-base/dist/connectToComponent.
 import { isSpace, isUp, isDown, isEnter, isEscape, isHome, isEnd, isShow, isTabNext, isTabPrevious, } from "@ui5/webcomponents-base/dist/Keys.js";
 import DOMReference from "@ui5/webcomponents-base/dist/types/DOMReference.js";
 import announce from "@ui5/webcomponents-base/dist/util/InvisibleMessage.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import "@ui5/webcomponents-icons/dist/slim-arrow-down.js";
@@ -30,7 +29,7 @@ import Integer from "@ui5/webcomponents-base/dist/types/Integer.js";
 import InvisibleMessageMode from "@ui5/webcomponents-base/dist/types/InvisibleMessageMode.js";
 import { getScopedVarName } from "@ui5/webcomponents-base/dist/CustomElementsScope.js";
 import List from "./List.js";
-import { VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, INPUT_SUGGESTIONS_TITLE, LIST_ITEM_POSITION, SELECT_ROLE_DESCRIPTION, } from "./generated/i18n/i18n-defaults.js";
+import { VALUE_STATE_SUCCESS, VALUE_STATE_INFORMATION, VALUE_STATE_ERROR, VALUE_STATE_WARNING, VALUE_STATE_TYPE_SUCCESS, VALUE_STATE_TYPE_INFORMATION, VALUE_STATE_TYPE_ERROR, VALUE_STATE_TYPE_WARNING, INPUT_SUGGESTIONS_TITLE, LIST_ITEM_POSITION, SELECT_ROLE_DESCRIPTION, FORM_SELECTABLE_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 import Option from "./Option.js";
 import Label from "./Label.js";
 import ResponsivePopover from "./ResponsivePopover.js";
@@ -91,6 +90,23 @@ import SelectPopoverCss from "./generated/themes/SelectPopover.css.js";
  * @since 0.8.0
  */
 let Select = Select_1 = class Select extends UI5Element {
+    get formValidityMessage() {
+        return Select_1.i18nBundle.getText(FORM_SELECTABLE_REQUIRED);
+    }
+    get formValidity() {
+        const selectedOption = this.selectedOption;
+        return { valueMissing: this.required && (selectedOption && selectedOption.getAttribute("value") === "") };
+    }
+    async formElementAnchor() {
+        return this.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        const selectedOption = this.selectedOption;
+        if (selectedOption) {
+            return selectedOption.hasAttribute("value") ? selectedOption.value : selectedOption.textContent;
+        }
+        return "";
+    }
     constructor() {
         super();
         this._syncedOptions = [];
@@ -118,7 +134,6 @@ let Select = Select_1 = class Select extends UI5Element {
         else {
             this._syncSelection();
         }
-        this._enableFormSupport();
         this.style.setProperty(getScopedVarName("--_ui5-input-icons-count"), `${this.iconsCount}`);
     }
     onAfterRendering() {
@@ -310,19 +325,6 @@ let Select = Select_1 = class Select extends UI5Element {
         menu.removeEventListener("ui5-option-click", this._onMenuClick);
         // @ts-ignore
         menu.removeEventListener("ui5-menu-change", this._onMenuChange);
-    }
-    _enableFormSupport() {
-        const formSupport = getFeature("FormSupport");
-        if (formSupport) {
-            formSupport.syncNativeHiddenInput(this, (element, nativeInput) => {
-                const selectElement = element;
-                nativeInput.disabled = !!element.disabled;
-                nativeInput.value = selectElement.value;
-            });
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
     }
     _onkeydown(e) {
         const isTab = (isTabNext(e) || isTabPrevious(e));
@@ -759,9 +761,6 @@ __decorate([
 ], Select.prototype, "options", void 0);
 __decorate([
     slot()
-], Select.prototype, "formSupport", void 0);
-__decorate([
-    slot()
 ], Select.prototype, "valueStateMessage", void 0);
 __decorate([
     slot()
@@ -770,6 +769,7 @@ Select = Select_1 = __decorate([
     customElement({
         tag: "ui5-select",
         languageAware: true,
+        formAssociated: true,
         renderer: litRender,
         template: SelectTemplate,
         styles: [

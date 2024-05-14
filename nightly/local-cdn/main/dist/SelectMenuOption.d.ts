@@ -81,7 +81,7 @@ declare class SelectMenuOption extends CustomListItem implements IOption {
         ariaLabel: string;
         ariaLabelRadioButton: string;
         ariaSelectedText?: string | undefined;
-        ariaHaspopup?: "dialog" | "menu" | "grid" | "listbox" | "tree" | undefined;
+        ariaHaspopup?: "dialog" | "grid" | "listbox" | "menu" | "tree" | undefined;
         posinset?: number | undefined;
         setsize?: number | undefined;
         ariaChecked?: boolean | undefined;

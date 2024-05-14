@@ -183,7 +183,7 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
      */
     get еffectiveBackgroundColor(): AvatarColorScheme;
     get _role(): "button" | "img";
-    get _ariaHasPopup(): ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+    get _ariaHasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
     get _fallbackIcon(): string;
     get _interactive(): boolean;
     get validInitials(): string | null;
@@ -203,7 +203,7 @@ declare class Avatar extends UI5Element implements ITabbable, IAvatarGroupItem {
     _onkeydown(e: KeyboardEvent): void;
     _onkeyup(e: KeyboardEvent): void;
     _fireClick(): void;
-    _getAriaHasPopup(): ("dialog" | "menu" | "grid" | "listbox" | "tree") | undefined;
+    _getAriaHasPopup(): ("dialog" | "grid" | "listbox" | "menu" | "tree") | undefined;
 }
 export default Avatar;
 export type { AvatarAccessibilityAttributes, };

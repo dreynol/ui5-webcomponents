@@ -19,6 +19,7 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         };
         _doNotSyncAttributes: Set<string>;
         _state: import("../UI5ElementMetadata.js").State;
+        _internals?: ElementInternals | undefined;
         _getRealDomRef?: (() => HTMLElement) | undefined;
         readonly _id: string;
         render(): object;
@@ -41,6 +42,7 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         }) => void): void;
         _onChildChange(slotName: string, childChangeInfo: import("../UI5Element.js").ChangeInfo): void;
         attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
+        formAssociatedCallback(): void;
         _updateAttribute(name: string, newValue: import("../UI5ElementMetadata.js").PropertyValue): void;
         _upgradeProperty(this: Record<string, any>, propertyName: string): void;
         _upgradeAllProperties(): void;
@@ -70,6 +72,10 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
         readonly isUI5Element: boolean;
         readonly classes: import("../types.js").ClassMap;
         readonly accessibilityInfo: import("../types.js").AccessibilityInfo;
+        readonly validity: ValidityState | undefined;
+        readonly validationMessage: string | undefined;
+        checkValidity(): boolean | undefined;
+        reportValidity(): boolean | undefined;
         accessKey: string;
         readonly accessKeyLabel: string;
         autocapitalize: string;
@@ -398,6 +404,7 @@ declare const getClassCopy: (klass: typeof UI5Element, constructorCallback: () =
     template?: import("../renderer/executeTemplate.js").TemplateFunction | undefined;
     _metadata: import("../UI5ElementMetadata.js").default;
     renderer: import("../UI5Element.js").Renderer;
+    readonly formAssociated: boolean;
     readonly observedAttributes: string[];
     _needsShadowDOM(): boolean;
     _generateAccessors(): void;

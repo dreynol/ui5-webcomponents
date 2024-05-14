@@ -14,7 +14,6 @@ import "@ui5/webcomponents-localization/dist/features/calendar/Japanese.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Persian.js";
 import ResizeHandler from "@ui5/webcomponents-base/dist/delegate/ResizeHandler.js";
 import * as defaultTexts from "./generated/i18n/i18n-defaults.js";
-import "./features/InputElementsFormSupport.js";
 import "./features/ColorPaletteMoreColors.js";
 import "./features/InputSuggestions.js";
 declare const testAssets: {

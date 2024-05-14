@@ -9,7 +9,6 @@ import customElement from "@ui5/webcomponents-base/dist/decorators/customElement
 import property from "@ui5/webcomponents-base/dist/decorators/property.js";
 import slot from "@ui5/webcomponents-base/dist/decorators/slot.js";
 import event from "@ui5/webcomponents-base/dist/decorators/event.js";
-import { getFeature } from "@ui5/webcomponents-base/dist/FeaturesRegistry.js";
 import "@ui5/webcomponents-localization/dist/DateFormat.js";
 import CalendarDate from "@ui5/webcomponents-localization/dist/dates/CalendarDate.js";
 import modifyDateBy from "@ui5/webcomponents-localization/dist/dates/modifyDateBy.js";
@@ -17,13 +16,14 @@ import getRoundedTimestamp from "@ui5/webcomponents-localization/dist/dates/getR
 import getTodayUTCTimestamp from "@ui5/webcomponents-localization/dist/dates/getTodayUTCTimestamp.js";
 import ValueState from "@ui5/webcomponents-base/dist/types/ValueState.js";
 import { getEffectiveAriaLabelText } from "@ui5/webcomponents-base/dist/util/AriaLabelHelper.js";
+import { submitForm } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import { isPageUp, isPageDown, isPageUpShift, isPageDownShift, isPageUpShiftCtrl, isPageDownShiftCtrl, isShow, isF4, isEnter, isTabNext, isTabPrevious, isF6Next, isF6Previous, } from "@ui5/webcomponents-base/dist/Keys.js";
 import AriaHasPopup from "@ui5/webcomponents-base/dist/types/AriaHasPopup.js";
 import { isPhone, isDesktop } from "@ui5/webcomponents-base/dist/Device.js";
 import CalendarPickersMode from "./types/CalendarPickersMode.js";
 import "@ui5/webcomponents-icons/dist/appointment-2.js";
 import "@ui5/webcomponents-icons/dist/decline.js";
-import { DATEPICKER_OPEN_ICON_TITLE, DATEPICKER_DATE_DESCRIPTION, INPUT_SUGGESTIONS_TITLE } from "./generated/i18n/i18n-defaults.js";
+import { DATEPICKER_OPEN_ICON_TITLE, DATEPICKER_DATE_DESCRIPTION, INPUT_SUGGESTIONS_TITLE, FORM_TEXTFIELD_REQUIRED, } from "./generated/i18n/i18n-defaults.js";
 import DateComponentBase from "./DateComponentBase.js";
 import Icon from "./Icon.js";
 import Button from "./Button.js";
@@ -121,6 +121,18 @@ import ResponsivePopoverCommonCss from "./generated/themes/ResponsivePopoverComm
  * @public
  */
 let DatePicker = DatePicker_1 = class DatePicker extends DateComponentBase {
+    get formValidityMessage() {
+        return DatePicker_1.i18nBundle.getText(FORM_TEXTFIELD_REQUIRED);
+    }
+    get formValidity() {
+        return { valueMissing: this.required && !this.value };
+    }
+    async formElementAnchor() {
+        return (await this.getFocusDomRefAsync())?.getFocusDomRefAsync();
+    }
+    get formFormattedValue() {
+        return this.value;
+    }
     /**
      * @protected
      */
@@ -137,19 +149,12 @@ let DatePicker = DatePicker_1 = class DatePicker extends DateComponentBase {
         this._calendarCurrentPicker = this.firstPicker;
     }
     onBeforeRendering() {
-        this.FormSupport = getFeature("FormSupport");
         ["minDate", "maxDate"].forEach((prop) => {
             const propValue = this[prop];
             if (!this.isValid(propValue)) {
                 console.warn(`Invalid value for property "${prop}": ${propValue} is not compatible with the configured format pattern: "${this._displayFormat}"`); // eslint-disable-line
             }
         });
-        if (this.FormSupport) {
-            this.FormSupport.syncNativeHiddenInput(this);
-        }
-        else if (this.name) {
-            console.warn(`In order for the "name" property to have effect, you should also: import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`); // eslint-disable-line
-        }
         this.value = this.normalizeValue(this.value) || this.value;
         this.liveValue = this.value;
     }
@@ -204,8 +209,8 @@ let DatePicker = DatePicker_1 = class DatePicker extends DateComponentBase {
             return;
         }
         if (isEnter(e)) {
-            if (this.FormSupport) {
-                this.FormSupport.triggerFormSubmit(this);
+            if (this._internals?.form) {
+                submitForm(this);
             }
         }
         else if (isPageUpShiftCtrl(e)) {
@@ -548,13 +553,11 @@ __decorate([
 __decorate([
     slot({ type: HTMLElement })
 ], DatePicker.prototype, "valueStateMessage", void 0);
-__decorate([
-    slot({ type: HTMLElement })
-], DatePicker.prototype, "formSupport", void 0);
 DatePicker = DatePicker_1 = __decorate([
     customElement({
         tag: "ui5-date-picker",
         languageAware: true,
+        formAssociated: true,
         template: DatePickerTemplate,
         styles: [
             datePickerCss,

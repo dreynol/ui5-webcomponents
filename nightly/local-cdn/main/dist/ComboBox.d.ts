@@ -8,13 +8,13 @@ import "@ui5/webcomponents-icons/dist/alert.js";
 import "@ui5/webcomponents-icons/dist/sys-enter-2.js";
 import "@ui5/webcomponents-icons/dist/information.js";
 import type I18nBundle from "@ui5/webcomponents-base/dist/i18nBundle.js";
+import type { IFormInputElement } from "@ui5/webcomponents-base/dist/features/InputElementsFormSupport.js";
 import type { IIcon } from "./Icon.js";
 import ComboBoxItem from "./ComboBoxItem.js";
 import Popover from "./Popover.js";
 import ResponsivePopover from "./ResponsivePopover.js";
 import type { ListItemClickEventDetail } from "./List.js";
 import ComboBoxFilter from "./types/ComboBoxFilter.js";
-import type FormSupportT from "./features/InputElementsFormSupport.js";
 import PopoverHorizontalAlign from "./types/PopoverHorizontalAlign.js";
 import { InputEventDetail } from "./Input.js";
 /**
@@ -72,7 +72,7 @@ type ComboBoxSelectionChangeEventDetail = {
  * @public
  * @since 1.0.0-rc.6
  */
-declare class ComboBox extends UI5Element {
+declare class ComboBox extends UI5Element implements IFormInputElement {
     /**
      * Defines the value of the component.
      * @default ""
@@ -81,6 +81,15 @@ declare class ComboBox extends UI5Element {
      * @public
      */
     value: string;
+    /**
+     * Determines the name by which the component will be identified upon submission in an HTML form.
+     *
+     * **Note:** This property is only applicable within the context of an HTML Form element.
+     * @default ""
+     * @public
+     * @since 2.0.0
+     */
+    name: string;
     /**
      * Defines whether the value will be autocompleted to match an item
      * @default false
@@ -214,8 +223,11 @@ declare class ComboBox extends UI5Element {
     _userTypedValue: string;
     responsivePopover?: ResponsivePopover;
     valueStatePopover?: Popover;
-    FormSupport?: typeof FormSupportT;
     static i18nBundle: I18nBundle;
+    get formValidityMessage(): string;
+    get formValidity(): ValidityStateFlags;
+    formElementAnchor(): Promise<HTMLElement | undefined>;
+    get formFormattedValue(): string;
     constructor();
     onBeforeRendering(): Promise<void>;
     get iconsCount(): number;
