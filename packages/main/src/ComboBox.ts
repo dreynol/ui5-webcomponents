@@ -676,7 +676,18 @@ class ComboBox extends UI5Element {
 	}
 
 	_startsWithMatchingItems(str: string): Array<IComboBoxItem> {
-		return Filters.StartsWith(str, this._filteredItems, "text");
+		const filteredItems: Array<IComboBoxItem> = [];
+
+		this._filteredItems.forEach(item => {
+			if (item.items?.length) {
+				filteredItems.push(...item.items);
+				return;
+			}
+
+			filteredItems.push(item);
+		});
+
+		return Filters.StartsWith(str, filteredItems, "text");
 	}
 
 	_clearFocus() {
@@ -1008,23 +1019,23 @@ class ComboBox extends UI5Element {
 	_selectMatchingItem() {
 		const currentlyFocusedItem = this.items.find(item => item.focused);
 		const shouldSelectionBeCleared = currentlyFocusedItem && currentlyFocusedItem.isGroupItem;
+		let itemToBeSelected: IComboBoxItem | undefined;
 
-		const itemToBeSelected = this._filteredItems.find(item => {
-			return ((!item.isGroupItem && (item.text === this.value)) || (item.items?.length && (item.items[0].text === this.value))) && !shouldSelectionBeCleared;
+		this._filteredItems.forEach(item => {
+			if (!shouldSelectionBeCleared && !itemToBeSelected) {
+				itemToBeSelected = ((!item.isGroupItem && (item.text === this.value)) ? item : item?.items?.find(i => i.text === this.value));
+			}
 		});
-
-		if (!itemToBeSelected) {
-			return;
-		}
 
 		this._filteredItems = this._filteredItems.map(item => {
 			if (!item.items) {
 				item.selected = item === itemToBeSelected;
+				return item;
 			}
 
-			if (item.items && !!itemToBeSelected?.items?.length) {
-				item.items[0].selected = itemToBeSelected.items[0] === item.items[0];
-			}
+			item.items.forEach(groupItem => {
+				groupItem.selected = itemToBeSelected === groupItem;
+			});
 
 			return item;
 		});
